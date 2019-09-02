@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.jvm-redux.jvm-redux-api:api:1.2.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.jvm-redux.jvm-redux-api/api/1.2.0/10399f5fa796b4b9640d81e20c0462ffb822e69d/api-1.2.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.jvm-redux.jvm-redux-api/api/1.2.0/c10ede36321da45628980521057fd9961de1fad1/api-1.2.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
