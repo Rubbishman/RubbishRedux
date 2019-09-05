@@ -36,25 +36,28 @@ public class TimerExecutorTest {
 
         TimerExecutor timer = new TimerExecutor(creator);
 
-        RepeatingTimer repeatingTimer1 = timer.createTimer("ACTION", 100, 3);
-        RepeatingTimer repeatingTimer2 = timer.createTimer("ACTION2", 100, 4);
-        RepeatingTimer repeatingTimer3 = timer.createTimer("ACTION3", 100, 5);
-        timer.createTimer("ACTION4", 100, 5);
-        timer.createTimer("ACTION5", 100, 5);
-        timer.createTimer("ACTION6", 100, 5);
+        Long nowTime = 0l;
 
-//        timer.startTimer();
-        timer.rubbish();
+        timer.createTimer(nowTime,"ACTION", 100, 3);
+        timer.createTimer(nowTime + 10,"ACTION2", 100, 4);
+        timer.createTimer(nowTime + 20,"ACTION3", 100, 5);
+        timer.createTimer(nowTime + 30,"ACTION4", 100, 5);
+        timer.createTimer(nowTime + 40,"ACTION5", 100, 5);
+        timer.createTimer(nowTime + 50,"ACTION6", 100, 5);
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        timer.timerLogic(nowTime);
+
+        assertEquals(6, timer.getState().timers.size());
+        for(int i  = 0; i < timer.getState().timers.size(); i++) {
+            assertEquals(0, timer.getState().timers.get(i).currentRepeats);
         }
 
-//        assertEquals("moo [CREATE:RepeatingTimer { id: 0 startTime: " + repeatingTimer1.timer.startTime + " period: 100 currentRepeats: 0 repeats: 5 action: ACTION]",
-//                stringBuilder.toString()/*.replaceAll(System.lineSeparator(), "")*/);
+        timer.timerLogic(nowTime + 100);
+        assertEquals(1, timer.getState().timers.get(0).currentRepeats);
 
-        System.out.println(timer.getState());
+        timer.timerLogic(nowTime + 150);
+        for(int i  = 0; i < timer.getState().timers.size(); i++) {
+            assertEquals(1, timer.getState().timers.get(i).currentRepeats);
+        }
     }
 }

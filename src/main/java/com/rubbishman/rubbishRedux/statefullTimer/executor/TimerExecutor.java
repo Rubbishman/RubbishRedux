@@ -6,7 +6,6 @@ import com.rubbishman.rubbishRedux.statefullTimer.helper.TimerHelper;
 import com.rubbishman.rubbishRedux.statefullTimer.logic.TimerLogic;
 import com.rubbishman.rubbishRedux.statefullTimer.reducer.TimerReducer;
 import com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer;
-import com.rubbishman.rubbishRedux.statefullTimer.state.Timer;
 import com.rubbishman.rubbishRedux.statefullTimer.state.TimerState;
 import redux.api.Store;
 
@@ -56,8 +55,8 @@ public class TimerExecutor {
         executor = Executors.newSingleThreadScheduledExecutor();
     }
 
-    public void rubbish() {
-        LinkedList<TimerLogic> toAdd = checkTimers();
+    public void timerLogic(Long nowTime) {
+        LinkedList<TimerLogic> toAdd = checkTimers(nowTime);
 
         doActions();
 
@@ -70,24 +69,22 @@ public class TimerExecutor {
 
     public void startTimer() {
         Runnable runner = () -> {
-            rubbish();
+            Long nowTime = System.nanoTime();
+            timerLogic(nowTime);
         };
 
         executor.scheduleAtFixedRate(runner, 0, 15, TimeUnit.MILLISECONDS);
     }
 
-    private LinkedList<TimerLogic> checkTimers() {
+    private LinkedList<TimerLogic> checkTimers(Long nowTime) {
         LinkedList<TimerLogic> toAdd = new LinkedList();
 
         synchronized (timerState) {
             TimerState state = timerState.getState();
-            Long nowTime = System.nanoTime();
-
-
 
             TimerLogic logic = timerList.peek();
             while(logic != null) {
-                if(TimerHelper.repeatsChanged(logic.getPeriodicIncrementer(state), nowTime)) {
+                if(TimerHelper.repeatsChanged(logic.getRepeatingTimer(state), nowTime)) {
                     logic = timerList.poll();
 
                     if(logic.logic(state, nowTime)) {
@@ -111,24 +108,23 @@ public class TimerExecutor {
         }
     }
 
-    public RepeatingTimer createTimer(Object action, int period, int repeats) {
+    public RepeatingTimer createTimer(Long nowTime, Object action, int period, int repeats) {
         CreateObject createObj = new CreateObject();
 
-        RepeatingTimer create = new RepeatingTimer();
-        create.timer = new Timer();
-        create.timer.startTime = System.nanoTime();
-        create.timer.period = period;
-        create.action = action;
-        create.repeats = repeats;
+        RepeatingTimer create = new RepeatingTimer(0, nowTime, period, repeats, 0 , action);
 
         createObj.createObject = create;
 
         createObj.callback = (repeatingTimer) -> {
-            addTimer(new TimerLogic(((RepeatingTimer)repeatingTimer).id));
+            addTimer(new TimerLogic(this, ((RepeatingTimer)repeatingTimer).id));
         };
 
         addAction(createObj);
 
         return create;
+    }
+
+    public RepeatingTimer createTimer(Object action, int period, int repeats) {
+        return createTimer(System.nanoTime(), action, period, repeats);
     }
 }

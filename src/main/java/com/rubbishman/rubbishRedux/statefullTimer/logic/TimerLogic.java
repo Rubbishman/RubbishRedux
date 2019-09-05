@@ -1,13 +1,17 @@
 package com.rubbishman.rubbishRedux.statefullTimer.logic;
 
+import com.rubbishman.rubbishRedux.statefullTimer.action.IncrementTimer;
+import com.rubbishman.rubbishRedux.statefullTimer.executor.TimerExecutor;
 import com.rubbishman.rubbishRedux.statefullTimer.helper.TimerHelper;
 import com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer;
 import com.rubbishman.rubbishRedux.statefullTimer.state.TimerState;
 
 public class TimerLogic {
-    public int subject;
+    private TimerExecutor owner;
+    public final int subject;
 
-    public TimerLogic(int subject) {
+    public TimerLogic(TimerExecutor owner, int subject) {
+        this.owner = owner;
         this.subject = subject;
     }
 
@@ -16,10 +20,10 @@ public class TimerLogic {
             return false;
         }
 
-        RepeatingTimer periodicIncrementer = getPeriodicIncrementer(state);
+        RepeatingTimer periodicIncrementer = getRepeatingTimer(state);
 
         if(TimerHelper.repeatsChanged(periodicIncrementer, nowTime)) {
-//            InitApp.actionQueue.add(new ActionTargeted(subject, Action.PERIODIC_INC_EXEC));
+            owner.addAction(new IncrementTimer(nowTime, subject));
             if(periodicIncrementer.currentRepeats == periodicIncrementer.repeats - 1) {
                 return false; //Destruct is needed..?
             }
@@ -28,7 +32,7 @@ public class TimerLogic {
         return false;
     }
 
-    public RepeatingTimer getPeriodicIncrementer(TimerState state) {
+    public RepeatingTimer getRepeatingTimer(TimerState state) {
         return state.timers.get(subject);
     }
 

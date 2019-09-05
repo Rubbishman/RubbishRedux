@@ -18,8 +18,7 @@ public class TimerCreateProcessor implements ICreateObjectProcessor<TimerState, 
     public TimerState run(TimerState state, CreateObject action) {
         state.timers = (ArrayList<RepeatingTimer>)state.timers.clone();
 
-        createdObject = (RepeatingTimer) action.createObject;
-        createdObject.id = state.timers.size();
+        createdObject = ((RepeatingTimer) action.createObject).assignId(state.timers.size());
 
         state.timers.add(createdObject);
 
