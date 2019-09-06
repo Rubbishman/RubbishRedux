@@ -1,4 +1,4 @@
-package com.rubbishman.rubbishRedux;
+package com.rubbishman.rubbishRedux.misc;
 
 import redux.api.Dispatcher;
 import redux.api.Store;

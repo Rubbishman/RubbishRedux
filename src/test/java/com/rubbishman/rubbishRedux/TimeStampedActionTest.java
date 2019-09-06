@@ -4,21 +4,19 @@ import com.rubbishman.rubbishRedux.middlewareEnhancer.MiddlewareEnhancer;
 import com.rubbishman.rubbishRedux.misc.MyLoggingMiddleware;
 import com.rubbishman.rubbishRedux.misc.MyReducer;
 import com.rubbishman.rubbishRedux.misc.MyState;
+import com.rubbishman.rubbishRedux.timeStampedLogger.middleware.TimeStampedMiddleware;
 import org.junit.Test;
-import redux.api.Reducer;
 import redux.api.Store;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
-public class MiddlewareEnchancerTest {
-
+public class TimeStampedActionTest {
     @Test
-    public void testMiddlewareEnhancer() {
+    public void testTimeStampedAction() {
         StringBuilder stringBuilder = new StringBuilder();
 
         OutputStream myOutput = new OutputStream() {
@@ -34,8 +32,9 @@ public class MiddlewareEnchancerTest {
 
         MiddlewareEnhancer<MyState> enhancer = new MiddlewareEnhancer<>();
         enhancer.addMiddleware(new MyLoggingMiddleware(printStream, "moo1"));
-        enhancer.addMiddleware(new MyLoggingMiddleware(printStream, "moo2"));
-        enhancer.addMiddleware(new MyLoggingMiddleware(printStream, "moo3"));
+
+        TimeStampedMiddleware timeStampedMiddleware = new TimeStampedMiddleware();
+        enhancer.addMiddleware(timeStampedMiddleware);
 
         creator = enhancer.enhance(creator);
 
@@ -46,19 +45,31 @@ public class MiddlewareEnchancerTest {
         store.dispatch("Third");
 
         assertEquals(
-       "Initial state INIT" +
-                "moo1 First" +
-                "moo2 First" +
-                "moo3 First" +
-                "Adding First" +
-                "moo1 Second" +
-                "moo2 Second" +
-                "moo3 Second" +
-                "Adding Second" +
-                "moo1 Third" +
-                "moo2 Third" +
-                "moo3 Third" +
-                "Adding Third",
+                "Initial state INIT" +
+                        "moo1 First" +
+                        "Adding First" +
+                        "moo1 Second" +
+                        "Adding Second" +
+                        "moo1 Third" +
+                        "Adding Third",
+                stringBuilder.toString().replaceAll(System.lineSeparator(), ""));
+
+        timeStampedMiddleware.dispatchLogInstantly(store);
+
+        assertEquals(
+                "Initial state INIT" +
+                        "moo1 First" +
+                        "Adding First" +
+                        "moo1 Second" +
+                        "Adding Second" +
+                        "moo1 Third" +
+                        "Adding Third" +
+                        "moo1 First" +
+                        "Adding First" +
+                        "moo1 Second" +
+                        "Adding Second" +
+                        "moo1 Third" +
+                        "Adding Third",
                 stringBuilder.toString().replaceAll(System.lineSeparator(), ""));
     }
 }
