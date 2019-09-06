@@ -28,7 +28,7 @@ public class TimerExecutorTest {
         PrintStream printStream = new PrintStream(myOutput);
 
         MiddlewareEnhancer<TimerState> enhancer = new MiddlewareEnhancer<>();
-        enhancer.addMiddleware(new MyLoggingMiddleware(System.out, "moo"));
+        enhancer.addMiddleware(new MyLoggingMiddleware(printStream, "moo"));
 
         Store.Creator<TimerState> creator = new com.glung.redux.Store.Creator();
 
@@ -59,5 +59,20 @@ public class TimerExecutorTest {
         for(int i  = 0; i < timer.getState().timers.size(); i++) {
             assertEquals(1, timer.getState().timers.get(i).currentRepeats);
         }
+
+        assertEquals(
+                "moo [CREATE:RepeatingTimer { id: 0 startTime: 0 period: 100 currentRepeats: 0 repeats: 3 action: ACTION]" +
+                        "moo [CREATE:RepeatingTimer { id: 0 startTime: 10 period: 100 currentRepeats: 0 repeats: 4 action: ACTION2]" +
+                        "moo [CREATE:RepeatingTimer { id: 0 startTime: 20 period: 100 currentRepeats: 0 repeats: 5 action: ACTION3]" +
+                        "moo [CREATE:RepeatingTimer { id: 0 startTime: 30 period: 100 currentRepeats: 0 repeats: 5 action: ACTION4]" +
+                        "moo [CREATE:RepeatingTimer { id: 0 startTime: 40 period: 100 currentRepeats: 0 repeats: 5 action: ACTION5]" +
+                        "moo [CREATE:RepeatingTimer { id: 0 startTime: 50 period: 100 currentRepeats: 0 repeats: 5 action: ACTION6]" +
+                        "moo [IncrementTimer(0) @ 100]" +
+                        "moo [IncrementTimer(1) @ 150]" +
+                        "moo [IncrementTimer(2) @ 150]" +
+                        "moo [IncrementTimer(3) @ 150]" +
+                        "moo [IncrementTimer(4) @ 150]" +
+                        "moo [IncrementTimer(5) @ 150]",
+                stringBuilder.toString().replaceAll(System.lineSeparator(), ""));
     }
 }

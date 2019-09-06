@@ -24,7 +24,6 @@ public class CreateObjectReducer<S> implements Reducer<S> {
             S newState = runnable.run(state, action);
             Object createdObject = runnable.getPostCreateObject();
             action.callback.postCreateState(createdObject);
-            System.out.println(state);
             return newState;
         }
 
