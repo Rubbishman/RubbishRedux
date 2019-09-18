@@ -2,7 +2,7 @@ package com.rubbishman.rubbishRedux;
 
 import com.rubbishman.rubbishRedux.middlewareEnhancer.MiddlewareEnhancer;
 import com.rubbishman.rubbishRedux.misc.MyLoggingMiddleware;
-import com.rubbishman.rubbishRedux.statefullTimer.executor.TimerExecutor;
+import com.rubbishman.rubbishRedux.statefullTimer.TimerExecutor;
 import com.rubbishman.rubbishRedux.statefullTimer.state.TimerState;
 import org.junit.Test;
 import redux.api.Store;

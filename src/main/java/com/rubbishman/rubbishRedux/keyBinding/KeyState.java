@@ -3,7 +3,17 @@ package com.rubbishman.rubbishRedux.keyBinding;
 import java.util.HashMap;
 
 public class KeyState {
-    public HashMap<Object, Boolean> keyState = new HashMap<>();
+    private HashMap<Object, Boolean> keyState = new HashMap<>();
+
+    public Boolean getKeyState(Object key) {
+        Boolean value = keyState.get(key);
+
+        return value == null ? false : value;
+    }
+
+    public void setKeyState(Object key, Boolean value) {
+        keyState.put(key, value);
+    }
 
     public KeyState clone() {
         KeyState cloned = new KeyState();
@@ -11,5 +21,9 @@ public class KeyState {
         cloned.keyState = (HashMap<Object, Boolean>)this.keyState.clone();
 
         return cloned;
+    }
+
+    public String toString() {
+        return "[keyState: " + keyState.toString() + "]";
     }
 }

@@ -1,4 +1,4 @@
-package com.rubbishman.rubbishRedux.statefullTimer.executor;
+package com.rubbishman.rubbishRedux.statefullTimer;
 
 import com.rubbishman.rubbishRedux.createObjectCallback.action.CreateObject;
 import com.rubbishman.rubbishRedux.statefullTimer.helper.TimerComparator;

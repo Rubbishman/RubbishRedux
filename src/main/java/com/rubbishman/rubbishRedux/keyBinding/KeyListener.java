@@ -12,8 +12,7 @@ import java.util.HashMap;
 public class KeyListener {
     private HashMap<KeyCode, BindListener> keyBindings = new HashMap<>();
 
-    private KeyPressedHandler keyPressedHandler;
-    private KeyReleasedHandler keyReleasedHandler;
+    private KeyEventHandler keyPressedHandler;
 
     private Store<KeyState> store;
 
@@ -28,44 +27,29 @@ public class KeyListener {
         }
     }
 
-    public KeyPressedHandler getKeyPressedHandler() {
+    public EventHandler<KeyEvent> getKeyEventHandler() {
         if(keyPressedHandler == null) {
-            keyPressedHandler = new KeyPressedHandler();
+            keyPressedHandler = new KeyEventHandler();
         }
 
         return keyPressedHandler;
     }
 
-    public KeyReleasedHandler getKeyReleasedHandler() {
-        if(keyReleasedHandler == null) {
-            keyReleasedHandler = new KeyReleasedHandler();
-        }
-
-        return keyReleasedHandler;
-    }
-
-    private class KeyPressedHandler implements EventHandler<KeyEvent> {
+    private class KeyEventHandler implements EventHandler<KeyEvent> {
         public void handle(KeyEvent keyEvent) {
             BindListener bindListener = keyBindings.get(keyEvent.getCode());
 
             if(bindListener != null) {
-                ActionBindInstance action = KeyBindingHelper.resolvePressedAction(keyEvent, bindListener);
+
+                ActionBindInstance action;
+                if(keyEvent.getEventType() == KeyEvent.KEY_PRESSED || keyEvent.getEventType() == KeyEvent.KEY_TYPED) {
+                    action = KeyBindingHelper.resolvePressedAction(keyEvent, bindListener);
+                } else {
+                    action = KeyBindingHelper.resolveReleasedAction(keyEvent, bindListener);
+                }
 
                 store.dispatch(action);
             }
-        }
-    }
-
-    private class KeyReleasedHandler implements EventHandler<KeyEvent> {
-        public void handle(KeyEvent keyEvent) {
-            BindListener bindListener = keyBindings.get(keyEvent.getCode());
-
-            if(bindListener != null) {
-                ActionBindInstance action = KeyBindingHelper.resolveReleasedAction(keyEvent, bindListener);
-
-                store.dispatch(action);
-            }
-
         }
     }
 }

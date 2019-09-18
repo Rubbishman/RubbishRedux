@@ -13,8 +13,6 @@ public class KeyBindReducer implements Reducer<KeyState> {
         if(action instanceof ActionBindInstance) {
             ActionBindInstance actionBind = (ActionBindInstance) action;
 
-            Boolean value = cloned.keyState.get(actionBind.actionBind.action);
-
             switch(actionBind.actionBind.bindType) {
                 case ACTION:
                     if(actionBind.pressed) {
@@ -23,24 +21,24 @@ public class KeyBindReducer implements Reducer<KeyState> {
                     break;
                 case HOLD_FOR_ON:
                     if(actionBind.pressed) {
-                        cloned.keyState.put(actionBind.actionBind.action, true);
+                        cloned.setKeyState(actionBind.actionBind.action, true);
                     } else {
-                        cloned.keyState.put(actionBind.actionBind.action, false);
+                        cloned.setKeyState(actionBind.actionBind.action, false);
                     }
                     break;
                 case TOGGLE:
                     if(actionBind.pressed) {
-                        cloned.keyState.put(actionBind.actionBind.action, !value);
+                        cloned.setKeyState(actionBind.actionBind.action, !cloned.getKeyState(actionBind.actionBind.action));
                     }
                     break;
                 case TURN_ON:
                     if(actionBind.pressed) {
-                        cloned.keyState.put(actionBind.actionBind.action, true);
+                        cloned.setKeyState(actionBind.actionBind.action, true);
                     }
                     break;
                 case TURN_OFF:
                     if(actionBind.pressed) {
-                        cloned.keyState.put(actionBind.actionBind.action, false);
+                        cloned.setKeyState(actionBind.actionBind.action, false);
                     }
                     break;
             }
