@@ -42,7 +42,7 @@ public class KeyListener {
             if(bindListener != null) {
 
                 ActionBindInstance action;
-                if(keyEvent.getEventType() == KeyEvent.KEY_PRESSED || keyEvent.getEventType() == KeyEvent.KEY_TYPED) {
+                if(keyEvent.getEventType() == KeyEvent.KEY_PRESSED /*|| keyEvent.getEventType() == KeyEvent.KEY_TYPED*/) {
                     action = KeyBindingHelper.resolvePressedAction(keyEvent, bindListener);
                 } else {
                     action = KeyBindingHelper.resolveReleasedAction(keyEvent, bindListener);

@@ -10,6 +10,7 @@ import com.rubbishman.rubbishRedux.keyBinding.reducer.KeyBindReducer;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
+import org.junit.Before;
 import org.junit.Test;
 import redux.api.Store;
 import java.util.ArrayList;
@@ -24,24 +25,58 @@ public class KeyBindingTest {
     public static final String ACTION_LEFT = "left";
     public static final String ACTION_RIGHT = "right";
 
-    @Test
-    public void testKeyBinding() {
+    Store<KeyState> store;
+    KeyListener keyListener;
+
+    @Before
+    public void setup() {
         Store.Creator<KeyState> creator = new com.glung.redux.Store.Creator();
+        store = creator.create(new KeyBindReducer(),new KeyState());
+        keyListener = new  KeyListener(store, simpleKeyBindings());
+    }
 
-        Store<KeyState> store = creator.create(new KeyBindReducer(),new KeyState());
+
+    @Test
+    public void testKeyBindingHoldForOn() {
         assertFalse(store.getState().getKeyState(ACTION_UP));
-
-        KeyListener keyListener = new  KeyListener(store, simpleKeyBindings());
 
         keyListener.getKeyEventHandler().handle(createSimpleKeyEvent(KeyCode.UP, true));
 
         assertTrue(store.getState().getKeyState(ACTION_UP));
-        System.out.println(store.getState());
 
         keyListener.getKeyEventHandler().handle(createSimpleKeyEvent(KeyCode.UP, false));
 
         assertFalse(store.getState().getKeyState(ACTION_UP));
-        System.out.println(store.getState());
+    }
+
+    @Test
+    public void testKeyBindingTurnOnTurnOff() {
+        assertFalse(store.getState().getKeyState(ACTION_DOWN));
+
+        keyListener.getKeyEventHandler().handle(createSimpleKeyEvent(KeyCode.DOWN, true));
+        assertTrue(store.getState().getKeyState(ACTION_DOWN));
+        keyListener.getKeyEventHandler().handle(createSimpleKeyEvent(KeyCode.DOWN, false));
+        assertTrue(store.getState().getKeyState(ACTION_DOWN));
+
+        keyListener.getKeyEventHandler().handle(createSimpleKeyEventShift(KeyCode.DOWN, true));
+        assertFalse(store.getState().getKeyState(ACTION_DOWN));
+        keyListener.getKeyEventHandler().handle(createSimpleKeyEventShift(KeyCode.DOWN, false));
+        assertFalse(store.getState().getKeyState(ACTION_DOWN));
+    }
+
+    @Test
+    public void testKeyBindingToggle() {
+        assertFalse(store.getState().getKeyState(ACTION_LEFT));
+
+        keyListener.getKeyEventHandler().handle(createSimpleKeyEvent(KeyCode.LEFT, true));
+        assertTrue(store.getState().getKeyState(ACTION_LEFT));
+        keyListener.getKeyEventHandler().handle(createSimpleKeyEvent(KeyCode.LEFT, false));
+        assertTrue(store.getState().getKeyState(ACTION_LEFT));
+
+        keyListener.getKeyEventHandler().handle(createSimpleKeyEvent(KeyCode.LEFT, true));
+        assertFalse(store.getState().getKeyState(ACTION_LEFT));
+        keyListener.getKeyEventHandler().handle(createSimpleKeyEvent(KeyCode.LEFT, false));
+        assertFalse(store.getState().getKeyState(ACTION_LEFT));
     }
 
     static KeyEvent createSimpleKeyEvent(KeyCode key, boolean pressed) {
