@@ -28,4 +28,7 @@ test {
     testLogging {
         events "passed", "skipped", "failed", "standardOut", "standardError"
     }
+    coveralls {
+        dependsOn 'check'
+    }
 }
