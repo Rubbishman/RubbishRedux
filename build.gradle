@@ -15,7 +15,7 @@ repositories {
 }
 
 cobertura.coverageFormats = ['html', 'xml'] // coveralls plugin depends on xml format report
-cobertura.coverageSourceDirs = sourceSets.test.srcDirs
+cobertura.coverageSourceDirs = sourceSets.test.output.srcDirs
 
 dependencies {
     compile 'com.github.glung:redux-java:1.0'
