@@ -15,6 +15,7 @@ repositories {
 }
 
 cobertura.coverageFormats = ['html', 'xml'] // coveralls plugin depends on xml format report
+cobertura.coberturaVersion = '2.1.2-SNAPSHOT'
 //cobertura.coverageSourceDirs = sourceSets.test.output.classesDirs
 
 dependencies {
