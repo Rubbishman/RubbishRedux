@@ -21,6 +21,7 @@ dependencies {
     compile 'com.github.glung:redux-java:1.0'
     compile 'com.google.guava:guava:28.1-jre'
     compile 'com.github.usethesource:capsule:v0.6.3'
+    compile 'com.github.cobertura:cobertura:v2.1.1'
     implementation 'com.google.code.gson:gson:2.8.5'
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
