@@ -9,6 +9,7 @@ import redux.api.Store;
 import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+// TODO, hook in createObject stuff here.
 public class MultistageActions<S> {
     private Store<S> state;
     private ConcurrentLinkedQueue<Object> actionQueue;
