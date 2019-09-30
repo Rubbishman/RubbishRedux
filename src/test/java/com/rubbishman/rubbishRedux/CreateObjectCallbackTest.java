@@ -4,6 +4,9 @@ import com.rubbishman.rubbishRedux.createObjectCallback.action.CreateObject;
 import com.rubbishman.rubbishRedux.createObjectCallback.interfaces.ICreateObjectCallback;
 import com.rubbishman.rubbishRedux.createObjectCallback.interfaces.ICreateObjectProcessor;
 import com.rubbishman.rubbishRedux.createObjectCallback.reducer.CreateObjectReducer;
+import com.rubbishman.rubbishRedux.createObjectCallbackTest.processor.CreateObjectProcessor;
+import com.rubbishman.rubbishRedux.createObjectCallbackTest.state.CreateObjectState;
+import com.rubbishman.rubbishRedux.createObjectCallbackTest.state.CreateObjectStateObject;
 import org.junit.Test;
 import redux.api.Store;
 
@@ -28,14 +31,14 @@ public class CreateObjectCallbackTest {
 
         PrintStream printStream = new PrintStream(myOutput);
 
-        Store.Creator<MyState> creator = new com.glung.redux.Store.Creator();
-        CreateObjectReducer<MyState> reducer = new CreateObjectReducer<>();
+        Store.Creator<CreateObjectState> creator = new com.glung.redux.Store.Creator();
+        CreateObjectReducer<CreateObjectState> reducer = new CreateObjectReducer<>();
 
-        reducer.addProcessor(new MyCreateObjectProcessor());
+        reducer.addProcessor(new CreateObjectProcessor());
 
         CreateObject newObjectCreator = createObjectTest(printStream);
 
-        Store<MyState> store = creator.create(reducer, new MyState());
+        Store<CreateObjectState> store = creator.create(reducer, new CreateObjectState());
 
         store.dispatch(newObjectCreator);
         store.dispatch(newObjectCreator);
@@ -49,7 +52,7 @@ public class CreateObjectCallbackTest {
 
     private CreateObject createObjectTest(PrintStream printStream) {
         CreateObject newObjectCreator = new CreateObject();
-        MyStateObject myStateObject = new MyStateObject();
+        CreateObjectStateObject myStateObject = new CreateObjectStateObject();
         myStateObject.message = "MOOOOO";
         newObjectCreator.createObject = myStateObject;
         newObjectCreator.callback = new ICreateObjectCallback() {
@@ -59,67 +62,5 @@ public class CreateObjectCallbackTest {
         };
 
         return newObjectCreator;
-    }
-
-    private class MyCreateObjectProcessor implements ICreateObjectProcessor<MyState, MyStateObject> {
-        private MyStateObject createdObject;
-        public MyStateObject getPostCreateObject() {
-            return createdObject;
-        }
-
-        public MyState run(MyState state, CreateObject action) {
-            if(action.createObject instanceof MyStateObject) {
-                createdObject = ((MyStateObject)action.createObject).clone();
-                createdObject.id = state.stateObjects.size();
-                state.stateObjects.add(createdObject);
-            }
-
-            return state;
-        }
-    }
-
-//    private class MyStateObjectCreator {
-//        public String message;
-//    }
-
-    private class MyStateObject {
-        public int id;
-        public String message;
-
-        public String toString() {
-            return "{" +
-                    "   id: " + id +
-                    "   message: " + message +
-                    "}";
-        }
-
-        public MyStateObject clone() {
-            MyStateObject clone = new MyStateObject();
-            clone.id = id;
-            clone.message = message;
-
-            return clone;
-        }
-    }
-
-    private class MyState {
-        public ArrayList<Object> actions = new ArrayList<>();
-        public ArrayList<MyStateObject> stateObjects = new ArrayList<>();
-
-        public MyState clone() {
-            MyState clone = new MyState();
-
-            clone.actions.addAll(this.actions);
-            clone.stateObjects.addAll(this.stateObjects);
-
-            return clone;
-        }
-
-        public String toString() {
-            return "{" +
-                    "   actions: " + actions.toString() +
-                    "   stateObjects: " + stateObjects.toString() +
-                   "}";
-        }
     }
 }
