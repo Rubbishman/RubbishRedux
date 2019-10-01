@@ -9,6 +9,24 @@ public class RepeatingTimer {
 
     public final Object action;
 
+    public RepeatingTimer (int id, long startTime, long period, Object action) {
+        this.id = id;
+        this.startTime = startTime;
+        this.period = period;
+        this.repeats = 1;
+        this.currentRepeats = 0;
+        this.action = action;
+    }
+
+    public RepeatingTimer(int id, long startTime, long period, int repeats, Object action) {
+        this.id = id;
+        this.startTime = startTime;
+        this.period = period;
+        this.repeats = repeats;
+        this.currentRepeats = 0;
+        this.action = action;
+    }
+
     public RepeatingTimer(int id, long startTime, long period, int repeats, int currentRepeats, Object action) {
         this.id = id;
         this.startTime = startTime;
