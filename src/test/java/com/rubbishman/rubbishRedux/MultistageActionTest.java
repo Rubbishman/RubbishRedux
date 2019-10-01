@@ -3,9 +3,12 @@ package com.rubbishman.rubbishRedux;
 import com.rubbishman.rubbishRedux.createObjectCallback.action.CreateObject;
 import com.rubbishman.rubbishRedux.createObjectCallback.interfaces.ICreateObjectCallback;
 import com.rubbishman.rubbishRedux.createObjectCallback.reducer.CreateObjectReducer;
-import com.rubbishman.rubbishRedux.createObjectCallbackTest.processor.CreateObjectProcessor;
-import com.rubbishman.rubbishRedux.createObjectCallbackTest.state.CreateObjectState;
-import com.rubbishman.rubbishRedux.createObjectCallbackTest.state.CreateObjectStateObject;
+import com.rubbishman.rubbishRedux.multistageActionTest.processor.CreateCounterProcessor;
+import com.rubbishman.rubbishRedux.multistageActionTest.processor.CreateCounterStopperProcessor;
+import com.rubbishman.rubbishRedux.multistageActionTest.reducer.MyReducer;
+import com.rubbishman.rubbishRedux.multistageActionTest.state.Counter;
+import com.rubbishman.rubbishRedux.multistageActionTest.state.MultistageActionState;
+import org.junit.Before;
 import org.junit.Test;
 import redux.api.Store;
 
@@ -16,11 +19,13 @@ import java.io.PrintStream;
 import static org.junit.Assert.assertEquals;
 
 public class MultistageActionTest {
-    @Test
-    public void testMultistageActions() {
-        // TODO, this need to be changed to point at multistage.
+    Store<MultistageActionState> store;
+    CreateObject newObjectCreator;
+    StringBuilder stringBuilder;
 
-        StringBuilder stringBuilder = new StringBuilder();
+    @Before
+    public void setup() {
+        stringBuilder = new StringBuilder();
 
         OutputStream myOutput = new OutputStream() {
             public void write(int b) throws IOException {
@@ -30,29 +35,36 @@ public class MultistageActionTest {
 
         PrintStream printStream = new PrintStream(myOutput);
 
-        Store.Creator<CreateObjectState> creator = new com.glung.redux.Store.Creator();
-        CreateObjectReducer<CreateObjectState> reducer = new CreateObjectReducer<>();
+        Store.Creator<MultistageActionState> creator = new com.glung.redux.Store.Creator();
+        MyReducer reducer = new MyReducer(printStream);
 
-        reducer.addProcessor(new CreateObjectProcessor());
+        newObjectCreator = createObjectTest(printStream);
 
-        CreateObject newObjectCreator = createObjectTest(printStream);
+        store = creator.create(reducer, new MultistageActionState());
+    }
 
-        Store<CreateObjectState> store = creator.create(reducer, new CreateObjectState());
-
+    @Test
+    public void testMultistageActions() {
+        // TODO, this need to be changed to point at multistage.
         store.dispatch(newObjectCreator);
         store.dispatch(newObjectCreator);
         store.dispatch(newObjectCreator);
 
-        assertEquals("We just created: {   id: 0   message: MOOOOO}"
-                        + "We just created: {   id: 1   message: MOOOOO}"
-                        + "We just created: {   id: 2   message: MOOOOO}",
+        assertEquals("Initial state INIT" +
+                        "Adding [CREATE:[Counter(-1): 0 | 1d6]]" +
+                        "We just created: [Counter(0): 0 | 1d6]" +
+                        "Adding [CREATE:[Counter(-1): 0 | 1d6]]" +
+                        "We just created: [Counter(1): 0 | 1d6]" +
+                        "Adding [CREATE:[Counter(-1): 0 | 1d6]]" +
+                        "We just created: [Counter(2): 0 | 1d6]"
+                        ,
                 stringBuilder.toString().replaceAll(System.lineSeparator(), ""));
     }
 
     private CreateObject createObjectTest(PrintStream printStream) {
         CreateObject newObjectCreator = new CreateObject();
-        CreateObjectStateObject myStateObject = new CreateObjectStateObject();
-        myStateObject.message = "MOOOOO";
+        Counter myStateObject = new Counter(-1,0);
+
         newObjectCreator.createObject = myStateObject;
         newObjectCreator.callback = new ICreateObjectCallback() {
             public void postCreateState(Object object) {
