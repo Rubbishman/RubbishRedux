@@ -1,9 +1,11 @@
 package com.rubbishman.rubbishRedux.statefullTimer;
 
 import com.rubbishman.rubbishRedux.createObjectCallback.action.CreateObject;
+import com.rubbishman.rubbishRedux.createObjectCallback.enhancer.CreateObjectEnhancer;
 import com.rubbishman.rubbishRedux.statefullTimer.helper.TimerComparator;
 import com.rubbishman.rubbishRedux.statefullTimer.helper.TimerHelper;
 import com.rubbishman.rubbishRedux.statefullTimer.logic.TimerLogic;
+import com.rubbishman.rubbishRedux.statefullTimer.reducer.TimerCreateProcessor;
 import com.rubbishman.rubbishRedux.statefullTimer.reducer.TimerReducer;
 import com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer;
 import com.rubbishman.rubbishRedux.statefullTimer.state.TimerState;
@@ -46,6 +48,11 @@ public class TimerExecutor {
     }
 
     private void initialize(Store.Creator<TimerState> creator) {
+        CreateObjectEnhancer<TimerState> enhancer = new CreateObjectEnhancer();
+        enhancer.addProcessor(new TimerCreateProcessor());
+
+        creator = enhancer.enhance(creator);
+
         timerState = creator.create(new TimerReducer(), new TimerState());
 
         comparator = new TimerComparator(timerState);

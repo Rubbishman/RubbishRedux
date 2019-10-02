@@ -1,9 +1,8 @@
 package com.rubbishman.rubbishRedux;
 
 import com.rubbishman.rubbishRedux.createObjectCallback.action.CreateObject;
+import com.rubbishman.rubbishRedux.createObjectCallback.enhancer.CreateObjectEnhancer;
 import com.rubbishman.rubbishRedux.createObjectCallback.interfaces.ICreateObjectCallback;
-import com.rubbishman.rubbishRedux.createObjectCallback.interfaces.ICreateObjectProcessor;
-import com.rubbishman.rubbishRedux.createObjectCallback.reducer.CreateObjectReducer;
 import com.rubbishman.rubbishRedux.createObjectCallbackTest.processor.CreateObjectProcessor;
 import com.rubbishman.rubbishRedux.createObjectCallbackTest.state.CreateObjectState;
 import com.rubbishman.rubbishRedux.createObjectCallbackTest.state.CreateObjectStateObject;
@@ -13,7 +12,6 @@ import redux.api.Store;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
@@ -32,13 +30,15 @@ public class CreateObjectCallbackTest {
         PrintStream printStream = new PrintStream(myOutput);
 
         Store.Creator<CreateObjectState> creator = new com.glung.redux.Store.Creator();
-        CreateObjectReducer<CreateObjectState> reducer = new CreateObjectReducer<>();
 
-        reducer.addProcessor(new CreateObjectProcessor());
+        CreateObjectEnhancer<CreateObjectState> enhancer = new CreateObjectEnhancer();
+        enhancer.addProcessor(new CreateObjectProcessor());
+
+        creator = enhancer.enhance(creator);
 
         CreateObject newObjectCreator = createObjectTest(printStream);
 
-        Store<CreateObjectState> store = creator.create(reducer, new CreateObjectState());
+        Store<CreateObjectState> store = creator.create(null, new CreateObjectState());
 
         store.dispatch(newObjectCreator);
         store.dispatch(newObjectCreator);

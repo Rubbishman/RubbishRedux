@@ -9,14 +9,6 @@ import com.rubbishman.rubbishRedux.statefullTimer.state.TimerState;
 import redux.api.Reducer;
 
 public class TimerReducer implements Reducer<TimerState> {
-    CreateObjectReducer<TimerState> createReducer;
-
-    public TimerReducer() {
-        createReducer = new CreateObjectReducer<>();
-
-        createReducer.addProcessor(new TimerCreateProcessor());
-    }
-
     private TimerState reduce(TimerState state, IncrementTimer action) {
         RepeatingTimer timer = state.timers.get(action.subject);
 
@@ -34,9 +26,7 @@ public class TimerReducer implements Reducer<TimerState> {
     }
 
     public TimerState reduce(TimerState state, Object action) {
-        if(action instanceof CreateObject) {
-            return createReducer.reduce(state, (CreateObject)action);
-        } else if (action instanceof IncrementTimer) {
+        if (action instanceof IncrementTimer) {
             return reduce(state, (IncrementTimer)action);
         }
         return state;

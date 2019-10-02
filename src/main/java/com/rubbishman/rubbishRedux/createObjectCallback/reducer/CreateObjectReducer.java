@@ -8,6 +8,12 @@ import java.util.HashMap;
 
 public class CreateObjectReducer<S> implements Reducer<S> {
     private HashMap<Class, ICreateObjectProcessor<S, ?>> createObjectProcessor = new HashMap<>();
+    private Reducer<S> wrappedReducer;
+    private Runnable postDispatchRunnable;
+
+    public void setWrappedReducer(Reducer<S> wrapperReducer) {
+        this.wrappedReducer = wrapperReducer;
+    }
 
     public void addProcessor(ICreateObjectProcessor<S, ?> processor) {
         // Have to use the type against the method...?
@@ -18,12 +24,20 @@ public class CreateObjectReducer<S> implements Reducer<S> {
         }
     }
 
-    public S reduce(S state, CreateObject action) {
+    public void postDispatch() {
+        if(postDispatchRunnable != null) {
+            postDispatchRunnable.run();
+        }
+    }
+
+    public S reduceCreateObject(S state, CreateObject action) {
         ICreateObjectProcessor<S, ?> runnable = createObjectProcessor.get(action.createObject.getClass());
         if(runnable != null) {
             S newState = runnable.run(state, action);
-            Object createdObject = runnable.getPostCreateObject();
-            action.callback.postCreateState(createdObject);
+            this.postDispatchRunnable = () -> {
+                Object createdObject = runnable.getPostCreateObject();
+                action.callback.postCreateState(createdObject);
+            };
             return newState;
         }
 
@@ -33,7 +47,9 @@ public class CreateObjectReducer<S> implements Reducer<S> {
     public S reduce(S state, Object action) {
 //        S cloned = state.clone(); //ZzZz?
         if(action instanceof CreateObject) {
-            return reduce(state, (CreateObject)action);
+            return reduceCreateObject(state, (CreateObject)action);
+        } else if(wrappedReducer != null) {
+            return wrappedReducer.reduce(state, action);
         }
 
         return state;

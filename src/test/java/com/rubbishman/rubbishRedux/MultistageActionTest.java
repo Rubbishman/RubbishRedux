@@ -1,8 +1,8 @@
 package com.rubbishman.rubbishRedux;
 
 import com.rubbishman.rubbishRedux.createObjectCallback.action.CreateObject;
+import com.rubbishman.rubbishRedux.createObjectCallback.enhancer.CreateObjectEnhancer;
 import com.rubbishman.rubbishRedux.createObjectCallback.interfaces.ICreateObjectCallback;
-import com.rubbishman.rubbishRedux.createObjectCallback.reducer.CreateObjectReducer;
 import com.rubbishman.rubbishRedux.multistageActionTest.processor.CreateCounterProcessor;
 import com.rubbishman.rubbishRedux.multistageActionTest.processor.CreateCounterStopperProcessor;
 import com.rubbishman.rubbishRedux.multistageActionTest.reducer.MyReducer;
@@ -36,6 +36,13 @@ public class MultistageActionTest {
         PrintStream printStream = new PrintStream(myOutput);
 
         Store.Creator<MultistageActionState> creator = new com.glung.redux.Store.Creator();
+        CreateObjectEnhancer<MultistageActionState> enhancer = new CreateObjectEnhancer();
+
+        enhancer.addProcessor(new CreateCounterProcessor());
+        enhancer.addProcessor(new CreateCounterStopperProcessor());
+
+        creator = enhancer.enhance(creator);
+
         MyReducer reducer = new MyReducer(printStream);
 
         newObjectCreator = createObjectTest(printStream);
@@ -51,11 +58,8 @@ public class MultistageActionTest {
         store.dispatch(newObjectCreator);
 
         assertEquals("Initial state INIT" +
-                        "Adding [CREATE:[Counter(-1): 0 | 1d6]]" +
                         "We just created: [Counter(0): 0 | 1d6]" +
-                        "Adding [CREATE:[Counter(-1): 0 | 1d6]]" +
                         "We just created: [Counter(1): 0 | 1d6]" +
-                        "Adding [CREATE:[Counter(-1): 0 | 1d6]]" +
                         "We just created: [Counter(2): 0 | 1d6]"
                         ,
                 stringBuilder.toString().replaceAll(System.lineSeparator(), ""));

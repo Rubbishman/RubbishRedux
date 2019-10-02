@@ -5,8 +5,6 @@ import com.rubbishman.rubbishRedux.createObjectCallback.interfaces.ICreateObject
 import com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer;
 import com.rubbishman.rubbishRedux.statefullTimer.state.TimerState;
 
-import java.util.ArrayList;
-
 public class TimerCreateProcessor implements ICreateObjectProcessor<TimerState, RepeatingTimer> {
 
     private RepeatingTimer createdObject;
@@ -16,12 +14,12 @@ public class TimerCreateProcessor implements ICreateObjectProcessor<TimerState, 
     }
 
     public TimerState run(TimerState state, CreateObject action) {
-        state.timers = (ArrayList<RepeatingTimer>)state.timers.clone();
+        TimerState cloned = state.clone();
 
-        createdObject = ((RepeatingTimer) action.createObject).assignId(state.timers.size());
+        createdObject = ((RepeatingTimer) action.createObject).assignId(cloned.timers.size());
 
-        state.timers.add(createdObject);
+        cloned.timers.add(createdObject);
 
-        return state;
+        return cloned;
     }
 }
