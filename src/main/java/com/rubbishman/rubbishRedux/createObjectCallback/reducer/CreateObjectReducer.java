@@ -27,6 +27,7 @@ public class CreateObjectReducer<S> implements Reducer<S> {
     public void postDispatch() {
         if(postDispatchRunnable != null) {
             postDispatchRunnable.run();
+            postDispatchRunnable = null;
         }
     }
 
