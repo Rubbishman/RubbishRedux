@@ -1,5 +1,8 @@
 package com.rubbishman.rubbishRedux.multistageActions.action;
 
-public interface MultistageAction<S> {
-    Object provideAction(S state, long nowTime);
+import com.rubbishman.rubbishRedux.multistageActions.stage.Stage;
+
+public interface MultistageAction<S, A> {
+    Stage getStage();
+    Object provideAction(A action, S state, long nowTime);
 }

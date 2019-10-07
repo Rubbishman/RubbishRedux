@@ -2,20 +2,20 @@ package com.rubbishman.rubbishRedux.multistageActions;
 
 import com.rubbishman.rubbishRedux.multistageActions.action.MultistageAction;
 import com.rubbishman.rubbishRedux.multistageActions.stage.MultistageComparator;
-import com.rubbishman.rubbishRedux.multistageActions.stage.StageActions;
+import com.rubbishman.rubbishRedux.multistageActions.stage.StageAction;
 import redux.api.Reducer;
 import redux.api.Store;
 
+import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-// TODO, hook in createObject stuff here.
 public class MultistageActions<S> {
     private Store<S> state;
     private ConcurrentLinkedQueue<Object> actionQueue;
     private MultistageComparator comparator;
-    private PriorityQueue<StageActions> stageQueue;
-
+    private PriorityQueue<StageAction> stageQueue;
+    private HashMap<Class, MultistageAction> multistageProcessor = new HashMap<>();
 
     public void addAction(Object action) {
         actionQueue.add(action);
@@ -32,15 +32,17 @@ public class MultistageActions<S> {
 
     private void initialize(Store.Creator<S> creator, Reducer<S> reducer, S initialState) {
         state = creator.create(reducer, initialState);
-
         comparator = new MultistageComparator();
         stageQueue = new PriorityQueue<>(comparator);
         actionQueue = new ConcurrentLinkedQueue<>();
     }
 
+    public void addMultistageProcessor(Class clazz, MultistageAction msAction) {
+        multistageProcessor.put(clazz, msAction);
+    }
+
     public void doActions() {
         Long nowTime = System.nanoTime();
-
         ConcurrentLinkedQueue<Object> internalQueue;
         synchronized (actionQueue) {
             internalQueue = actionQueue;
@@ -54,18 +56,20 @@ public class MultistageActions<S> {
         }
     }
 
-    // TODO, multistage actions that happen after everything else (IE, on empty multistage object).
-    // IE, something that responds to all of something that happened..?
+    public void addMultistageAction(Object action) {
+        MultistageAction msAction = multistageProcessor.get(action.getClass());
+        stageQueue.add(new StageAction(msAction.getStage(), action));
+    }
 
     private void doMultistageActions(Long nowTime) {
-        StageActions actions = stageQueue.poll();
-        while(actions != null) {
-            MultistageAction action = actions.poll();
-            while(action != null) {
-                state.dispatch(action.provideAction(state.getState(), nowTime));
-                action = actions.poll();
+        StageAction stageAction = stageQueue.poll();
+        while(stageAction != null) {
+            MultistageAction msAction = multistageProcessor.get(stageAction.action.getClass());
+            if(msAction != null) {
+                state.dispatch(msAction.provideAction(stageAction.action, state.getState(), nowTime));
             }
-            actions = stageQueue.poll();
+
+            stageAction = stageQueue.poll();
         }
     }
 }

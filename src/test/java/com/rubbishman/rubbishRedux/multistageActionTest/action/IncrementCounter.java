@@ -6,4 +6,8 @@ public class IncrementCounter {
     public IncrementCounter(int targetCounterId) {
         this.targetCounterId = targetCounterId;
     }
+
+    public String toString() {
+        return "[Increment: (" + targetCounterId + ")]";
+    }
 }

@@ -8,4 +8,8 @@ public class IncrementCounterResolved {
         this.targetCounterId = targetCounterId;
         this.incrementAmount = incrementAmount;
     }
+
+    public String toString() {
+        return "[Resolved Increment: (" + targetCounterId + ") +" + incrementAmount + "]";
+    }
 }

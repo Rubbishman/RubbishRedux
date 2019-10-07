@@ -2,9 +2,9 @@ package com.rubbishman.rubbishRedux.multistageActions.stage;
 
 import java.util.Comparator;
 
-public class MultistageComparator implements Comparator<StageActions> {
+public class MultistageComparator implements Comparator<StageAction> {
 
-    public int compare(StageActions o1, StageActions o2) {
+    public int compare(StageAction o1, StageAction o2) {
         if (o1.stage.priority < o2.stage.priority) {
             return -1;
         } else if (o1.stage.priority > o2.stage.priority) {

@@ -14,7 +14,7 @@ public class CreateCounterProcessor implements ICreateObjectProcessor<Multistage
 
     public MultistageActionState run(MultistageActionState state, CreateObject action) {
         if(action.createObject instanceof Counter) {
-            createdObject = new Counter(state.counterObjects.size(), ((Counter)action.createObject).count);
+            createdObject = ((Counter) action.createObject).setId(state.counterObjects.size());
             state.counterObjects.add(createdObject);
         }
 
