@@ -1,7 +1,7 @@
 package com.rubbishman.rubbishRedux;
 
-import io.usethesource.capsule.api.experimental.Map;
-import io.usethesource.capsule.core.experimental.TrieMap;
+import io.usethesource.capsule.Map;
+import io.usethesource.capsule.core.PersistentTrieMap;
 import org.junit.Test;
 import org.organicdesign.fp.collections.PersistentHashMap;
 
@@ -22,7 +22,7 @@ public class CapsuleTest {
 
     private void trieInsertThenUpdate() {
         long thenTime = System.nanoTime();
-        Map.Immutable<Integer, Integer> originalTrie = TrieMap.<Integer, Integer>of();
+        Map.Immutable<Integer, Integer> originalTrie = PersistentTrieMap.<Integer, Integer>of();
 
         Map.Immutable<Integer, Integer> trie = trieInsert(originalTrie);
         assertEquals(ITERATIONS, trie.size());
@@ -38,7 +38,7 @@ public class CapsuleTest {
         long thenTime = System.nanoTime();
 
         for(int i = 0; i < ITERATIONS; i++) {
-            trie = trie.insert(new Integer(i), new Integer(i));
+            trie = trie.__put(new Integer(i), new Integer(i));
         }
 
         System.out.println("Trie performance (initialValue): \t\t\t" + (System.nanoTime() - thenTime));
@@ -49,7 +49,7 @@ public class CapsuleTest {
         long thenTime = System.nanoTime();
 
         for(int i = 0; i < ITERATIONS; i++) {
-            trie = trie.insert(new Integer(i), new Integer(i+1000));
+            trie = trie.__put(new Integer(i), new Integer(i+1000));
         }
 
         System.out.println("Trie performance (updateValue): \t\t\t" + (System.nanoTime() - thenTime));
