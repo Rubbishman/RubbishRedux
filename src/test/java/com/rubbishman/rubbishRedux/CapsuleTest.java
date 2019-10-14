@@ -10,7 +10,7 @@ import java.util.HashMap;
 import static org.junit.Assert.assertEquals;
 
 public class CapsuleTest {
-    public static final int ITERATIONS = 100000;
+    public static final int ITERATIONS = 1000;
 
     @Test
     public void capsuleTest() {
@@ -31,7 +31,7 @@ public class CapsuleTest {
         assertEquals(ITERATIONS, trie.size());
 
         assertEquals(0, originalTrie.size());
-        System.out.println("Trie performance performance (total): \t\t" + (System.nanoTime() - thenTime));
+        System.out.println("Trie performance performance (total): \n    " + (System.nanoTime() - thenTime));
     }
 
     private Map.Immutable<Integer, Integer> trieInsert(Map.Immutable<Integer, Integer> trie) {
@@ -41,7 +41,7 @@ public class CapsuleTest {
             trie = trie.__put(new Integer(i), new Integer(i));
         }
 
-        System.out.println("Trie performance (initialValue): \t\t\t" + (System.nanoTime() - thenTime));
+        System.out.println("Trie performance (initialValue): \n    " + (System.nanoTime() - thenTime));
         return trie;
     }
 
@@ -52,7 +52,7 @@ public class CapsuleTest {
             trie = trie.__put(new Integer(i), new Integer(i+1000));
         }
 
-        System.out.println("Trie performance (updateValue): \t\t\t" + (System.nanoTime() - thenTime));
+        System.out.println("Trie performance (updateValue): \n    " + (System.nanoTime() - thenTime));
         return trie;
     }
 
@@ -67,7 +67,7 @@ public class CapsuleTest {
         assertEquals(ITERATIONS, hashMap.size());
 
         assertEquals(0, originalHashMap.size());
-        System.out.println("Hashmap clone performance performance (total): \t" + (System.nanoTime() - thenTime));
+        System.out.println("Hashmap clone performance performance (total): \n    " + (System.nanoTime() - thenTime));
     }
 
     private HashMap<Integer, Integer> hashCloneInsert(HashMap<Integer, Integer> hashMap) {
@@ -80,7 +80,7 @@ public class CapsuleTest {
             hashMap = tempMap;
         }
 
-        System.out.println("HashMap clone performance (initial value): \t\t" + (System.nanoTime() - thenTime));
+        System.out.println("HashMap clone performance (initial value): \n    " + (System.nanoTime() - thenTime));
 
         return hashMap;
     }
@@ -95,7 +95,7 @@ public class CapsuleTest {
             hashMap = tempMap;
         }
 
-        System.out.println("HashMap clone performance (update value): \t\t" + (System.nanoTime() - thenTime));
+        System.out.println("HashMap clone performance (update value): \n    " + (System.nanoTime() - thenTime));
 
         return hashMap;
     }
@@ -111,7 +111,7 @@ public class CapsuleTest {
         assertEquals(ITERATIONS, hashMap.size());
 
         assertEquals(ITERATIONS, originalHashMap.size());
-        System.out.println("Hashmap performance performance (total): \t" + (System.nanoTime() - thenTime));
+        System.out.println("Hashmap performance performance (total): \n    " + (System.nanoTime() - thenTime));
     }
 
     private HashMap<Integer, Integer> hashInsert(HashMap<Integer, Integer> hashMap) {
@@ -121,7 +121,7 @@ public class CapsuleTest {
             hashMap.put(new Integer(i), new Integer(i));
         }
 
-        System.out.println("HashMap performance (initial value): \t\t" + (System.nanoTime() - thenTime));
+        System.out.println("HashMap performance (initial value): \n    " + (System.nanoTime() - thenTime));
 
         return hashMap;
     }
@@ -133,7 +133,7 @@ public class CapsuleTest {
             hashMap.put(new Integer(i), new Integer(i + 1000));
         }
 
-        System.out.println("HashMap performance (update value): \t\t" + (System.nanoTime() - thenTime));
+        System.out.println("HashMap performance (update value): \n    " + (System.nanoTime() - thenTime));
 
         return hashMap;
     }
@@ -151,7 +151,7 @@ public class CapsuleTest {
 
         assertEquals(0, originalHashMap.size());
 
-        System.out.println("PresistentHashMap performance performance (total): \t" + (System.nanoTime() - thenTime));
+        System.out.println("PresistentHashMap performance performance (total): \n    " + (System.nanoTime() - thenTime));
     }
 
     private PersistentHashMap<Integer,Integer> persestentHashMapUpdate(PersistentHashMap<Integer,Integer> ourMap) {
@@ -162,7 +162,7 @@ public class CapsuleTest {
             ourMap = ourMap.assoc(new Integer(i), new Integer(i+1000));
         }
 
-        System.out.println("PresistentHashMap performance (updateValue): \t\t\t" + (System.nanoTime() - thenTime));
+        System.out.println("PresistentHashMap performance (updateValue): \n    " + (System.nanoTime() - thenTime));
 
         return ourMap;
     }
@@ -174,7 +174,7 @@ public class CapsuleTest {
             ourMap = ourMap.assoc(new Integer(i), new Integer(i));
         }
 
-        System.out.println("PresistentHashMap performance (initialValue): \t\t\t" + (System.nanoTime() - thenTime));
+        System.out.println("PresistentHashMap performance (initialValue): \n    " + (System.nanoTime() - thenTime));
 
         return ourMap;
     }
