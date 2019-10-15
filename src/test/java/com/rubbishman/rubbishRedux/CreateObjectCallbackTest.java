@@ -1,5 +1,6 @@
 package com.rubbishman.rubbishRedux;
 
+import com.google.gson.Gson;
 import com.rubbishman.rubbishRedux.createObjectCallback.action.CreateObject;
 import com.rubbishman.rubbishRedux.createObjectCallback.enhancer.CreateObjectEnhancer;
 import com.rubbishman.rubbishRedux.createObjectCallback.interfaces.ICreateObjectCallback;
@@ -44,9 +45,9 @@ public class CreateObjectCallbackTest {
         store.dispatch(newObjectCreator);
         store.dispatch(newObjectCreator);
 
-        assertEquals("We just created: {   id: 0   message: MOOOOO}"
-                + "We just created: {   id: 1   message: MOOOOO}"
-                + "We just created: {   id: 2   message: MOOOOO}",
+        assertEquals("We just created: CreateObjectStateObject {\"id\":0,\"message\":\"MOOOOO\"}" +
+                        "We just created: CreateObjectStateObject {\"id\":1,\"message\":\"MOOOOO\"}" +
+                        "We just created: CreateObjectStateObject {\"id\":2,\"message\":\"MOOOOO\"}",
                 stringBuilder.toString().replaceAll(System.lineSeparator(), ""));
     }
 
@@ -57,7 +58,8 @@ public class CreateObjectCallbackTest {
         newObjectCreator.createObject = myStateObject;
         newObjectCreator.callback = new ICreateObjectCallback() {
             public void postCreateState(Object object) {
-                printStream.println("We just created: " + object.toString());
+                Gson gson = new Gson();
+                printStream.println("We just created: " + object.getClass().getSimpleName() + " " + gson.toJson(object));
             }
         };
 

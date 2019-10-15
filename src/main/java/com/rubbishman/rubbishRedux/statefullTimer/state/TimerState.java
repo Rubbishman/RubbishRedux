@@ -11,8 +11,4 @@ public class TimerState {
 
         return cloned;
     }
-
-    public String toString() {
-        return timers.toString();
-    }
 }

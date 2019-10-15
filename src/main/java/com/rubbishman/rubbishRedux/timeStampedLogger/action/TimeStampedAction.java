@@ -8,8 +8,4 @@ public class TimeStampedAction {
         this.nowTime = nowTime;
         this.action = action;
     }
-
-    public String toString() {
-        return "[Timestamp: " + nowTime + ", ACTION: " + action + "]";
-    }
 }

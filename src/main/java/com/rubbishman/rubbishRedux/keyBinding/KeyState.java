@@ -22,8 +22,4 @@ public class KeyState {
 
         return cloned;
     }
-
-    public String toString() {
-        return "[keyState: " + keyState.toString() + "]";
-    }
 }

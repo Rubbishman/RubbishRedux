@@ -12,8 +12,4 @@ public class MyState {
 
         return clone;
     }
-
-    public String toString() {
-        return actions.toString();
-    }
 }

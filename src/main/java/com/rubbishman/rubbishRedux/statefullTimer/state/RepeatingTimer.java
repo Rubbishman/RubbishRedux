@@ -74,14 +74,4 @@ public class RepeatingTimer {
 
         return cloned;
     }
-
-    public String toString() {
-        return "RepeatingTimer {" +
-                " id: " + id +
-                " startTime: " + startTime +
-                " period: " + period +
-                " currentRepeats: " + currentRepeats +
-                " repeats: " + repeats +
-                " action: " + action.toString();
-    }
 }

@@ -1,5 +1,6 @@
 package com.rubbishman.rubbishRedux.misc;
 
+import com.google.gson.Gson;
 import com.rubbishman.rubbishRedux.MiddlewareEnchancerTest;
 import redux.api.Reducer;
 
@@ -19,7 +20,8 @@ public class MyReducer implements Reducer<MyState> {
         if(action == redux.api.Store.INIT) {
             printStream.println("Initial state INIT");
         } else {
-            printStream.println("Adding " + action.toString());
+            Gson gson = new Gson();
+            printStream.println("Adding " + action.getClass().getSimpleName() + " " + gson.toJson(action));
         }
 
         cloned.actions.add(action);

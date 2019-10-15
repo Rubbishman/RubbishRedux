@@ -1,5 +1,6 @@
 package com.rubbishman.rubbishRedux;
 
+import com.google.gson.Gson;
 import com.rubbishman.rubbishRedux.createObjectCallback.action.CreateObject;
 import com.rubbishman.rubbishRedux.createObjectCallback.enhancer.CreateObjectEnhancer;
 import com.rubbishman.rubbishRedux.createObjectCallback.interfaces.ICreateObjectCallback;
@@ -79,26 +80,26 @@ public class MultistageActionTest {
         multiStageActions.doActions();
 
         assertEquals("Output was: " + stringBuilder.toString(),"Initial state INIT" +
-                        "MOO [CREATE:[Counter(-1): 0 | 1d6]]" +
-                        "We just created: [Counter(0): 0 | 1d6]" +
-                        "MOO [CREATE:[Counter(-1): 0 | 2d6]]" +
-                        "We just created: [Counter(1): 0 | 2d6]" +
-                        "MOO [CREATE:[Counter(-1): 0 | 3d3]]" +
-                        "We just created: [Counter(2): 0 | 3d3]" +
-                        "MOO [Increment: (0)]" +
-                        "MOO [Resolved Increment: (0) +3]" +
-                        "MOO [Increment: (0)]" +
-                        "MOO [Resolved Increment: (0) +6]" +
-                        "MOO [Increment: (1)]" +
-                        "MOO [Resolved Increment: (1) +7]" +
-                        "MOO [Increment: (2)]" +
-                        "MOO [Resolved Increment: (2) +6]" +
-                        "MOO [Increment: (0)]" +
-                        "MOO [Resolved Increment: (0) +2]" +
-                        "MOO [Increment: (1)]" +
-                        "MOO [Resolved Increment: (1) +4]" +
-                        "MOO [Increment: (2)]" +
-                        "MOO [Resolved Increment: (2) +2]"
+                        "MOO CreateObject {\"createObject\":{\"id\":-1,\"count\":0,\"incrementDiceNum\":1,\"incrementDiceSize\":6}}" +
+                        "We just created: Counter {\"id\":0,\"count\":0,\"incrementDiceNum\":1,\"incrementDiceSize\":6}" +
+                        "MOO CreateObject {\"createObject\":{\"id\":-1,\"count\":0,\"incrementDiceNum\":2,\"incrementDiceSize\":6}}" +
+                        "We just created: Counter {\"id\":1,\"count\":0,\"incrementDiceNum\":2,\"incrementDiceSize\":6}" +
+                        "MOO CreateObject {\"createObject\":{\"id\":-1,\"count\":0,\"incrementDiceNum\":3,\"incrementDiceSize\":3}}" +
+                        "We just created: Counter {\"id\":2,\"count\":0,\"incrementDiceNum\":3,\"incrementDiceSize\":3}" +
+                        "MOO IncrementCounter {\"targetCounterId\":0}" +
+                        "MOO IncrementCounterResolved {\"targetCounterId\":0,\"incrementAmount\":3}" +
+                        "MOO IncrementCounter {\"targetCounterId\":0}" +
+                        "MOO IncrementCounterResolved {\"targetCounterId\":0,\"incrementAmount\":6}" +
+                        "MOO IncrementCounter {\"targetCounterId\":1}" +
+                        "MOO IncrementCounterResolved {\"targetCounterId\":1,\"incrementAmount\":7}" +
+                        "MOO IncrementCounter {\"targetCounterId\":2}" +
+                        "MOO IncrementCounterResolved {\"targetCounterId\":2,\"incrementAmount\":6}" +
+                        "MOO IncrementCounter {\"targetCounterId\":0}" +
+                        "MOO IncrementCounterResolved {\"targetCounterId\":0,\"incrementAmount\":2}" +
+                        "MOO IncrementCounter {\"targetCounterId\":1}" +
+                        "MOO IncrementCounterResolved {\"targetCounterId\":1,\"incrementAmount\":4}" +
+                        "MOO IncrementCounter {\"targetCounterId\":2}" +
+                        "MOO IncrementCounterResolved {\"targetCounterId\":2,\"incrementAmount\":2}"
                         ,
                 stringBuilder.toString().replaceAll(System.lineSeparator(), ""));
 
@@ -114,7 +115,8 @@ public class MultistageActionTest {
         newObjectCreator.createObject = myStateObject;
         newObjectCreator.callback = new ICreateObjectCallback() {
             public void postCreateState(Object object) {
-                printStream.println("We just created: " + object.toString());
+                Gson gson = new Gson();
+                printStream.println("We just created: " + object.getClass().getSimpleName() + " " + gson.toJson(object));
             }
         };
 
