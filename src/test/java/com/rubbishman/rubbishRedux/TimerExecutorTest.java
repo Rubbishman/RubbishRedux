@@ -61,18 +61,18 @@ public class TimerExecutorTest {
         }
 
         assertEquals(
-                "moo [CREATE:RepeatingTimer { id: 0 startTime: 0 period: 100 currentRepeats: 0 repeats: 3 action: ACTION]" +
-                        "moo [CREATE:RepeatingTimer { id: 0 startTime: 10 period: 100 currentRepeats: 0 repeats: 4 action: ACTION2]" +
-                        "moo [CREATE:RepeatingTimer { id: 0 startTime: 20 period: 100 currentRepeats: 0 repeats: 5 action: ACTION3]" +
-                        "moo [CREATE:RepeatingTimer { id: 0 startTime: 30 period: 100 currentRepeats: 0 repeats: 5 action: ACTION4]" +
-                        "moo [CREATE:RepeatingTimer { id: 0 startTime: 40 period: 100 currentRepeats: 0 repeats: 5 action: ACTION5]" +
-                        "moo [CREATE:RepeatingTimer { id: 0 startTime: 50 period: 100 currentRepeats: 0 repeats: 5 action: ACTION6]" +
-                        "moo [IncrementTimer(0) @ 100]" +
-                        "moo [IncrementTimer(1) @ 150]" +
-                        "moo [IncrementTimer(2) @ 150]" +
-                        "moo [IncrementTimer(3) @ 150]" +
-                        "moo [IncrementTimer(4) @ 150]" +
-                        "moo [IncrementTimer(5) @ 150]",
+                "moo CreateObject {\"createObject\":{\"id\":0,\"startTime\":0,\"period\":100,\"repeats\":3,\"currentRepeats\":0,\"action\":\"ACTION\"}}" +
+                        "moo CreateObject {\"createObject\":{\"id\":0,\"startTime\":10,\"period\":100,\"repeats\":4,\"currentRepeats\":0,\"action\":\"ACTION2\"}}" +
+                        "moo CreateObject {\"createObject\":{\"id\":0,\"startTime\":20,\"period\":100,\"repeats\":5,\"currentRepeats\":0,\"action\":\"ACTION3\"}}" +
+                        "moo CreateObject {\"createObject\":{\"id\":0,\"startTime\":30,\"period\":100,\"repeats\":5,\"currentRepeats\":0,\"action\":\"ACTION4\"}}" +
+                        "moo CreateObject {\"createObject\":{\"id\":0,\"startTime\":40,\"period\":100,\"repeats\":5,\"currentRepeats\":0,\"action\":\"ACTION5\"}}" +
+                        "moo CreateObject {\"createObject\":{\"id\":0,\"startTime\":50,\"period\":100,\"repeats\":5,\"currentRepeats\":0,\"action\":\"ACTION6\"}}" +
+                        "moo IncrementTimer {\"nowTime\":100,\"subject\":0}" +
+                        "moo IncrementTimer {\"nowTime\":150,\"subject\":1}" +
+                        "moo IncrementTimer {\"nowTime\":150,\"subject\":2}" +
+                        "moo IncrementTimer {\"nowTime\":150,\"subject\":3}" +
+                        "moo IncrementTimer {\"nowTime\":150,\"subject\":4}" +
+                        "moo IncrementTimer {\"nowTime\":150,\"subject\":5}",
                 stringBuilder.toString().replaceAll(System.lineSeparator(), ""));
     }
 }
