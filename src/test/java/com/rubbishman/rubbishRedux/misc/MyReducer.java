@@ -2,6 +2,7 @@ package com.rubbishman.rubbishRedux.misc;
 
 import com.google.gson.Gson;
 import com.rubbishman.rubbishRedux.MiddlewareEnchancerTest;
+import com.rubbishman.rubbishRedux.dynamicObjectStore.GsonInstance;
 import redux.api.Reducer;
 
 import java.io.PrintStream;
@@ -20,7 +21,7 @@ public class MyReducer implements Reducer<MyState> {
         if(action == redux.api.Store.INIT) {
             printStream.println("Initial state INIT");
         } else {
-            Gson gson = new Gson();
+            Gson gson = GsonInstance.getInstance();
             printStream.println("Adding " + action.getClass().getSimpleName() + " " + gson.toJson(action));
         }
 

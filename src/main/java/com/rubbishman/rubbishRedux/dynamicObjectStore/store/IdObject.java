@@ -1,4 +1,4 @@
-package com.rubbishman.rubbishRedux.dynamicObjectStore;
+package com.rubbishman.rubbishRedux.dynamicObjectStore.store;
 
 public class IdObject {
     public final Identifier id;

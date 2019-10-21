@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.rubbishman.rubbishRedux.createObjectCallback.action.CreateObject;
 import com.rubbishman.rubbishRedux.createObjectCallback.enhancer.CreateObjectEnhancer;
 import com.rubbishman.rubbishRedux.createObjectCallback.interfaces.ICreateObjectCallback;
+import com.rubbishman.rubbishRedux.dynamicObjectStore.GsonInstance;
 import com.rubbishman.rubbishRedux.middlewareEnhancer.MiddlewareEnhancer;
 import com.rubbishman.rubbishRedux.misc.MyLoggingMiddleware;
 import com.rubbishman.rubbishRedux.multistageActionTest.action.IncrementCounter;
@@ -115,7 +116,7 @@ public class MultistageActionTest {
         newObjectCreator.createObject = myStateObject;
         newObjectCreator.callback = new ICreateObjectCallback() {
             public void postCreateState(Object object) {
-                Gson gson = new Gson();
+                Gson gson = GsonInstance.getInstance();
                 printStream.println("We just created: " + object.getClass().getSimpleName() + " " + gson.toJson(object));
             }
         };

@@ -7,6 +7,7 @@ import com.rubbishman.rubbishRedux.createObjectCallback.interfaces.ICreateObject
 import com.rubbishman.rubbishRedux.createObjectCallbackTest.processor.CreateObjectProcessor;
 import com.rubbishman.rubbishRedux.createObjectCallbackTest.state.CreateObjectState;
 import com.rubbishman.rubbishRedux.createObjectCallbackTest.state.CreateObjectStateObject;
+import com.rubbishman.rubbishRedux.dynamicObjectStore.GsonInstance;
 import org.junit.Test;
 import redux.api.Store;
 
@@ -58,7 +59,7 @@ public class CreateObjectCallbackTest {
         newObjectCreator.createObject = myStateObject;
         newObjectCreator.callback = new ICreateObjectCallback() {
             public void postCreateState(Object object) {
-                Gson gson = new Gson();
+                Gson gson = GsonInstance.getInstance();
                 printStream.println("We just created: " + object.getClass().getSimpleName() + " " + gson.toJson(object));
             }
         };

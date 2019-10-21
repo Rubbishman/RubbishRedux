@@ -1,7 +1,7 @@
-package com.rubbishman.rubbishRedux.dynamicObjectStore;
+package com.rubbishman.rubbishRedux.dynamicObjectStore.store;
 
 public class Identifier {
-    public static long NO_ID = -1l;
+    public static transient long NO_ID = -1l;
 
     public static Identifier getNoId(Class clazz) {
         return new Identifier(clazz, NO_ID);

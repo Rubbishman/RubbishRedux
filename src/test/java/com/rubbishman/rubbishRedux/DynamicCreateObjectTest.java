@@ -1,7 +1,8 @@
 package com.rubbishman.rubbishRedux;
 
 import com.google.gson.Gson;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.ObjectStore;
+import com.rubbishman.rubbishRedux.dynamicObjectStore.GsonInstance;
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
 import com.rubbishman.rubbishRedux.dynamicObjectStore.reducer.CreateObjectReducer;
 import com.rubbishman.rubbishRedux.middlewareEnhancer.MiddlewareEnhancer;
 import com.rubbishman.rubbishRedux.misc.MyLoggingMiddleware;
@@ -50,11 +51,10 @@ public class DynamicCreateObjectTest {
         store.dispatch(new Integer(5));
         store.dispatch(new Long(5));
 
-        Gson gson = new Gson();
+        Gson gson = GsonInstance.getInstance();
 
-        System.out.println(printStream.toString());
+        System.out.println(stringBuilder.toString());
 
-        System.out.println(store.getState().idGenerator.idSequence.toString());
-        System.out.println(store.getState().objectMap.toString());
+        System.out.println(gson.toJson(store.getState()));
     }
 }

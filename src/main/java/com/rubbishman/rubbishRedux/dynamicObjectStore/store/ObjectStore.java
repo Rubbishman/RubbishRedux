@@ -1,4 +1,4 @@
-package com.rubbishman.rubbishRedux.dynamicObjectStore;
+package com.rubbishman.rubbishRedux.dynamicObjectStore.store;
 
 import org.organicdesign.fp.collections.PersistentHashMap;
 

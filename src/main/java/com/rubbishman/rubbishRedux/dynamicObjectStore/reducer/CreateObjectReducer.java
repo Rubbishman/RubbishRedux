@@ -1,9 +1,9 @@
 package com.rubbishman.rubbishRedux.dynamicObjectStore.reducer;
 
-import com.rubbishman.rubbishRedux.dynamicObjectStore.IdGenerator;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.IdObject;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.Identifier;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.ObjectStore;
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.IdGenerator;
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.IdObject;
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.Identifier;
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
 import redux.api.Reducer;
 
 public class CreateObjectReducer implements Reducer<ObjectStore> {
