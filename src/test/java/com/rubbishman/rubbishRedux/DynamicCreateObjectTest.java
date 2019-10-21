@@ -1,6 +1,8 @@
 package com.rubbishman.rubbishRedux;
 
 import com.google.gson.Gson;
+import com.rubbishman.rubbishRedux.createObjectCallback.action.CreateObject;
+import com.rubbishman.rubbishRedux.createObjectCallback.interfaces.ICreateObjectCallback;
 import com.rubbishman.rubbishRedux.dynamicObjectStore.GsonInstance;
 import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
 import com.rubbishman.rubbishRedux.dynamicObjectStore.reducer.CreateObjectReducer;
@@ -14,10 +16,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
+import static org.junit.Assert.assertEquals;
+
 public class DynamicCreateObjectTest {
     Store<ObjectStore> store;
     StringBuilder stringBuilder = new StringBuilder();
     PrintStream printStream;
+    CreateObjectReducer reducer;
 
     @Before
     public void setup() {
@@ -36,25 +41,60 @@ public class DynamicCreateObjectTest {
 
         creator = middlewareEnhancer.enhance(creator);
 
-        CreateObjectReducer reducer = new CreateObjectReducer();
+        reducer = new CreateObjectReducer();
 
         store = creator.create(reducer, new ObjectStore());
     }
 
     @Test
     public void dynamicCreateObjectTest() {
-        store.dispatch("String!");
-        store.dispatch(new Integer(5));
-        store.dispatch(new Long(5));
+        // This looks good... Now drop this in place of the existing createObject enhancer stuff.
+        // And then the multistage stuff -> how are the reducers going to end up after doing this...
+        store.dispatch(createObjectTest("String!", printStream));
+        reducer.postDispatch();
+        store.dispatch(createObjectTest(new Integer(5), printStream));
+        reducer.postDispatch();
+        store.dispatch(createObjectTest(new Long(5), printStream));
+        reducer.postDispatch();
 
-        store.dispatch("String!");
-        store.dispatch(new Integer(5));
-        store.dispatch(new Long(5));
+        store.dispatch(createObjectTest("String!", printStream));
+        reducer.postDispatch();
+        store.dispatch(createObjectTest(new Integer(5), printStream));
+        reducer.postDispatch();
+        store.dispatch(createObjectTest(new Long(5), printStream));
+        reducer.postDispatch();
 
         Gson gson = GsonInstance.getInstance();
 
-        System.out.println(stringBuilder.toString());
+        assertEquals("MOO CreateObject {\"createObject\":\"String!\"}" +
+                        "We just created: IdObject {\"id\":{\"id\":1,\"clazz\":\"java.lang.String\"},\"object\":\"String!\"}" +
+                        "MOO CreateObject {\"createObject\":5}" +
+                        "We just created: IdObject {\"id\":{\"id\":1,\"clazz\":\"java.lang.Integer\"},\"object\":5}" +
+                        "MOO CreateObject {\"createObject\":5}" +
+                        "We just created: IdObject {\"id\":{\"id\":1,\"clazz\":\"java.lang.Long\"},\"object\":5}" +
+                        "MOO CreateObject {\"createObject\":\"String!\"}" +
+                        "We just created: IdObject {\"id\":{\"id\":2,\"clazz\":\"java.lang.String\"},\"object\":\"String!\"}" +
+                        "MOO CreateObject {\"createObject\":5}" +
+                        "We just created: IdObject {\"id\":{\"id\":2,\"clazz\":\"java.lang.Integer\"},\"object\":5}" +
+                        "MOO CreateObject {\"createObject\":5}" +
+                        "We just created: IdObject {\"id\":{\"id\":2,\"clazz\":\"java.lang.Long\"},\"object\":5}",
+                stringBuilder.toString().replaceAll(System.lineSeparator(), ""));
 
-        System.out.println(gson.toJson(store.getState()));
+        assertEquals("{\"objectMap\":[{\"key\":\"{\\\"id\\\":1,\\\"clazz\\\":\\\"java.lang.Long\\\"}\",\"value\":\"{\\\"id\\\":{\\\"id\\\":1,\\\"clazz\\\":\\\"java.lang.Long\\\"},\\\"object\\\":5}\"},{\"key\":\"{\\\"id\\\":2,\\\"clazz\\\":\\\"java.lang.String\\\"}\",\"value\":\"{\\\"id\\\":{\\\"id\\\":2,\\\"clazz\\\":\\\"java.lang.String\\\"},\\\"object\\\":\\\"String!\\\"}\"},{\"key\":\"{\\\"id\\\":1,\\\"clazz\\\":\\\"java.lang.Integer\\\"}\",\"value\":\"{\\\"id\\\":{\\\"id\\\":1,\\\"clazz\\\":\\\"java.lang.Integer\\\"},\\\"object\\\":5}\"},{\"key\":\"{\\\"id\\\":2,\\\"clazz\\\":\\\"java.lang.Long\\\"}\",\"value\":\"{\\\"id\\\":{\\\"id\\\":2,\\\"clazz\\\":\\\"java.lang.Long\\\"},\\\"object\\\":5}\"},{\"key\":\"{\\\"id\\\":1,\\\"clazz\\\":\\\"java.lang.String\\\"}\",\"value\":\"{\\\"id\\\":{\\\"id\\\":1,\\\"clazz\\\":\\\"java.lang.String\\\"},\\\"object\\\":\\\"String!\\\"}\"},{\"key\":\"{\\\"id\\\":2,\\\"clazz\\\":\\\"java.lang.Integer\\\"}\",\"value\":\"{\\\"id\\\":{\\\"id\\\":2,\\\"clazz\\\":\\\"java.lang.Integer\\\"},\\\"object\\\":5}\"}],\"idGenerator\":\"{\\\"idSequence\\\":{\\\"class java.lang.Long\\\":2,\\\"class java.lang.Integer\\\":2,\\\"class java.lang.String\\\":2}}\"}",
+                gson.toJson(store.getState()));
+    }
+
+    private CreateObject createObjectTest(Object object, PrintStream printStream) {
+        CreateObject newObjectCreator = new CreateObject();
+
+        newObjectCreator.createObject = object;
+        newObjectCreator.callback = new ICreateObjectCallback() {
+            public void postCreateState(Object object) {
+                Gson gson = GsonInstance.getInstance();
+                printStream.println("We just created: " + object.getClass().getSimpleName() + " " + gson.toJson(object));
+            }
+        };
+
+        return newObjectCreator;
     }
 }
