@@ -1,15 +1,19 @@
 package com.rubbishman.rubbishRedux;
 
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.IdObject;
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.Identifier;
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
 import com.rubbishman.rubbishRedux.middlewareEnhancer.MiddlewareEnhancer;
 import com.rubbishman.rubbishRedux.misc.MyLoggingMiddleware;
 import com.rubbishman.rubbishRedux.statefullTimer.TimerExecutor;
-import com.rubbishman.rubbishRedux.statefullTimer.state.TimerState;
+import com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer;
 import org.junit.Test;
 import redux.api.Store;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Iterator;
 
 import static org.junit.Assert.assertEquals;
 
@@ -27,10 +31,10 @@ public class TimerExecutorTest {
 
         PrintStream printStream = new PrintStream(myOutput);
 
-        MiddlewareEnhancer<TimerState> enhancer = new MiddlewareEnhancer<>();
+        MiddlewareEnhancer<ObjectStore> enhancer = new MiddlewareEnhancer<>();
         enhancer.addMiddleware(new MyLoggingMiddleware(printStream, "moo"));
 
-        Store.Creator<TimerState> creator = new com.glung.redux.Store.Creator();
+        Store.Creator<ObjectStore> creator = new com.glung.redux.Store.Creator();
 
         creator = enhancer.enhance(creator);
 
@@ -47,32 +51,37 @@ public class TimerExecutorTest {
 
         timer.timerLogic(nowTime);
 
-        assertEquals(6, timer.getState().timers.size());
-        for(int i  = 0; i < timer.getState().timers.size(); i++) {
-            assertEquals(0, timer.getState().timers.get(i).currentRepeats);
+        assertEquals(6, timer.getState().objectMap.size());
+        Iterator<IdObject> iter = timer.getState().objectMap.valIterator();
+        while(iter.hasNext()) {
+            IdObject obj = iter.next();
+            assertEquals(0, ((RepeatingTimer)obj.object).currentRepeats);
         }
 
         timer.timerLogic(nowTime + 100);
-        assertEquals(1, timer.getState().timers.get(0).currentRepeats);
+        assertEquals(1, ((RepeatingTimer)timer.getState().objectMap.get(new Identifier(RepeatingTimer.class, 1l)).object).currentRepeats);
 
         timer.timerLogic(nowTime + 150);
-        for(int i  = 0; i < timer.getState().timers.size(); i++) {
-            assertEquals(1, timer.getState().timers.get(i).currentRepeats);
+
+        iter = timer.getState().objectMap.valIterator();
+        while(iter.hasNext()) {
+            IdObject obj = iter.next();
+            assertEquals(1, ((RepeatingTimer)obj.object).currentRepeats);
         }
 
         assertEquals(
-                "moo CreateObject {\"createObject\":{\"id\":0,\"startTime\":0,\"period\":100,\"repeats\":3,\"currentRepeats\":0,\"action\":\"ACTION\"}}" +
-                        "moo CreateObject {\"createObject\":{\"id\":0,\"startTime\":10,\"period\":100,\"repeats\":4,\"currentRepeats\":0,\"action\":\"ACTION2\"}}" +
-                        "moo CreateObject {\"createObject\":{\"id\":0,\"startTime\":20,\"period\":100,\"repeats\":5,\"currentRepeats\":0,\"action\":\"ACTION3\"}}" +
-                        "moo CreateObject {\"createObject\":{\"id\":0,\"startTime\":30,\"period\":100,\"repeats\":5,\"currentRepeats\":0,\"action\":\"ACTION4\"}}" +
-                        "moo CreateObject {\"createObject\":{\"id\":0,\"startTime\":40,\"period\":100,\"repeats\":5,\"currentRepeats\":0,\"action\":\"ACTION5\"}}" +
-                        "moo CreateObject {\"createObject\":{\"id\":0,\"startTime\":50,\"period\":100,\"repeats\":5,\"currentRepeats\":0,\"action\":\"ACTION6\"}}" +
-                        "moo IncrementTimer {\"nowTime\":100,\"subject\":0}" +
-                        "moo IncrementTimer {\"nowTime\":150,\"subject\":1}" +
-                        "moo IncrementTimer {\"nowTime\":150,\"subject\":2}" +
-                        "moo IncrementTimer {\"nowTime\":150,\"subject\":3}" +
-                        "moo IncrementTimer {\"nowTime\":150,\"subject\":4}" +
-                        "moo IncrementTimer {\"nowTime\":150,\"subject\":5}",
+                "moo CreateObject {\"createObject\":{\"startTime\":0,\"period\":100,\"repeats\":3,\"currentRepeats\":0,\"action\":\"ACTION\"}}" +
+                        "moo CreateObject {\"createObject\":{\"startTime\":10,\"period\":100,\"repeats\":4,\"currentRepeats\":0,\"action\":\"ACTION2\"}}" +
+                        "moo CreateObject {\"createObject\":{\"startTime\":20,\"period\":100,\"repeats\":5,\"currentRepeats\":0,\"action\":\"ACTION3\"}}" +
+                        "moo CreateObject {\"createObject\":{\"startTime\":30,\"period\":100,\"repeats\":5,\"currentRepeats\":0,\"action\":\"ACTION4\"}}" +
+                        "moo CreateObject {\"createObject\":{\"startTime\":40,\"period\":100,\"repeats\":5,\"currentRepeats\":0,\"action\":\"ACTION5\"}}" +
+                        "moo CreateObject {\"createObject\":{\"startTime\":50,\"period\":100,\"repeats\":5,\"currentRepeats\":0,\"action\":\"ACTION6\"}}" +
+                        "moo IncrementTimer {\"nowTime\":100,\"subject\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer\"}}" +
+                        "moo IncrementTimer {\"nowTime\":150,\"subject\":{\"id\":2,\"clazz\":\"com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer\"}}" +
+                        "moo IncrementTimer {\"nowTime\":150,\"subject\":{\"id\":3,\"clazz\":\"com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer\"}}" +
+                        "moo IncrementTimer {\"nowTime\":150,\"subject\":{\"id\":4,\"clazz\":\"com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer\"}}" +
+                        "moo IncrementTimer {\"nowTime\":150,\"subject\":{\"id\":5,\"clazz\":\"com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer\"}}" +
+                        "moo IncrementTimer {\"nowTime\":150,\"subject\":{\"id\":6,\"clazz\":\"com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer\"}}",
                 stringBuilder.toString().replaceAll(System.lineSeparator(), ""));
     }
 }

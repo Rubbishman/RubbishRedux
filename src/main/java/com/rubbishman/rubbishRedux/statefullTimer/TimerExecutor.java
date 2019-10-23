@@ -2,13 +2,13 @@ package com.rubbishman.rubbishRedux.statefullTimer;
 
 import com.rubbishman.rubbishRedux.createObjectCallback.action.CreateObject;
 import com.rubbishman.rubbishRedux.createObjectCallback.enhancer.CreateObjectEnhancer;
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.IdObject;
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
 import com.rubbishman.rubbishRedux.statefullTimer.helper.TimerComparator;
 import com.rubbishman.rubbishRedux.statefullTimer.helper.TimerHelper;
 import com.rubbishman.rubbishRedux.statefullTimer.logic.TimerLogic;
-import com.rubbishman.rubbishRedux.statefullTimer.reducer.TimerCreateProcessor;
 import com.rubbishman.rubbishRedux.statefullTimer.reducer.TimerReducer;
 import com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer;
-import com.rubbishman.rubbishRedux.statefullTimer.state.TimerState;
 import redux.api.Store;
 
 import java.util.LinkedList;
@@ -19,7 +19,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class TimerExecutor {
-    private Store<TimerState> timerState;
+    private Store<ObjectStore> timerState;
     private ConcurrentLinkedQueue<Object> actionQueue;
     private TimerComparator comparator;
     private PriorityQueue<TimerLogic> timerList;
@@ -35,7 +35,7 @@ public class TimerExecutor {
         actionQueue.add(action);
     }
 
-    public TimerExecutor(Store.Creator<TimerState> creator) {
+    public TimerExecutor(Store.Creator<ObjectStore> creator) {
         initialize(creator);
     }
 
@@ -43,17 +43,16 @@ public class TimerExecutor {
         initialize(new com.glung.redux.Store.Creator());
     }
 
-    public TimerState getState() {
+    public ObjectStore getState() {
         return timerState.getState();
     }
 
-    private void initialize(Store.Creator<TimerState> creator) {
-        CreateObjectEnhancer<TimerState> enhancer = new CreateObjectEnhancer();
-        enhancer.addProcessor(new TimerCreateProcessor());
+    private void initialize(Store.Creator<ObjectStore> creator) {
+        CreateObjectEnhancer enhancer = new CreateObjectEnhancer();
 
         creator = enhancer.enhance(creator);
 
-        timerState = creator.create(new TimerReducer(), new TimerState());
+        timerState = creator.create(new TimerReducer(), new ObjectStore());
 
         comparator = new TimerComparator(timerState);
         timerList = new PriorityQueue<>(comparator);
@@ -87,7 +86,7 @@ public class TimerExecutor {
         LinkedList<TimerLogic> toAdd = new LinkedList();
 
         synchronized (timerState) {
-            TimerState state = timerState.getState();
+            ObjectStore state = timerState.getState();
 
             TimerLogic logic = timerList.peek();
             while(logic != null) {
@@ -118,12 +117,12 @@ public class TimerExecutor {
     public RepeatingTimer createTimer(Long nowTime, Object action, int period, int repeats) {
         CreateObject createObj = new CreateObject();
 
-        RepeatingTimer create = new RepeatingTimer(0, nowTime, period, repeats, 0 , action);
+        RepeatingTimer create = new RepeatingTimer(nowTime, period, repeats, 0 , action);
 
         createObj.createObject = create;
 
         createObj.callback = (repeatingTimer) -> {
-            addTimer(new TimerLogic(this, ((RepeatingTimer)repeatingTimer).id));
+            addTimer(new TimerLogic(this, ((IdObject)repeatingTimer).id));
         };
 
         addAction(createObj);

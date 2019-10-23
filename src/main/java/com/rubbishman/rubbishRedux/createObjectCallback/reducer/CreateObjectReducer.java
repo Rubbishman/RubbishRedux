@@ -1,27 +1,18 @@
 package com.rubbishman.rubbishRedux.createObjectCallback.reducer;
 
 import com.rubbishman.rubbishRedux.createObjectCallback.action.CreateObject;
-import com.rubbishman.rubbishRedux.createObjectCallback.interfaces.ICreateObjectProcessor;
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.IdGenerator;
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.IdObject;
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.Identifier;
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
 import redux.api.Reducer;
 
-import java.util.HashMap;
-
-public class CreateObjectReducer<S> implements Reducer<S> {
-    private HashMap<Class, ICreateObjectProcessor<S, ?>> createObjectProcessor = new HashMap<>();
-    private Reducer<S> wrappedReducer;
+public class CreateObjectReducer implements Reducer<ObjectStore> {
+    private Reducer<ObjectStore> wrappedReducer;
     private Runnable postDispatchRunnable;
 
-    public void setWrappedReducer(Reducer<S> wrapperReducer) {
+    public void setWrappedReducer(Reducer<ObjectStore> wrapperReducer) {
         this.wrappedReducer = wrapperReducer;
-    }
-
-    public void addProcessor(ICreateObjectProcessor<S, ?> processor) {
-        // Have to use the type against the method...?
-        try {
-            createObjectProcessor.put(processor.getClass().getMethod("getPostCreateObject").getReturnType(), processor);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
     }
 
     public void postDispatch() {
@@ -31,22 +22,25 @@ public class CreateObjectReducer<S> implements Reducer<S> {
         }
     }
 
-    public S reduceCreateObject(S state, CreateObject action) {
-        ICreateObjectProcessor<S, ?> runnable = createObjectProcessor.get(action.createObject.getClass());
-        if(runnable != null) {
-            S newState = runnable.run(state, action);
-            this.postDispatchRunnable = () -> {
-                Object createdObject = runnable.getPostCreateObject();
-                action.callback.postCreateState(createdObject);
-            };
-            return newState;
-        }
+    private ObjectStore reduceCreateObject(ObjectStore state, CreateObject action) {
+        IdGenerator idGenerator = new IdGenerator(state.idGenerator.idSequence);
 
-        return state;
+        Identifier identifier = idGenerator.nextId(action.createObject.getClass());
+        IdObject idObject = new IdObject(identifier, action.createObject);
+
+        ObjectStore cloned = new ObjectStore(
+                state.objectMap.assoc(identifier, idObject),
+                new IdGenerator(idGenerator.idSequence)
+        );
+
+        this.postDispatchRunnable = () -> {
+            action.callback.postCreateState(idObject);
+        };
+
+        return cloned;
     }
 
-    public S reduce(S state, Object action) {
-//        S cloned = state.clone(); //ZzZz?
+    public ObjectStore reduce(ObjectStore state, Object action) {
         if(action instanceof CreateObject) {
             return reduceCreateObject(state, (CreateObject)action);
         } else if(wrappedReducer != null) {

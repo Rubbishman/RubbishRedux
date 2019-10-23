@@ -1,10 +1,12 @@
 package com.rubbishman.rubbishRedux.statefullTimer.action;
 
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.Identifier;
+
 public class IncrementTimer {
     public final long nowTime;
-    public final int subject;
+    public final Identifier subject;
 
-    public IncrementTimer(long nowTime, int subject) {
+    public IncrementTimer(long nowTime, Identifier subject) {
         this.nowTime = nowTime;
         this.subject = subject;
     }

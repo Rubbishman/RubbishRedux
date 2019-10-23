@@ -5,12 +5,11 @@ import com.rubbishman.rubbishRedux.createObjectCallback.action.CreateObject;
 import com.rubbishman.rubbishRedux.createObjectCallback.enhancer.CreateObjectEnhancer;
 import com.rubbishman.rubbishRedux.createObjectCallback.interfaces.ICreateObjectCallback;
 import com.rubbishman.rubbishRedux.dynamicObjectStore.GsonInstance;
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
 import com.rubbishman.rubbishRedux.middlewareEnhancer.MiddlewareEnhancer;
 import com.rubbishman.rubbishRedux.misc.MyLoggingMiddleware;
 import com.rubbishman.rubbishRedux.multistageActionTest.action.IncrementCounter;
 import com.rubbishman.rubbishRedux.multistageActionTest.action.MultistageAction.IncrementCounterResolution;
-import com.rubbishman.rubbishRedux.multistageActionTest.processor.CreateCounterProcessor;
-import com.rubbishman.rubbishRedux.multistageActionTest.processor.CreateCounterStopperProcessor;
 import com.rubbishman.rubbishRedux.multistageActionTest.reducer.MyReducer;
 import com.rubbishman.rubbishRedux.multistageActionTest.state.Counter;
 import com.rubbishman.rubbishRedux.multistageActionTest.state.MultistageActionState;
@@ -40,15 +39,12 @@ public class MultistageActionTest {
 
         printStream = new PrintStream(myOutput);
 
-        Store.Creator<MultistageActionState> creator = new com.glung.redux.Store.Creator();
-        CreateObjectEnhancer<MultistageActionState> enhancer = new CreateObjectEnhancer();
-
-        enhancer.addProcessor(new CreateCounterProcessor());
-        enhancer.addProcessor(new CreateCounterStopperProcessor());
+        Store.Creator<ObjectStore> creator = new com.glung.redux.Store.Creator();
+        CreateObjectEnhancer enhancer = new CreateObjectEnhancer();
 
         creator = enhancer.enhance(creator);
 
-        MiddlewareEnhancer<MultistageActionState> middlewareEnhancer = new MiddlewareEnhancer<>();
+        MiddlewareEnhancer<ObjectStore> middlewareEnhancer = new MiddlewareEnhancer<>();
         middlewareEnhancer.addMiddleware(new MyLoggingMiddleware(printStream, "MOO"));
 
         creator = middlewareEnhancer.enhance(creator);
