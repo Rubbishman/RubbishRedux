@@ -6,13 +6,13 @@ public class Identifier {
     public static transient long NO_ID = -1l;
 
     public static Identifier getNoId(Class clazz) {
-        return new Identifier(clazz, NO_ID);
+        return new Identifier(NO_ID, clazz);
     }
 
     public final long id;
     public final Class clazz;
 
-    public Identifier(Class clazz, long id) {
+    public Identifier(long id, Class clazz) {
         this.clazz = clazz;
         this.id = id;
     }

@@ -23,6 +23,6 @@ public class IdGenerator {
 
         idSequence = idSequence.assoc(clazz, id);
 
-        return new Identifier(clazz, id);
+        return new Identifier(id, clazz);
     }
 }

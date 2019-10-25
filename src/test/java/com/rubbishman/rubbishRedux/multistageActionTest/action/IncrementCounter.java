@@ -1,9 +1,11 @@
 package com.rubbishman.rubbishRedux.multistageActionTest.action;
 
-public class IncrementCounter {
-    public final int targetCounterId;
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.Identifier;
 
-    public IncrementCounter(int targetCounterId) {
+public class IncrementCounter {
+    public final Identifier targetCounterId;
+
+    public IncrementCounter(Identifier targetCounterId) {
         this.targetCounterId = targetCounterId;
     }
 }

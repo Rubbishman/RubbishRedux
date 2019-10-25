@@ -1,5 +1,6 @@
 package com.rubbishman.rubbishRedux.multistageActions;
 
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
 import com.rubbishman.rubbishRedux.multistageActions.action.MultistageAction;
 import com.rubbishman.rubbishRedux.multistageActions.stage.MultistageComparator;
 import com.rubbishman.rubbishRedux.multistageActions.stage.StageAction;
@@ -10,8 +11,8 @@ import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class MultistageActions<S> {
-    private Store<S> state;
+public class MultistageActions {
+    private Store<ObjectStore> state;
     private ConcurrentLinkedQueue<Object> actionQueue;
     private MultistageComparator comparator;
     private PriorityQueue<StageAction> stageQueue;
@@ -21,16 +22,16 @@ public class MultistageActions<S> {
         actionQueue.add(action);
     }
 
-    public MultistageActions(Store.Creator<S> creator, Reducer<S> reducer, S initialState) {
+    public MultistageActions(Store.Creator<ObjectStore> creator, Reducer<ObjectStore> reducer, ObjectStore initialState) {
         stageQueue = new PriorityQueue<>();
         initialize(creator, reducer, initialState);
     }
 
-    public S getState() {
+    public ObjectStore getState() {
         return state.getState();
     }
 
-    private void initialize(Store.Creator<S> creator, Reducer<S> reducer, S initialState) {
+    private void initialize(Store.Creator<ObjectStore> creator, Reducer<ObjectStore> reducer, ObjectStore initialState) {
         state = creator.create(reducer, initialState);
         comparator = new MultistageComparator();
         stageQueue = new PriorityQueue<>(comparator);

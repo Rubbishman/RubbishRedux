@@ -1,5 +1,7 @@
 package com.rubbishman.rubbishRedux.multistageActions.eventListener;
 
-public interface MultistageEventListener<S> {
-    public boolean listen(S state, long nowTime);
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
+
+public interface MultistageEventListener {
+    public boolean listen(ObjectStore state, long nowTime);
 }
