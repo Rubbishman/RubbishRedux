@@ -16,11 +16,4 @@ public class CreateObjectState {
 
         return clone;
     }
-
-    public String toString() {
-        return "{" +
-                "   actions: " + actions.toString() +
-                "   stateObjects: " + stateObjects.toString() +
-                "}";
-    }
 }

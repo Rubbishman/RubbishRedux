@@ -1,27 +1,23 @@
 package com.rubbishman.rubbishRedux.createObjectCallback.enhancer;
 
-import com.rubbishman.rubbishRedux.createObjectCallback.interfaces.ICreateObjectProcessor;
 import com.rubbishman.rubbishRedux.createObjectCallback.reducer.CreateObjectReducer;
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
 import redux.api.Reducer;
 import redux.api.Store;
 
-public class CreateObjectEnhancer<S> implements Store.Enhancer<S> {
-    private CreateObjectReducer<S> createObjectReducer;
+public class CreateObjectEnhancer implements Store.Enhancer<ObjectStore> {
+    private CreateObjectReducer createObjectReducer;
 
     public CreateObjectEnhancer() {
-        createObjectReducer = new CreateObjectReducer<>();
+        createObjectReducer = new CreateObjectReducer();
     }
 
-    public void addProcessor(ICreateObjectProcessor<S, ?> processor) {
-        createObjectReducer.addProcessor(processor);
-    }
-
-    public Store.Creator<S> enhance(Store.Creator<S> next) {
+    public Store.Creator<ObjectStore> enhance(Store.Creator<ObjectStore> next) {
         return (reducer, initialState) -> {
             createObjectReducer.setWrappedReducer(reducer);
-            Store<S> baseStore = next.create(createObjectReducer, initialState);
+            Store<ObjectStore> baseStore = next.create(createObjectReducer, initialState);
 
-            return new Store<S>() {
+            return new Store<ObjectStore>() {
                 public Object dispatch(Object action) {
                     //Not sure if this is best...
                     Object result = baseStore.dispatch(action);
@@ -29,13 +25,13 @@ public class CreateObjectEnhancer<S> implements Store.Enhancer<S> {
                     return result;
                 }
 
-                public S getState() {
+                public ObjectStore getState() {
                     return baseStore.getState();
                 }
                 public Subscription subscribe(Subscriber subscriber) {
                     return baseStore.subscribe(subscriber);
                 }
-                public void replaceReducer(Reducer<S> reducer1) {
+                public void replaceReducer(Reducer<ObjectStore> reducer1) {
                     createObjectReducer.setWrappedReducer(reducer1);
                     baseStore.replaceReducer(createObjectReducer);
                 }

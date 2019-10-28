@@ -1,31 +1,34 @@
 package com.rubbishman.rubbishRedux.statefullTimer.reducer;
 
-import com.rubbishman.rubbishRedux.createObjectCallback.action.CreateObject;
-import com.rubbishman.rubbishRedux.createObjectCallback.reducer.CreateObjectReducer;
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.IdObject;
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
 import com.rubbishman.rubbishRedux.statefullTimer.action.IncrementTimer;
 import com.rubbishman.rubbishRedux.statefullTimer.helper.TimerHelper;
 import com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer;
-import com.rubbishman.rubbishRedux.statefullTimer.state.TimerState;
 import redux.api.Reducer;
 
-public class TimerReducer implements Reducer<TimerState> {
-    private TimerState reduce(TimerState state, IncrementTimer action) {
-        RepeatingTimer timer = state.timers.get(action.subject);
+public class TimerReducer implements Reducer<ObjectStore> {
+    private ObjectStore reduce(ObjectStore state, IncrementTimer action) {
+        RepeatingTimer timer = (RepeatingTimer)state.objectMap.get(action.subject).object;
 
         RepeatingTimer newTimer = timer.changeRepeats(TimerHelper.calculateNewRepeats(action.nowTime, timer));
-        state.timers.set(action.subject, newTimer);
+
+        ObjectStore cloned = new ObjectStore(
+                state.objectMap.assoc(action.subject, new IdObject(action.subject, newTimer)),
+                state.idGenerator
+        );
 
         int diff = newTimer.currentRepeats - timer.currentRepeats;
 
         while(diff > 0) {
-            state = this.reduce(state, timer.action);
+            cloned = this.reduce(cloned, timer.action);
             diff--;
         }
 
-        return state;
+        return cloned;
     }
 
-    public TimerState reduce(TimerState state, Object action) {
+    public ObjectStore reduce(ObjectStore state, Object action) {
         if (action instanceof IncrementTimer) {
             return reduce(state, (IncrementTimer)action);
         }

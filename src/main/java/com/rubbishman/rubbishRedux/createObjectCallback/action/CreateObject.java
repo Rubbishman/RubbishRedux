@@ -4,9 +4,5 @@ import com.rubbishman.rubbishRedux.createObjectCallback.interfaces.ICreateObject
 
 public class CreateObject {
     public Object createObject;
-    public ICreateObjectCallback callback;
-
-    public String toString() {
-        return "[CREATE:" + createObject + "]";
-    }
+    public transient ICreateObjectCallback callback;
 }

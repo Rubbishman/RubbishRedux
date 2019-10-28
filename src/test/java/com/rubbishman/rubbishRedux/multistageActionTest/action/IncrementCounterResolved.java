@@ -1,15 +1,13 @@
 package com.rubbishman.rubbishRedux.multistageActionTest.action;
 
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.Identifier;
+
 public class IncrementCounterResolved {
-    public final int targetCounterId;
+    public final Identifier targetCounterId;
     public final int incrementAmount;
 
-    public IncrementCounterResolved(int targetCounterId, int incrementAmount) {
+    public IncrementCounterResolved(Identifier targetCounterId, int incrementAmount) {
         this.targetCounterId = targetCounterId;
         this.incrementAmount = incrementAmount;
-    }
-
-    public String toString() {
-        return "[Resolved Increment: (" + targetCounterId + ") +" + incrementAmount + "]";
     }
 }

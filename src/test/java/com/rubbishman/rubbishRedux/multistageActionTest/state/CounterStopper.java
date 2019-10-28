@@ -8,8 +8,4 @@ public class CounterStopper {
         this.targetCounterId = targetCounterId;
         this.stopNumber = stopNumber;
     }
-
-    public String toString() {
-        return "[StopCounter (" + targetCounterId + ") : " + stopNumber + "]";
-    }
 }

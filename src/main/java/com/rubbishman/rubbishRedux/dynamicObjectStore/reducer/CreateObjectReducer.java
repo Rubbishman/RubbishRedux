@@ -1,4 +1,4 @@
-package com.rubbishman.rubbishRedux.createObjectCallback.reducer;
+package com.rubbishman.rubbishRedux.dynamicObjectStore.reducer;
 
 import com.rubbishman.rubbishRedux.createObjectCallback.action.CreateObject;
 import com.rubbishman.rubbishRedux.dynamicObjectStore.store.IdGenerator;

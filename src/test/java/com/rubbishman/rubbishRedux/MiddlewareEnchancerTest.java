@@ -47,18 +47,18 @@ public class MiddlewareEnchancerTest {
 
         assertEquals(
        "Initial state INIT" +
-                "moo1 First" +
-                "moo2 First" +
-                "moo3 First" +
-                "Adding First" +
-                "moo1 Second" +
-                "moo2 Second" +
-                "moo3 Second" +
-                "Adding Second" +
-                "moo1 Third" +
-                "moo2 Third" +
-                "moo3 Third" +
-                "Adding Third",
+               "moo1 String \"First\"" +
+               "moo2 String \"First\"" +
+               "moo3 String \"First\"" +
+               "Adding String \"First\"" +
+               "moo1 String \"Second\"" +
+               "moo2 String \"Second\"" +
+               "moo3 String \"Second\"" +
+               "Adding String \"Second\"" +
+               "moo1 String \"Third\"" +
+               "moo2 String \"Third\"" +
+               "moo3 String \"Third\"" +
+               "Adding String \"Third\"",
                 stringBuilder.toString().replaceAll(System.lineSeparator(), ""));
     }
 }

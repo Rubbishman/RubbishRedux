@@ -1,22 +1,23 @@
 package com.rubbishman.rubbishRedux.statefullTimer.logic;
 
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.Identifier;
+import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
 import com.rubbishman.rubbishRedux.statefullTimer.action.IncrementTimer;
 import com.rubbishman.rubbishRedux.statefullTimer.TimerExecutor;
 import com.rubbishman.rubbishRedux.statefullTimer.helper.TimerHelper;
 import com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer;
-import com.rubbishman.rubbishRedux.statefullTimer.state.TimerState;
 
 public class TimerLogic {
     private TimerExecutor owner;
-    public final int subject;
+    public final Identifier subject;
 
-    public TimerLogic(TimerExecutor owner, int subject) {
+    public TimerLogic(TimerExecutor owner, Identifier subject) {
         this.owner = owner;
         this.subject = subject;
     }
 
-    public boolean logic(TimerState state, long nowTime) {
-        if(state.timers.get(subject) == null) {
+    public boolean logic(ObjectStore state, long nowTime) {
+        if(state.objectMap.get(subject) == null) {
             return false;
         }
 
@@ -32,8 +33,8 @@ public class TimerLogic {
         return false;
     }
 
-    public RepeatingTimer getRepeatingTimer(TimerState state) {
-        return state.timers.get(subject);
+    public RepeatingTimer getRepeatingTimer(ObjectStore state) {
+        return (RepeatingTimer)state.objectMap.get(subject).object;
     }
 
 }

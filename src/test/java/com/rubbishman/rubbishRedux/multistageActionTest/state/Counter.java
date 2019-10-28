@@ -33,8 +33,4 @@ public class Counter {
     public Counter increment(int incrementAmount) {
         return new Counter(id, count + incrementAmount);
     }
-
-    public String toString() {
-        return "[Counter(" + id + "): " + count + " | " + incrementDiceNum + "d" + incrementDiceSize + "]";
-    }
 }

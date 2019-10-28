@@ -46,30 +46,30 @@ public class TimeStampedActionTest {
 
         assertEquals(
                 "Initial state INIT" +
-                        "moo1 First" +
-                        "Adding First" +
-                        "moo1 Second" +
-                        "Adding Second" +
-                        "moo1 Third" +
-                        "Adding Third",
+                        "moo1 String \"First\"" +
+                        "Adding String \"First\"" +
+                        "moo1 String \"Second\"" +
+                        "Adding String \"Second\"" +
+                        "moo1 String \"Third\"" +
+                        "Adding String \"Third\"",
                 stringBuilder.toString().replaceAll(System.lineSeparator(), ""));
 
         timeStampedMiddleware.dispatchLogInstantly(store);
 
         assertEquals(
                 "Initial state INIT" +
-                        "moo1 First" +
-                        "Adding First" +
-                        "moo1 Second" +
-                        "Adding Second" +
-                        "moo1 Third" +
-                        "Adding Third" +
-                        "moo1 First" +
-                        "Adding First" +
-                        "moo1 Second" +
-                        "Adding Second" +
-                        "moo1 Third" +
-                        "Adding Third",
+                        "moo1 String \"First\"" +
+                        "Adding String \"First\"" +
+                        "moo1 String \"Second\"" +
+                        "Adding String \"Second\"" +
+                        "moo1 String \"Third\"" +
+                        "Adding String \"Third\"" +
+                        "moo1 String \"First\"" +
+                        "Adding String \"First\"" +
+                        "moo1 String \"Second\"" +
+                        "Adding String \"Second\"" +
+                        "moo1 String \"Third\"" +
+                        "Adding String \"Third\"",
                 stringBuilder.toString().replaceAll(System.lineSeparator(), ""));
     }
 }

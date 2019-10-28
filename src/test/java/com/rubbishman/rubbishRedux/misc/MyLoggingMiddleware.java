@@ -1,5 +1,7 @@
 package com.rubbishman.rubbishRedux.misc;
 
+import com.google.gson.Gson;
+import com.rubbishman.rubbishRedux.dynamicObjectStore.GsonInstance;
 import redux.api.Dispatcher;
 import redux.api.Store;
 import redux.api.enhancer.Middleware;
@@ -17,7 +19,8 @@ public class MyLoggingMiddleware implements Middleware {
     }
 
     public Object dispatch(Store store, Dispatcher next, Object action) {
-        printStream.println(prefix + " " + action.toString());
+        Gson gson = GsonInstance.getInstance();
+        printStream.println(prefix + " " + action.getClass().getSimpleName() + " " + gson.toJson(action));
         return next.dispatch(action);
     }
 }
