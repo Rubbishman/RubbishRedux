@@ -52,7 +52,7 @@ public class MultistageActionTest {
         MyReducer reducer = new MyReducer(printStream);
 
         multiStageActions = new MultistageActions(creator, reducer, new ObjectStore());
-        multiStageActions.addMultistageProcessor(IncrementCounter.class, new IncrementCounterResolution(1234l));
+        multiStageActions.addMultistageProcessor(IncrementCounter.class, new IncrementCounterResolution(1234));
 
         reducer.setMultistageAction(multiStageActions);
     }
@@ -100,9 +100,9 @@ public class MultistageActionTest {
                         ,
                 stringBuilder.toString().replaceAll(System.lineSeparator(), ""));
 
-        assertEquals(11,((Counter)multiStageActions.getState().objectMap.get(new Identifier(1l, Counter.class)).object).count);
-        assertEquals(11,((Counter)multiStageActions.getState().objectMap.get(new Identifier(2l, Counter.class)).object).count);
-        assertEquals(8,((Counter)multiStageActions.getState().objectMap.get(new Identifier(3l, Counter.class)).object).count);
+        assertEquals(11,((Counter)multiStageActions.getState().objectMap.get(new Identifier(1, Counter.class)).object).count);
+        assertEquals(11,((Counter)multiStageActions.getState().objectMap.get(new Identifier(2, Counter.class)).object).count);
+        assertEquals(8,((Counter)multiStageActions.getState().objectMap.get(new Identifier(3, Counter.class)).object).count);
     }
 
     private CreateObject createObjectTest(PrintStream printStream, int incrementDiceNum, int incrementDiceSize) {

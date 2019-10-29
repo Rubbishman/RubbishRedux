@@ -3,7 +3,7 @@ package com.rubbishman.rubbishRedux.dynamicObjectStore.store;
 import java.util.Objects;
 
 public class Identifier {
-    public static transient long NO_ID = -1l;
+    public static transient long NO_ID = -1;
 
     public static Identifier getNoId(Class clazz) {
         return new Identifier(NO_ID, clazz);
