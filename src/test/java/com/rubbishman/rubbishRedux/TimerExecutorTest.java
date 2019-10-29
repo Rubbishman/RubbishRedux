@@ -40,7 +40,7 @@ public class TimerExecutorTest {
 
         TimerExecutor timer = new TimerExecutor(creator);
 
-        Long nowTime = 0l;
+        long nowTime = 0;
 
         timer.createTimer(nowTime,"ACTION", 100, 3);
         timer.createTimer(nowTime + 10,"ACTION2", 100, 4);
@@ -59,7 +59,7 @@ public class TimerExecutorTest {
         }
 
         timer.timerLogic(nowTime + 100);
-        assertEquals(1, ((RepeatingTimer)timer.getState().objectMap.get(new Identifier(1l, RepeatingTimer.class)).object).currentRepeats);
+        assertEquals(1, ((RepeatingTimer)timer.getState().objectMap.get(new Identifier(1, RepeatingTimer.class)).object).currentRepeats);
 
         timer.timerLogic(nowTime + 150);
 

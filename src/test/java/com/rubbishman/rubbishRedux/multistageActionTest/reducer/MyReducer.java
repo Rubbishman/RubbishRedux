@@ -32,9 +32,9 @@ public class MyReducer implements Reducer<ObjectStore> {
 
             Counter counter = (Counter)state.objectMap.get(resolved.targetCounterId).object;
 
-            return new ObjectStore(
-                    state.objectMap.assoc(resolved.targetCounterId, new IdObject(resolved.targetCounterId, counter.increment(resolved.incrementAmount))),
-                    state.idGenerator
+            return state.setObject(
+                resolved.targetCounterId,
+                counter.increment(resolved.incrementAmount)
             );
         }
 

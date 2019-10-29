@@ -3,7 +3,7 @@ package com.rubbishman.rubbishRedux.dynamicObjectStore.store;
 import org.organicdesign.fp.collections.PersistentHashMap;
 
 public class IdGenerator {
-    private transient long FIRST_ID = 1l;
+    private transient long FIRST_ID = 1;
     public PersistentHashMap<Class, Long> idSequence;
 
     public IdGenerator() {
