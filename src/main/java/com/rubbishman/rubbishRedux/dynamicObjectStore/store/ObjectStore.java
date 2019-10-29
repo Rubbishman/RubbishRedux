@@ -15,4 +15,15 @@ public class ObjectStore {
         this.objectMap = objectMap;
         this.idGenerator = idGenerator;
     }
+
+    public ObjectStore setObject(Identifier id, Object obj) {
+        return new ObjectStore(
+                this.objectMap.assoc(id, new IdObject(id, obj)),
+                this.idGenerator
+        );
+    }
+
+    public <T> T getObject(Identifier id) {
+        return (T)objectMap.get(id).object;
+    }
 }

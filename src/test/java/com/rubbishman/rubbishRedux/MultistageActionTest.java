@@ -64,25 +64,29 @@ public class MultistageActionTest {
         multiStageActions.addAction(createObjectTest(printStream, 2, 6));
         multiStageActions.addAction(createObjectTest(printStream, 3, 3));
 
-        multiStageActions.addAction(new IncrementCounter(new Identifier(1, Counter.class)));
-        multiStageActions.addAction(new IncrementCounter(new Identifier(1, Counter.class)));
+        Identifier counter1 = new Identifier(1, Counter.class);
+        Identifier counter2 = new Identifier(2, Counter.class);
+        Identifier counter3 = new Identifier(3, Counter.class);
 
-        multiStageActions.addAction(new IncrementCounter(new Identifier(2, Counter.class)));
-        multiStageActions.addAction(new IncrementCounter(new Identifier(3, Counter.class)));
+        multiStageActions.addAction(new IncrementCounter(counter1));
+        multiStageActions.addAction(new IncrementCounter(counter1));
 
-        multiStageActions.addAction(new IncrementCounter(new Identifier(1, Counter.class)));
-        multiStageActions.addAction(new IncrementCounter(new Identifier(2, Counter.class)));
-        multiStageActions.addAction(new IncrementCounter(new Identifier(3, Counter.class)));
+        multiStageActions.addAction(new IncrementCounter(counter2));
+        multiStageActions.addAction(new IncrementCounter(counter3));
+
+        multiStageActions.addAction(new IncrementCounter(counter1));
+        multiStageActions.addAction(new IncrementCounter(counter2));
+        multiStageActions.addAction(new IncrementCounter(counter3));
 
         multiStageActions.doActions();
 
         assertEquals("Output was: " + stringBuilder.toString(),"Initial state INIT" +
-                        "MOO CreateObject {\"createObject\":{\"id\":-1,\"count\":0,\"incrementDiceNum\":1,\"incrementDiceSize\":6}}" +
-                        "We just created: IdObject {\"id\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.multistageActionTest.state.Counter\"},\"object\":{\"id\":-1,\"count\":0,\"incrementDiceNum\":1,\"incrementDiceSize\":6}}" +
-                        "MOO CreateObject {\"createObject\":{\"id\":-1,\"count\":0,\"incrementDiceNum\":2,\"incrementDiceSize\":6}}" +
-                        "We just created: IdObject {\"id\":{\"id\":2,\"clazz\":\"com.rubbishman.rubbishRedux.multistageActionTest.state.Counter\"},\"object\":{\"id\":-1,\"count\":0,\"incrementDiceNum\":2,\"incrementDiceSize\":6}}" +
-                        "MOO CreateObject {\"createObject\":{\"id\":-1,\"count\":0,\"incrementDiceNum\":3,\"incrementDiceSize\":3}}" +
-                        "We just created: IdObject {\"id\":{\"id\":3,\"clazz\":\"com.rubbishman.rubbishRedux.multistageActionTest.state.Counter\"},\"object\":{\"id\":-1,\"count\":0,\"incrementDiceNum\":3,\"incrementDiceSize\":3}}" +
+                        "MOO CreateObject {\"createObject\":{\"count\":0,\"incrementDiceNum\":1,\"incrementDiceSize\":6}}" +
+                        "We just created: IdObject {\"id\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.multistageActionTest.state.Counter\"},\"object\":{\"count\":0,\"incrementDiceNum\":1,\"incrementDiceSize\":6}}" +
+                        "MOO CreateObject {\"createObject\":{\"count\":0,\"incrementDiceNum\":2,\"incrementDiceSize\":6}}" +
+                        "We just created: IdObject {\"id\":{\"id\":2,\"clazz\":\"com.rubbishman.rubbishRedux.multistageActionTest.state.Counter\"},\"object\":{\"count\":0,\"incrementDiceNum\":2,\"incrementDiceSize\":6}}" +
+                        "MOO CreateObject {\"createObject\":{\"count\":0,\"incrementDiceNum\":3,\"incrementDiceSize\":3}}" +
+                        "We just created: IdObject {\"id\":{\"id\":3,\"clazz\":\"com.rubbishman.rubbishRedux.multistageActionTest.state.Counter\"},\"object\":{\"count\":0,\"incrementDiceNum\":3,\"incrementDiceSize\":3}}" +
                         "MOO IncrementCounter {\"targetCounterId\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.multistageActionTest.state.Counter\"}}" +
                         "MOO IncrementCounterResolved {\"targetCounterId\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.multistageActionTest.state.Counter\"},\"incrementAmount\":3}" +
                         "MOO IncrementCounter {\"targetCounterId\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.multistageActionTest.state.Counter\"}}" +
@@ -100,14 +104,14 @@ public class MultistageActionTest {
                         ,
                 stringBuilder.toString().replaceAll(System.lineSeparator(), ""));
 
-        assertEquals(11,((Counter)multiStageActions.getState().objectMap.get(new Identifier(1, Counter.class)).object).count);
-        assertEquals(11,((Counter)multiStageActions.getState().objectMap.get(new Identifier(2, Counter.class)).object).count);
-        assertEquals(8,((Counter)multiStageActions.getState().objectMap.get(new Identifier(3, Counter.class)).object).count);
+        assertEquals(11,multiStageActions.getState().<Counter>getObject(counter1).count);
+        assertEquals(11,multiStageActions.getState().<Counter>getObject(counter2).count);
+        assertEquals(8,multiStageActions.getState().<Counter>getObject(counter3).count);
     }
 
     private CreateObject createObjectTest(PrintStream printStream, int incrementDiceNum, int incrementDiceSize) {
         CreateObject newObjectCreator = new CreateObject();
-        Counter myStateObject = new Counter(-1,0, incrementDiceNum, incrementDiceSize);
+        Counter myStateObject = new Counter(0, incrementDiceNum, incrementDiceSize);
 
         newObjectCreator.createObject = myStateObject;
         newObjectCreator.callback = new ICreateObjectCallback() {
