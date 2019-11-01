@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.rubbishman.rubbishRedux.createObjectCallback.action.CreateObject;
 import com.rubbishman.rubbishRedux.createObjectCallback.enhancer.CreateObjectEnhancer;
 import com.rubbishman.rubbishRedux.createObjectCallback.interfaces.ICreateObjectCallback;
-import com.rubbishman.rubbishRedux.createObjectCallbackTest.state.CreateObjectState;
 import com.rubbishman.rubbishRedux.createObjectCallbackTest.state.CreateObjectStateObject;
 import com.rubbishman.rubbishRedux.dynamicObjectStore.GsonInstance;
 import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
@@ -46,25 +45,24 @@ public class CreateObjectCallbackTest {
         store.dispatch(newObjectCreator);
 
         assertEquals("We just created: IdObject {\"id\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.createObjectCallbackTest.state.CreateObjectStateObject\"}," +
-                            "\"object\":{\"id\":0,\"message\":\"MOOOOO\"}}" +
+                            "\"object\":{\"message\":\"MOOOOO\"}}" +
                         "We just created: IdObject {\"id\":{\"id\":2,\"clazz\":\"com.rubbishman.rubbishRedux.createObjectCallbackTest.state.CreateObjectStateObject\"}," +
-                            "\"object\":{\"id\":0,\"message\":\"MOOOOO\"}}" +
+                            "\"object\":{\"message\":\"MOOOOO\"}}" +
                         "We just created: IdObject {\"id\":{\"id\":3,\"clazz\":\"com.rubbishman.rubbishRedux.createObjectCallbackTest.state.CreateObjectStateObject\"}," +
-                            "\"object\":{\"id\":0,\"message\":\"MOOOOO\"}}",
+                            "\"object\":{\"message\":\"MOOOOO\"}}",
                 stringBuilder.toString().replaceAll(System.lineSeparator(), ""));
     }
 
     private CreateObject createObjectTest(PrintStream printStream) {
-        CreateObject newObjectCreator = new CreateObject();
-        CreateObjectStateObject myStateObject = new CreateObjectStateObject();
-        myStateObject.message = "MOOOOO";
-        newObjectCreator.createObject = myStateObject;
-        newObjectCreator.callback = new ICreateObjectCallback() {
-            public void postCreateState(Object object) {
-                Gson gson = GsonInstance.getInstance();
-                printStream.println("We just created: " + object.getClass().getSimpleName() + " " + gson.toJson(object));
-            }
-        };
+        CreateObject<CreateObjectStateObject> newObjectCreator = new CreateObject(
+                new CreateObjectStateObject("MOOOOO"),
+                new ICreateObjectCallback() {
+                    public void postCreateState(Object object) {
+                        Gson gson = GsonInstance.getInstance();
+                        printStream.println("We just created: " + object.getClass().getSimpleName() + " " + gson.toJson(object));
+                    }
+                }
+        );
 
         return newObjectCreator;
     }

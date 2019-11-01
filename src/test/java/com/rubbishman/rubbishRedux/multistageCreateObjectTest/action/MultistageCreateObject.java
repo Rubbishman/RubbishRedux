@@ -1,12 +1,12 @@
-package com.rubbishman.rubbishRedux.createObjectCallback.action;
+package com.rubbishman.rubbishRedux.multistageCreateObjectTest.action;
 
 import com.rubbishman.rubbishRedux.createObjectCallback.interfaces.ICreateObjectCallback;
 
-public class CreateObject<T> {
+public class MultistageCreateObject<T> {
     public final T createObject;
     public transient final ICreateObjectCallback callback;
 
-    public CreateObject(T createObject, ICreateObjectCallback callback) {
+    public MultistageCreateObject(T createObject, ICreateObjectCallback callback) {
         this.createObject = createObject;
         this.callback = callback;
     }

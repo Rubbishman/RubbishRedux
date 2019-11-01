@@ -1,4 +1,4 @@
-package com.rubbishman.rubbishRedux.multistageActionTest.action.MultistageAction;
+package com.rubbishman.rubbishRedux.multistageActionTest.action.multistageAction;
 
 import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
 import com.rubbishman.rubbishRedux.multistageActionTest.action.IncrementCounter;
@@ -11,8 +11,6 @@ import com.rubbishman.rubbishRedux.multistageActions.stage.Stage;
 import java.util.Random;
 
 public class IncrementCounterResolution implements MultistageAction<IncrementCounter> {
-    private static final Stage myStage = StageConstants.INCREMENT_RESOLUTION;
-
     public final Random rand;
 
     public IncrementCounterResolution(long seed) {
@@ -24,7 +22,7 @@ public class IncrementCounterResolution implements MultistageAction<IncrementCou
     }
 
     public Stage getStage() {
-        return myStage;
+        return StageConstants.INCREMENT_RESOLUTION;
     }
 
     public Object provideAction(IncrementCounter action, ObjectStore state, long nowTime) {

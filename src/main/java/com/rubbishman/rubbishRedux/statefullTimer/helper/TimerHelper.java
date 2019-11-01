@@ -5,7 +5,7 @@ import com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer;
 public class TimerHelper {
     public static int calculateNewRepeats(long nowTime, RepeatingTimer perInc) {
         long diff = nowTime - perInc.startTime;
-        return (int)Math.floor(diff / perInc.period);
+        return (int)Math.min(Math.floor(diff / perInc.period), perInc.repeats);
     }
 
     public static double calculatePercentToNextRepeat(long nowTime, RepeatingTimer perInc) {

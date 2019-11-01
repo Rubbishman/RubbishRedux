@@ -85,15 +85,16 @@ public class DynamicCreateObjectTest {
     }
 
     private CreateObject createObjectTest(Object object, PrintStream printStream) {
-        CreateObject newObjectCreator = new CreateObject();
+        CreateObject newObjectCreator = new CreateObject(
+                object,
 
-        newObjectCreator.createObject = object;
-        newObjectCreator.callback = new ICreateObjectCallback() {
-            public void postCreateState(Object object) {
-                Gson gson = GsonInstance.getInstance();
-                printStream.println("We just created: " + object.getClass().getSimpleName() + " " + gson.toJson(object));
-            }
-        };
+                new ICreateObjectCallback() {
+                    public void postCreateState(Object object) {
+                        Gson gson = GsonInstance.getInstance();
+                        printStream.println("We just created: " + object.getClass().getSimpleName() + " " + gson.toJson(object));
+                    }
+                }
+        );
 
         return newObjectCreator;
     }

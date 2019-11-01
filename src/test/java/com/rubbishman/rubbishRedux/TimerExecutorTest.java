@@ -6,6 +6,7 @@ import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
 import com.rubbishman.rubbishRedux.middlewareEnhancer.MiddlewareEnhancer;
 import com.rubbishman.rubbishRedux.misc.MyLoggingMiddleware;
 import com.rubbishman.rubbishRedux.statefullTimer.TimerExecutor;
+import com.rubbishman.rubbishRedux.statefullTimer.helper.TimerHelper;
 import com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer;
 import org.junit.Test;
 import redux.api.Store;
@@ -16,6 +17,7 @@ import java.io.PrintStream;
 import java.util.Iterator;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TimerExecutorTest {
 
@@ -58,6 +60,23 @@ public class TimerExecutorTest {
             assertEquals(0, ((RepeatingTimer)obj.object).currentRepeats);
         }
 
+        Identifier rt1id = new Identifier(
+                1,
+                RepeatingTimer.class
+        );
+
+        assertTrue(
+                TimerHelper.calculatePercentToNextRepeat(nowTime, timer.getState().getObject(
+                        rt1id
+                )) < 0.01
+        );
+
+        assertTrue(
+                TimerHelper.calculatePercentToNextRepeat(nowTime + 50, timer.getState().getObject(
+                        rt1id
+                )) > 0.49
+        );
+
         timer.timerLogic(nowTime + 100);
         assertEquals(1, ((RepeatingTimer)timer.getState().objectMap.get(new Identifier(1, RepeatingTimer.class)).object).currentRepeats);
 
@@ -83,5 +102,32 @@ public class TimerExecutorTest {
                         "moo IncrementTimer {\"nowTime\":150,\"subject\":{\"id\":5,\"clazz\":\"com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer\"}}" +
                         "moo IncrementTimer {\"nowTime\":150,\"subject\":{\"id\":6,\"clazz\":\"com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer\"}}",
                 stringBuilder.toString().replaceAll(System.lineSeparator(), ""));
+
+        Identifier rt6id = new Identifier(
+                6,
+                RepeatingTimer.class
+        );
+
+        timer.startTimer();
+
+        int cnt = 0;
+
+        while(timer.getState().<RepeatingTimer>getObject(rt6id).currentRepeats != timer.getState().<RepeatingTimer>getObject(rt6id
+        ).repeats && cnt < 5) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            cnt++;
+        }
+
+        RepeatingTimer rt = timer.getState().getObject(rt6id);
+
+        assertTrue(
+                TimerHelper.calculatePercentToNextRepeat(nowTime, rt) > 0.99
+        );
+
+        assertEquals(rt.repeats, rt.currentRepeats);
     }
 }

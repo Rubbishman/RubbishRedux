@@ -115,22 +115,15 @@ public class TimerExecutor {
     }
 
     public RepeatingTimer createTimer(Long nowTime, Object action, int period, int repeats) {
-        CreateObject createObj = new CreateObject();
-
-        RepeatingTimer create = new RepeatingTimer(nowTime, period, repeats, 0 , action);
-
-        createObj.createObject = create;
-
-        createObj.callback = (repeatingTimer) -> {
-            addTimer(new TimerLogic(this, ((IdObject)repeatingTimer).id));
-        };
+        CreateObject<RepeatingTimer> createObj = new CreateObject(
+                new RepeatingTimer(nowTime, period, repeats, 0 , action),
+                (repeatingTimer) -> {
+                    addTimer(new TimerLogic(this, ((IdObject)repeatingTimer).id));
+                }
+        );
 
         addAction(createObj);
 
-        return create;
-    }
-
-    public RepeatingTimer createTimer(Object action, int period, int repeats) {
-        return createTimer(System.nanoTime(), action, period, repeats);
+        return createObj.createObject;
     }
 }
