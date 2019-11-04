@@ -7,6 +7,7 @@ import com.rubbishman.rubbishRedux.createObjectCallback.interfaces.ICreateObject
 import com.rubbishman.rubbishRedux.createObjectCallbackTest.state.CreateObjectStateObject;
 import com.rubbishman.rubbishRedux.dynamicObjectStore.GsonInstance;
 import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
+import org.junit.Before;
 import org.junit.Test;
 import redux.api.Store;
 
@@ -17,10 +18,13 @@ import java.io.PrintStream;
 import static org.junit.Assert.assertEquals;
 
 public class CreateObjectCallbackTest {
+    Store<ObjectStore> store;
+    StringBuilder stringBuilder;
+    CreateObject newObjectCreator;
 
-    @Test
-    public void testCreateObjectCallback() {
-        StringBuilder stringBuilder = new StringBuilder();
+    @Before
+    public void setup() {
+        stringBuilder = new StringBuilder();
 
         OutputStream myOutput = new OutputStream() {
             public void write(int b) throws IOException {
@@ -36,10 +40,12 @@ public class CreateObjectCallbackTest {
 
         creator = enhancer.enhance(creator);
 
-        CreateObject newObjectCreator = createObjectTest(printStream);
+        newObjectCreator = createObjectTest(printStream);
 
-        Store<ObjectStore> store = creator.create(null, new ObjectStore());
-
+        store = creator.create(null, new ObjectStore());
+    }
+    @Test
+    public void testCreateObjectCallback() {
         store.dispatch(newObjectCreator);
         store.dispatch(newObjectCreator);
         store.dispatch(newObjectCreator);

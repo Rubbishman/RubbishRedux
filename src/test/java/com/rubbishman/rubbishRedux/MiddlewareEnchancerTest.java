@@ -4,6 +4,7 @@ import com.rubbishman.rubbishRedux.middlewareEnhancer.MiddlewareEnhancer;
 import com.rubbishman.rubbishRedux.misc.MyLoggingMiddleware;
 import com.rubbishman.rubbishRedux.misc.MyReducer;
 import com.rubbishman.rubbishRedux.misc.MyState;
+import org.junit.Before;
 import org.junit.Test;
 import redux.api.Reducer;
 import redux.api.Store;
@@ -16,10 +17,12 @@ import java.util.ArrayList;
 import static org.junit.Assert.assertEquals;
 
 public class MiddlewareEnchancerTest {
+    Store<MyState> store;
+    StringBuilder stringBuilder;
 
-    @Test
-    public void testMiddlewareEnhancer() {
-        StringBuilder stringBuilder = new StringBuilder();
+    @Before
+    public void setup() {
+        stringBuilder = new StringBuilder();
 
         OutputStream myOutput = new OutputStream() {
             public void write(int b) throws IOException {
@@ -39,8 +42,11 @@ public class MiddlewareEnchancerTest {
 
         creator = enhancer.enhance(creator);
 
-        Store<MyState> store = creator.create(reducer, new MyState());
+        store = creator.create(reducer, new MyState());
+    }
 
+    @Test
+    public void testMiddlewareEnhancer() {
         store.dispatch("First");
         store.dispatch("Second");
         store.dispatch("Third");

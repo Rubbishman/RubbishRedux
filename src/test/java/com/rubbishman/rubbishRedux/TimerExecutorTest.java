@@ -8,6 +8,7 @@ import com.rubbishman.rubbishRedux.misc.MyLoggingMiddleware;
 import com.rubbishman.rubbishRedux.statefullTimer.TimerExecutor;
 import com.rubbishman.rubbishRedux.statefullTimer.helper.TimerHelper;
 import com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer;
+import org.junit.Before;
 import org.junit.Test;
 import redux.api.Store;
 
@@ -20,10 +21,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class TimerExecutorTest {
+    TimerExecutor timer;
+    StringBuilder stringBuilder;
 
-    @Test
-    public void testTimerExecutor() {
-        StringBuilder stringBuilder = new StringBuilder();
+    @Before
+    public void setup() {
+        stringBuilder = new StringBuilder();
 
         OutputStream myOutput = new OutputStream() {
             public void write(int b) throws IOException {
@@ -40,8 +43,11 @@ public class TimerExecutorTest {
 
         creator = enhancer.enhance(creator);
 
-        TimerExecutor timer = new TimerExecutor(creator);
+        timer = new TimerExecutor(creator);
+    }
 
+    @Test
+    public void testTimerExecutor() {
         long nowTime = 0;
 
         timer.createTimer(nowTime,"ACTION", 100, 3);

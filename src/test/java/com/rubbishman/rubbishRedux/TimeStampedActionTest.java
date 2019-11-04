@@ -5,6 +5,7 @@ import com.rubbishman.rubbishRedux.misc.MyLoggingMiddleware;
 import com.rubbishman.rubbishRedux.misc.MyReducer;
 import com.rubbishman.rubbishRedux.misc.MyState;
 import com.rubbishman.rubbishRedux.timeStampedLogger.middleware.TimeStampedMiddleware;
+import org.junit.Before;
 import org.junit.Test;
 import redux.api.Store;
 
@@ -15,9 +16,13 @@ import java.io.PrintStream;
 import static org.junit.Assert.assertEquals;
 
 public class TimeStampedActionTest {
-    @Test
-    public void testTimeStampedAction() {
-        StringBuilder stringBuilder = new StringBuilder();
+    Store<MyState> store;
+    StringBuilder stringBuilder;
+    TimeStampedMiddleware timeStampedMiddleware;
+
+    @Before
+    public void setup() {
+        stringBuilder = new StringBuilder();
 
         OutputStream myOutput = new OutputStream() {
             public void write(int b) throws IOException {
@@ -33,13 +38,15 @@ public class TimeStampedActionTest {
         MiddlewareEnhancer<MyState> enhancer = new MiddlewareEnhancer<>();
         enhancer.addMiddleware(new MyLoggingMiddleware(printStream, "moo1"));
 
-        TimeStampedMiddleware timeStampedMiddleware = new TimeStampedMiddleware();
+        timeStampedMiddleware = new TimeStampedMiddleware();
         enhancer.addMiddleware(timeStampedMiddleware);
 
         creator = enhancer.enhance(creator);
 
-        Store<MyState> store = creator.create(reducer, new MyState());
-
+        store = creator.create(reducer, new MyState());
+    }
+    @Test
+    public void testTimeStampedAction() {
         store.dispatch("First");
         store.dispatch("Second");
         store.dispatch("Third");
