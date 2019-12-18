@@ -5,12 +5,12 @@ import com.rubbishman.rubbishRedux.multistageActionTest.action.IncrementCounter;
 import com.rubbishman.rubbishRedux.multistageActionTest.action.IncrementCounterResolved;
 import com.rubbishman.rubbishRedux.multistageActionTest.stage.StageConstants;
 import com.rubbishman.rubbishRedux.multistageActionTest.state.Counter;
-import com.rubbishman.rubbishRedux.multistageActions.action.MultistageAction;
+import com.rubbishman.rubbishRedux.multistageActions.action.MultistageActionResolver;
 import com.rubbishman.rubbishRedux.multistageActions.stage.Stage;
 
 import java.util.Random;
 
-public class IncrementCounterResolution implements MultistageAction<IncrementCounter> {
+public class IncrementCounterResolution implements MultistageActionResolver<IncrementCounter> {
     public final Random rand;
 
     public IncrementCounterResolution(long seed) {

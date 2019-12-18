@@ -8,7 +8,7 @@ import com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer;
 import redux.api.Reducer;
 
 public class TimerReducer implements Reducer<ObjectStore> {
-    private ObjectStore reduce(ObjectStore state, IncrementTimer action) {
+    public ObjectStore reduce(ObjectStore state, IncrementTimer action) {
         RepeatingTimer timer = (RepeatingTimer)state.objectMap.get(action.subject).object;
 
         RepeatingTimer newTimer = timer.changeRepeats(TimerHelper.calculateNewRepeats(action.nowTime, timer));
@@ -21,7 +21,7 @@ public class TimerReducer implements Reducer<ObjectStore> {
         int diff = newTimer.currentRepeats - timer.currentRepeats;
 
         while(diff > 0) {
-            cloned = this.reduce(cloned, timer.action);
+            cloned = this.reduce(cloned, timer.action); //TODO, this is a bug...
             diff--;
         }
 

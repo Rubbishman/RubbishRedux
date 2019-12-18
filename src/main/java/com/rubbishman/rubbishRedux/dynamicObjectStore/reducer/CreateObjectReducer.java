@@ -22,7 +22,7 @@ public class CreateObjectReducer implements Reducer<ObjectStore> {
         }
     }
 
-    private ObjectStore reduceCreateObject(ObjectStore state, CreateObject action) {
+    public ObjectStore reduceCreateObject(ObjectStore state, CreateObject action) {
         IdGenerator idGenerator = new IdGenerator(state.idGenerator.idSequence);
 
         Identifier identifier = idGenerator.nextId(action.createObject.getClass());

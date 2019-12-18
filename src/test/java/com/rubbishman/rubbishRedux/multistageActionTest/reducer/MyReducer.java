@@ -2,6 +2,7 @@ package com.rubbishman.rubbishRedux.multistageActionTest.reducer;
 
 import com.rubbishman.rubbishRedux.dynamicObjectStore.store.IdObject;
 import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
+import com.rubbishman.rubbishRedux.external.RubbishReducer;
 import com.rubbishman.rubbishRedux.multistageActionTest.action.IncrementCounter;
 import com.rubbishman.rubbishRedux.multistageActionTest.action.IncrementCounterResolved;
 import com.rubbishman.rubbishRedux.multistageActionTest.state.Counter;
@@ -10,16 +11,11 @@ import redux.api.Reducer;
 
 import java.io.PrintStream;
 
-public class MyReducer implements Reducer<ObjectStore> {
+public class MyReducer extends RubbishReducer {
     private PrintStream printStream;
-    private MultistageActions multistageAction;
 
     public MyReducer(PrintStream printStream) {
         this.printStream = printStream;
-    }
-
-    public void setMultistageAction(MultistageActions multistageAction) {
-        this.multistageAction = multistageAction;
     }
 
     public ObjectStore reduce(ObjectStore state, Object action) {

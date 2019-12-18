@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 public class TimerExecutor {
     private Store<ObjectStore> timerState;
-    private ConcurrentLinkedQueue<Object> actionQueue;
+    private ConcurrentLinkedQueue<Object> actionQueue = new ConcurrentLinkedQueue<>();
     private TimerComparator comparator;
     private PriorityQueue<TimerLogic> timerList;
     ScheduledExecutorService executor;
@@ -36,36 +36,33 @@ public class TimerExecutor {
     }
 
     public TimerExecutor(Store.Creator<ObjectStore> creator) {
-        initialize(creator);
+        timerState = creator.create(new TimerReducer(), new ObjectStore());
+
+        initialize(timerState);
     }
 
-    public TimerExecutor() {
-        initialize(new com.glung.redux.Store.Creator());
+    public TimerExecutor(ConcurrentLinkedQueue<Object> actionQueue, Store<ObjectStore> timerState) {
+        this.actionQueue = actionQueue;
+        initialize(timerState);
     }
 
     public ObjectStore getState() {
         return timerState.getState();
     }
 
-    private void initialize(Store.Creator<ObjectStore> creator) {
-        CreateObjectEnhancer enhancer = new CreateObjectEnhancer();
-
-        creator = enhancer.enhance(creator);
-
-        timerState = creator.create(new TimerReducer(), new ObjectStore());
-
+    private void initialize(Store<ObjectStore> timerState) {
+        this.timerState = timerState;
         comparator = new TimerComparator(timerState);
         timerList = new PriorityQueue<>(comparator);
-        actionQueue = new ConcurrentLinkedQueue<>();
 
         executor = Executors.newSingleThreadScheduledExecutor();
     }
 
-    public void timerLogic(Long nowTime) {
-        LinkedList<TimerLogic> toAdd = checkTimers(nowTime);
+    public LinkedList<TimerLogic> beforeDispatchStarted(ConcurrentLinkedQueue<Object> actionQueue, Long nowTime) {
+        return checkTimers(actionQueue, nowTime);
+    }
 
-        doActions();
-
+    public void afterDispatchFinished(LinkedList<TimerLogic> toAdd) {
         synchronized (timerState) {
             for(TimerLogic logicToAdd: toAdd) {
                 addTimer(logicToAdd);
@@ -73,16 +70,24 @@ public class TimerExecutor {
         }
     }
 
+    public void timerLogic(ConcurrentLinkedQueue<Object> actionQueue, Long nowTime) {
+        LinkedList<TimerLogic> toAdd = beforeDispatchStarted(actionQueue, nowTime);
+
+        doActions();
+
+        afterDispatchFinished(toAdd);
+    }
+
     public void startTimer() {
         Runnable runner = () -> {
             Long nowTime = System.nanoTime();
-            timerLogic(nowTime);
+            timerLogic(actionQueue, nowTime);
         };
 
         executor.scheduleAtFixedRate(runner, 0, 15, TimeUnit.MILLISECONDS);
     }
 
-    private LinkedList<TimerLogic> checkTimers(Long nowTime) {
+    private LinkedList<TimerLogic> checkTimers(ConcurrentLinkedQueue<Object> actionQueue, Long nowTime) {
         LinkedList<TimerLogic> toAdd = new LinkedList();
 
         synchronized (timerState) {
@@ -93,7 +98,7 @@ public class TimerExecutor {
                 if(TimerHelper.repeatsChanged(logic.getRepeatingTimer(state), nowTime)) {
                     logic = timerList.poll();
 
-                    if(logic.logic(state, nowTime)) {
+                    if(logic.logic(actionQueue, state, nowTime)) {
                         toAdd.add(logic);
                     }
                     logic = timerList.peek();
@@ -118,7 +123,7 @@ public class TimerExecutor {
         CreateObject<RepeatingTimer> createObj = new CreateObject(
                 new RepeatingTimer(nowTime, period, repeats, 0 , action),
                 (repeatingTimer) -> {
-                    addTimer(new TimerLogic(this, ((IdObject)repeatingTimer).id));
+                    addTimer(new TimerLogic(((IdObject)repeatingTimer).id));
                 }
         );
 

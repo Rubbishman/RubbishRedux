@@ -24,7 +24,7 @@ import java.io.PrintStream;
 
 import static org.junit.Assert.assertEquals;
 
-public class MultistageActionTest {
+public class MultistageActionResolverTest {
     MultistageActions multiStageActions;
     StringBuilder stringBuilder = new StringBuilder();
     PrintStream printStream;
@@ -54,7 +54,7 @@ public class MultistageActionTest {
         multiStageActions = new MultistageActions(creator, reducer, new ObjectStore());
         multiStageActions.addMultistageProcessor(IncrementCounter.class, new IncrementCounterResolution(1234));
 
-        reducer.setMultistageAction(multiStageActions);
+        reducer.setMultiStageActions(multiStageActions);
     }
 
     @Test
@@ -78,7 +78,7 @@ public class MultistageActionTest {
         multiStageActions.addAction(new IncrementCounter(counter2));
         multiStageActions.addAction(new IncrementCounter(counter3));
 
-        multiStageActions.doActions();
+        multiStageActions.doActions(0l);
 
         assertEquals("Output was: " + stringBuilder.toString(),"Initial state INIT" +
                         "MOO CreateObject {\"createObject\":{\"count\":0,\"incrementDiceNum\":1,\"incrementDiceSize\":6}}" +

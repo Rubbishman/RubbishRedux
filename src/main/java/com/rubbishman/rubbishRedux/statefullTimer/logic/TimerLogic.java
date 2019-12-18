@@ -7,16 +7,16 @@ import com.rubbishman.rubbishRedux.statefullTimer.TimerExecutor;
 import com.rubbishman.rubbishRedux.statefullTimer.helper.TimerHelper;
 import com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 public class TimerLogic {
-    private TimerExecutor owner;
     public final Identifier subject;
 
-    public TimerLogic(TimerExecutor owner, Identifier subject) {
-        this.owner = owner;
+    public TimerLogic(Identifier subject) {
         this.subject = subject;
     }
 
-    public boolean logic(ObjectStore state, long nowTime) {
+    public boolean logic(ConcurrentLinkedQueue<Object> actionQueue, ObjectStore state, long nowTime) {
         if(state.objectMap.get(subject) == null) {
             return false;
         }
@@ -24,7 +24,7 @@ public class TimerLogic {
         RepeatingTimer periodicIncrementer = getRepeatingTimer(state);
 
         if(TimerHelper.repeatsChanged(periodicIncrementer, nowTime)) {
-            owner.addAction(new IncrementTimer(nowTime, subject));
+            actionQueue.add(new IncrementTimer(nowTime, subject));
             if(periodicIncrementer.currentRepeats == periodicIncrementer.repeats - 1) {
                 return false; //Destruct is needed..?
             }
