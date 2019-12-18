@@ -1,11 +1,10 @@
 package com.rubbishman.rubbishRedux;
 
 import com.google.gson.Gson;
-import com.rubbishman.rubbishRedux.createObjectCallback.enhancer.CreateObjectEnhancer;
-import com.rubbishman.rubbishRedux.createObjectCallback.interfaces.ICreateObjectCallback;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.GsonInstance;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.store.Identifier;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
+import com.rubbishman.rubbishRedux.internal.createObjectCallback.interfaces.ICreateObjectCallback;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.GsonInstance;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.Identifier;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
 import com.rubbishman.rubbishRedux.external.RubbishContainer;
 import com.rubbishman.rubbishRedux.external.RubbishContainerCreator;
 import com.rubbishman.rubbishRedux.external.RubbishContainerOptions;
@@ -15,7 +14,7 @@ import com.rubbishman.rubbishRedux.multistageActionTest.action.IncrementCounterR
 import com.rubbishman.rubbishRedux.multistageActionTest.action.multistageAction.IncrementCounterResolution;
 
 import com.rubbishman.rubbishRedux.multistageActionTest.state.Counter;
-import com.rubbishman.rubbishRedux.multistageActions.action.MultistageCreateObject;
+import com.rubbishman.rubbishRedux.internal.multistageActions.action.MultistageCreateObject;
 import com.rubbishman.rubbishRedux.multistageCreateObjectTest.action.mulitstageAction.CounterCreateResolution;
 import com.rubbishman.rubbishRedux.multistageCreateObjectTest.action.CreateCounter;
 import org.junit.Before;

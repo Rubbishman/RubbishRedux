@@ -1,8 +1,7 @@
 package com.rubbishman.rubbishRedux.misc;
 
 import com.google.gson.Gson;
-import com.rubbishman.rubbishRedux.MiddlewareEnchancerTest;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.GsonInstance;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.GsonInstance;
 import redux.api.Reducer;
 
 import java.io.PrintStream;

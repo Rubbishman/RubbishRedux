@@ -1,12 +1,12 @@
 package com.rubbishman.rubbishRedux;
 
 import com.google.gson.Gson;
-import com.rubbishman.rubbishRedux.createObjectCallback.action.CreateObject;
-import com.rubbishman.rubbishRedux.createObjectCallback.interfaces.ICreateObjectCallback;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.GsonInstance;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.reducer.CreateObjectReducer;
-import com.rubbishman.rubbishRedux.middlewareEnhancer.MiddlewareEnhancer;
+import com.rubbishman.rubbishRedux.internal.createObjectCallback.action.CreateObject;
+import com.rubbishman.rubbishRedux.internal.createObjectCallback.interfaces.ICreateObjectCallback;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.GsonInstance;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.reducer.CreateObjectReducer;
+import com.rubbishman.rubbishRedux.internal.middlewareEnhancer.MiddlewareEnhancer;
 import com.rubbishman.rubbishRedux.misc.MyLoggingMiddleware;
 import org.junit.Before;
 import org.junit.Test;

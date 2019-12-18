@@ -1,12 +1,12 @@
 package com.rubbishman.rubbishRedux;
 
-import com.rubbishman.rubbishRedux.keyBinding.BindType;
-import com.rubbishman.rubbishRedux.keyBinding.KeyListener;
-import com.rubbishman.rubbishRedux.keyBinding.KeyState;
-import com.rubbishman.rubbishRedux.keyBinding.data.ActionBind;
-import com.rubbishman.rubbishRedux.keyBinding.data.Bind;
-import com.rubbishman.rubbishRedux.keyBinding.data.KeyBind;
-import com.rubbishman.rubbishRedux.keyBinding.reducer.KeyBindReducer;
+import com.rubbishman.rubbishRedux.internal.keyBinding.BindType;
+import com.rubbishman.rubbishRedux.internal.keyBinding.KeyListener;
+import com.rubbishman.rubbishRedux.internal.keyBinding.KeyState;
+import com.rubbishman.rubbishRedux.internal.keyBinding.data.ActionBind;
+import com.rubbishman.rubbishRedux.internal.keyBinding.data.Bind;
+import com.rubbishman.rubbishRedux.internal.keyBinding.data.KeyBind;
+import com.rubbishman.rubbishRedux.internal.keyBinding.reducer.KeyBindReducer;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 

@@ -1,9 +1,8 @@
 package com.rubbishman.rubbishRedux.statefullTimer.logic;
 
-import com.rubbishman.rubbishRedux.dynamicObjectStore.store.Identifier;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.Identifier;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
 import com.rubbishman.rubbishRedux.statefullTimer.action.IncrementTimer;
-import com.rubbishman.rubbishRedux.statefullTimer.TimerExecutor;
 import com.rubbishman.rubbishRedux.statefullTimer.helper.TimerHelper;
 import com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer;
 

@@ -1,7 +1,7 @@
 package com.rubbishman.rubbishRedux.multistageActionTest.action;
 
-import com.rubbishman.rubbishRedux.dynamicObjectStore.store.Identifier;
-import com.rubbishman.rubbishRedux.multistageActions.action.MultistageAction;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.Identifier;
+import com.rubbishman.rubbishRedux.internal.multistageActions.action.MultistageAction;
 
 public class IncrementCounter extends MultistageAction {
     public final Identifier targetCounterId;

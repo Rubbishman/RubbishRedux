@@ -1,9 +1,9 @@
 package com.rubbishman.rubbishRedux.external;
 
-import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
-import com.rubbishman.rubbishRedux.middlewareEnhancer.MiddlewareEnhancer;
-import com.rubbishman.rubbishRedux.multistageActions.MultistageActions;
-import com.rubbishman.rubbishRedux.statefullTimer.TimerExecutor;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
+import com.rubbishman.rubbishRedux.external.multiStageActions.MultiStageActionsProcessing;
+import com.rubbishman.rubbishRedux.external.statefullTimer.StatefullTimerProcessing;
+import com.rubbishman.rubbishRedux.internal.middlewareEnhancer.MiddlewareEnhancer;
 import redux.api.Store;
 import redux.api.enhancer.Middleware;
 
@@ -16,10 +16,10 @@ public class RubbishContainerCreator {
 
     public static RubbishContainer getRubbishContainer(RubbishContainerOptions options) {
         Store.Creator<ObjectStore> creator;
-        TimerExecutor timer;
+        StatefullTimerProcessing timer;
         RubbishReducer rubbishReducer;
         Store<ObjectStore> store;
-        MultistageActions multistageActions = null;
+        MultiStageActionsProcessing multistageActions = null;
         ConcurrentLinkedQueue<Object> actionQueue = new ConcurrentLinkedQueue<>();
 
         creator = new com.glung.redux.Store.Creator();
@@ -36,13 +36,13 @@ public class RubbishContainerCreator {
 
         store = creator.create(rubbishReducer, new ObjectStore());
         if(options != null && !options.multistageActionList.isEmpty()) {
-            multistageActions = new MultistageActions(actionQueue, store, rubbishReducer);
+            multistageActions = new MultiStageActionsProcessing(store, rubbishReducer);
             for(Class clazz: options.multistageActionList.keySet()) {
                 multistageActions.addMultistageProcessor(clazz, options.multistageActionList.get(clazz));
             }
         }
 
-        timer = new TimerExecutor(actionQueue, store);
+        timer = new StatefullTimerProcessing(store);
 
         return new RubbishContainer(actionQueue, multistageActions, timer, store);
     }

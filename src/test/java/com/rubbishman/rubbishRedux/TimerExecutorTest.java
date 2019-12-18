@@ -1,9 +1,9 @@
 package com.rubbishman.rubbishRedux;
 
-import com.rubbishman.rubbishRedux.dynamicObjectStore.store.IdObject;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.store.Identifier;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
-import com.rubbishman.rubbishRedux.middlewareEnhancer.MiddlewareEnhancer;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.IdObject;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.Identifier;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
+import com.rubbishman.rubbishRedux.internal.middlewareEnhancer.MiddlewareEnhancer;
 import com.rubbishman.rubbishRedux.misc.MyLoggingMiddleware;
 import com.rubbishman.rubbishRedux.statefullTimer.TimerExecutor;
 import com.rubbishman.rubbishRedux.statefullTimer.helper.TimerHelper;
@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Iterator;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -24,7 +23,6 @@ import static org.junit.Assert.assertTrue;
 public class TimerExecutorTest {
     TimerExecutor timer;
     StringBuilder stringBuilder;
-    ConcurrentLinkedQueue<Object> actionQueue = new ConcurrentLinkedQueue<>();
 
     @Before
     public void setup() {
@@ -59,7 +57,7 @@ public class TimerExecutorTest {
         timer.createTimer(nowTime + 40,"ACTION5", 100, 5);
         timer.createTimer(nowTime + 50,"ACTION6", 100, 5);
 
-        timer.timerLogic(actionQueue, nowTime);
+        timer.timerLogic(nowTime);
 
         assertEquals(6, timer.getState().objectMap.size());
         Iterator<IdObject> iter = timer.getState().objectMap.valIterator();
@@ -85,10 +83,10 @@ public class TimerExecutorTest {
                 )) > 0.49
         );
 
-        timer.timerLogic(actionQueue, nowTime + 100);
+        timer.timerLogic(nowTime + 100);
         assertEquals(1, ((RepeatingTimer)timer.getState().objectMap.get(new Identifier(1, RepeatingTimer.class)).object).currentRepeats);
 
-        timer.timerLogic(actionQueue, nowTime + 150);
+        timer.timerLogic(nowTime + 150);
 
         iter = timer.getState().objectMap.valIterator();
         while(iter.hasNext()) {

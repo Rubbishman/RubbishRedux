@@ -1,18 +1,16 @@
 package com.rubbishman.rubbishRedux;
 
-import com.rubbishman.rubbishRedux.middlewareEnhancer.MiddlewareEnhancer;
+import com.rubbishman.rubbishRedux.internal.middlewareEnhancer.MiddlewareEnhancer;
 import com.rubbishman.rubbishRedux.misc.MyLoggingMiddleware;
 import com.rubbishman.rubbishRedux.misc.MyReducer;
 import com.rubbishman.rubbishRedux.misc.MyState;
 import org.junit.Before;
 import org.junit.Test;
-import redux.api.Reducer;
 import redux.api.Store;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 

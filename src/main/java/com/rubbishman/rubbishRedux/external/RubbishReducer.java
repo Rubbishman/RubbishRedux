@@ -1,10 +1,10 @@
 package com.rubbishman.rubbishRedux.external;
 
-import com.rubbishman.rubbishRedux.createObjectCallback.action.CreateObject;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.reducer.CreateObjectReducer;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
-import com.rubbishman.rubbishRedux.multistageActions.MultistageActions;
-import com.rubbishman.rubbishRedux.multistageActions.action.MultistageAction;
+import com.rubbishman.rubbishRedux.internal.createObjectCallback.action.CreateObject;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.reducer.CreateObjectReducer;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
+import com.rubbishman.rubbishRedux.external.multiStageActions.MultiStageActionsProcessing;
+import com.rubbishman.rubbishRedux.internal.multistageActions.action.MultistageAction;
 import com.rubbishman.rubbishRedux.statefullTimer.action.IncrementTimer;
 import com.rubbishman.rubbishRedux.statefullTimer.reducer.TimerReducer;
 import redux.api.Reducer;
@@ -13,7 +13,7 @@ public class RubbishReducer implements Reducer<ObjectStore> {
     private TimerReducer timerReducer = new TimerReducer();
     private CreateObjectReducer createObjectReducer = new CreateObjectReducer();
     private Reducer<ObjectStore> wrappedReducer;
-    protected MultistageActions multistageAction;
+    protected MultiStageActionsProcessing multistageAction;
 
     public RubbishReducer() {}
 
@@ -21,8 +21,12 @@ public class RubbishReducer implements Reducer<ObjectStore> {
         this.wrappedReducer = wrappedReducer;
     }
 
-    public void setMultiStageActions(MultistageActions multistageAction) {
+    public void setMultiStageActions(MultiStageActionsProcessing multistageAction) {
         this.multistageAction = multistageAction;
+    }
+
+    public void postDispatch() {
+        createObjectReducer.postDispatch();
     }
 
     public ObjectStore reduce(ObjectStore state, Object action) {

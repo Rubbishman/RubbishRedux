@@ -1,9 +1,9 @@
 package com.rubbishman.rubbishRedux;
 
-import com.rubbishman.rubbishRedux.dynamicObjectStore.GsonInstance;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.store.IdObject;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.store.Identifier;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.GsonInstance;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.IdObject;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.Identifier;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
 import com.rubbishman.rubbishRedux.multistageActionTest.state.Counter;
 import org.junit.Test;
 

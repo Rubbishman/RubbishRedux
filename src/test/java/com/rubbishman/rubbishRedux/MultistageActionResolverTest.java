@@ -1,19 +1,19 @@
 package com.rubbishman.rubbishRedux;
 
 import com.google.gson.Gson;
-import com.rubbishman.rubbishRedux.createObjectCallback.action.CreateObject;
-import com.rubbishman.rubbishRedux.createObjectCallback.enhancer.CreateObjectEnhancer;
-import com.rubbishman.rubbishRedux.createObjectCallback.interfaces.ICreateObjectCallback;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.GsonInstance;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.store.Identifier;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
-import com.rubbishman.rubbishRedux.middlewareEnhancer.MiddlewareEnhancer;
+import com.rubbishman.rubbishRedux.internal.createObjectCallback.action.CreateObject;
+import com.rubbishman.rubbishRedux.internal.createObjectCallback.enhancer.CreateObjectEnhancer;
+import com.rubbishman.rubbishRedux.internal.createObjectCallback.interfaces.ICreateObjectCallback;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.GsonInstance;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.Identifier;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
+import com.rubbishman.rubbishRedux.internal.middlewareEnhancer.MiddlewareEnhancer;
 import com.rubbishman.rubbishRedux.misc.MyLoggingMiddleware;
 import com.rubbishman.rubbishRedux.multistageActionTest.action.IncrementCounter;
 import com.rubbishman.rubbishRedux.multistageActionTest.action.multistageAction.IncrementCounterResolution;
 import com.rubbishman.rubbishRedux.multistageActionTest.reducer.MyReducer;
 import com.rubbishman.rubbishRedux.multistageActionTest.state.Counter;
-import com.rubbishman.rubbishRedux.multistageActions.MultistageActions;
+import com.rubbishman.rubbishRedux.multistageActionTest.MultistageActions;
 import org.junit.Before;
 import org.junit.Test;
 import redux.api.Store;
@@ -53,8 +53,6 @@ public class MultistageActionResolverTest {
 
         multiStageActions = new MultistageActions(creator, reducer, new ObjectStore());
         multiStageActions.addMultistageProcessor(IncrementCounter.class, new IncrementCounterResolution(1234));
-
-        reducer.setMultiStageActions(multiStageActions);
     }
 
     @Test

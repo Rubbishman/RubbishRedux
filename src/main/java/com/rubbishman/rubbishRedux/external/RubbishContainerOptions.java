@@ -1,7 +1,7 @@
 package com.rubbishman.rubbishRedux.external;
 
-import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
-import com.rubbishman.rubbishRedux.multistageActions.action.MultistageActionResolver;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
+import com.rubbishman.rubbishRedux.internal.multistageActions.action.MultistageActionResolver;
 import redux.api.Reducer;
 import redux.api.enhancer.Middleware;
 

@@ -1,13 +1,10 @@
 package com.rubbishman.rubbishRedux.multistageActionTest.reducer;
 
-import com.rubbishman.rubbishRedux.dynamicObjectStore.store.IdObject;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
 import com.rubbishman.rubbishRedux.external.RubbishReducer;
 import com.rubbishman.rubbishRedux.multistageActionTest.action.IncrementCounter;
 import com.rubbishman.rubbishRedux.multistageActionTest.action.IncrementCounterResolved;
 import com.rubbishman.rubbishRedux.multistageActionTest.state.Counter;
-import com.rubbishman.rubbishRedux.multistageActions.MultistageActions;
-import redux.api.Reducer;
 
 import java.io.PrintStream;
 

@@ -1,12 +1,12 @@
 package com.rubbishman.rubbishRedux;
 
 import com.google.gson.Gson;
-import com.rubbishman.rubbishRedux.createObjectCallback.action.CreateObject;
-import com.rubbishman.rubbishRedux.createObjectCallback.enhancer.CreateObjectEnhancer;
-import com.rubbishman.rubbishRedux.createObjectCallback.interfaces.ICreateObjectCallback;
+import com.rubbishman.rubbishRedux.internal.createObjectCallback.action.CreateObject;
+import com.rubbishman.rubbishRedux.internal.createObjectCallback.enhancer.CreateObjectEnhancer;
+import com.rubbishman.rubbishRedux.internal.createObjectCallback.interfaces.ICreateObjectCallback;
 import com.rubbishman.rubbishRedux.createObjectCallbackTest.state.CreateObjectStateObject;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.GsonInstance;
-import com.rubbishman.rubbishRedux.dynamicObjectStore.store.ObjectStore;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.GsonInstance;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
 import org.junit.Before;
 import org.junit.Test;
 import redux.api.Store;

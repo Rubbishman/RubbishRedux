@@ -1,6 +1,6 @@
 package com.rubbishman.rubbishRedux.multistageActionTest.stage;
 
-import com.rubbishman.rubbishRedux.multistageActions.stage.Stage;
+import com.rubbishman.rubbishRedux.internal.multistageActions.stage.Stage;
 
 public class StageConstants {
     public static final String NAME_COUNTER_CREATE_RESOLUTION = "counter_create_resolution";

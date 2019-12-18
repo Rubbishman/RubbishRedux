@@ -1,10 +1,10 @@
 package com.rubbishman.rubbishRedux;
 
-import com.rubbishman.rubbishRedux.middlewareEnhancer.MiddlewareEnhancer;
+import com.rubbishman.rubbishRedux.internal.middlewareEnhancer.MiddlewareEnhancer;
 import com.rubbishman.rubbishRedux.misc.MyLoggingMiddleware;
 import com.rubbishman.rubbishRedux.misc.MyReducer;
 import com.rubbishman.rubbishRedux.misc.MyState;
-import com.rubbishman.rubbishRedux.timeStampedLogger.middleware.TimeStampedMiddleware;
+import com.rubbishman.rubbishRedux.internal.timeStampedLogger.middleware.TimeStampedMiddleware;
 import org.junit.Before;
 import org.junit.Test;
 import redux.api.Store;
