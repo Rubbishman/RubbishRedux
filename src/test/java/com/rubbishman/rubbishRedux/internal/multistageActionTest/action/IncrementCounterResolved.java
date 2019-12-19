@@ -1,6 +1,6 @@
 package com.rubbishman.rubbishRedux.internal.multistageActionTest.action;
 
-import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.Identifier;
+import com.rubbishman.rubbishRedux.external.operational.store.Identifier;
 
 public class IncrementCounterResolved {
     public final Identifier targetCounterId;

@@ -1,9 +1,9 @@
 package com.rubbishman.rubbishRedux.internal.multistageActionTest;
 
-import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
-import com.rubbishman.rubbishRedux.external.RubbishReducer;
-import com.rubbishman.rubbishRedux.external.multiStageActions.MultiStageActionsProcessing;
-import com.rubbishman.rubbishRedux.internal.multistageActions.action.MultistageActionResolver;
+import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
+import com.rubbishman.rubbishRedux.external.setup_extra.RubbishReducer;
+import com.rubbishman.rubbishRedux.external.setup_extra.multiStageActions.MultiStageActionsProcessing;
+import com.rubbishman.rubbishRedux.external.operational.action.multistageAction.MultistageActionResolver;
 import redux.api.Store;
 
 import java.util.concurrent.ConcurrentLinkedQueue;

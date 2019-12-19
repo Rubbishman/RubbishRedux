@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.Identifier;
+import com.rubbishman.rubbishRedux.external.operational.store.Identifier;
 
 import java.io.IOException;
 

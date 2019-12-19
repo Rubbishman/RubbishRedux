@@ -1,5 +1,7 @@
 package com.rubbishman.rubbishRedux.internal.multistageActions.stage;
 
+import com.rubbishman.rubbishRedux.external.operational.action.multistageAction.Stage.StageAction;
+
 import java.util.Comparator;
 
 public class MultistageComparator implements Comparator<StageAction> {

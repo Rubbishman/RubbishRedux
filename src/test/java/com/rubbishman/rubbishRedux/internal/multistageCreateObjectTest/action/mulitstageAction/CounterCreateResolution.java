@@ -1,17 +1,17 @@
 package com.rubbishman.rubbishRedux.internal.multistageCreateObjectTest.action.mulitstageAction;
 
-import com.rubbishman.rubbishRedux.internal.createObjectCallback.action.CreateObject;
-import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
+import com.rubbishman.rubbishRedux.external.operational.action.createObject.CreateObject;
+import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
 import com.rubbishman.rubbishRedux.internal.multistageActionTest.stage.StageConstants;
 import com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter;
-import com.rubbishman.rubbishRedux.internal.multistageActions.action.MultistageActionResolver;
-import com.rubbishman.rubbishRedux.internal.multistageActions.stage.Stage;
+import com.rubbishman.rubbishRedux.external.operational.action.createObject.IMultistageCreateObject;
+import com.rubbishman.rubbishRedux.external.operational.action.multistageAction.MultistageActionResolver;
+import com.rubbishman.rubbishRedux.external.operational.action.multistageAction.Stage.Stage;
 import com.rubbishman.rubbishRedux.internal.multistageCreateObjectTest.action.CreateCounter;
-import com.rubbishman.rubbishRedux.internal.multistageActions.action.MultistageCreateObject;
 
 import java.util.Random;
 
-public class CounterCreateResolution implements MultistageActionResolver<MultistageCreateObject<CreateCounter>> {
+public class CounterCreateResolution implements MultistageActionResolver<IMultistageCreateObject<CreateCounter>> {
     private final Random rand;
 
     public CounterCreateResolution(long seed) {
@@ -22,7 +22,7 @@ public class CounterCreateResolution implements MultistageActionResolver<Multist
         return StageConstants.COUNTER_CREATE_RESOLUTION;
     }
 
-    public Object provideAction(MultistageCreateObject<CreateCounter> action, ObjectStore state, long nowTime) {
+    public Object provideAction(IMultistageCreateObject<CreateCounter> action, ObjectStore state, long nowTime) {
         int diceNum = (rand.nextInt(action.createObject.diceNumMax - action.createObject.diceNumMin)
                 + 1
                 + action.createObject.diceNumMin);

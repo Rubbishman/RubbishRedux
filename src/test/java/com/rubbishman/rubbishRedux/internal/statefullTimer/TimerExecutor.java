@@ -1,9 +1,9 @@
 package com.rubbishman.rubbishRedux.internal.statefullTimer;
 
-import com.rubbishman.rubbishRedux.internal.createObjectCallback.enhancer.CreateObjectEnhancer;
-import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.reducer.CreateObjectReducer;
-import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
-import com.rubbishman.rubbishRedux.external.statefullTimer.StatefullTimerProcessing;
+import com.rubbishman.rubbishRedux.external.setup_extra.createObject.CreateObjectEnhancer;
+import com.rubbishman.rubbishRedux.external.setup_extra.createObject.reducer.CreateObjectReducer;
+import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
+import com.rubbishman.rubbishRedux.external.setup_extra.statefullTimer.StatefullTimerProcessing;
 import com.rubbishman.rubbishRedux.internal.statefullTimer.logic.TimerLogic;
 import com.rubbishman.rubbishRedux.internal.statefullTimer.reducer.TimerReducer;
 import redux.api.Store;

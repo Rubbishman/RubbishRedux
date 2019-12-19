@@ -1,8 +1,8 @@
 package com.rubbishman.rubbishRedux.external;
 
-import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
-import com.rubbishman.rubbishRedux.external.multiStageActions.MultiStageActionsProcessing;
-import com.rubbishman.rubbishRedux.external.statefullTimer.StatefullTimerProcessing;
+import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
+import com.rubbishman.rubbishRedux.external.setup_extra.multiStageActions.MultiStageActionsProcessing;
+import com.rubbishman.rubbishRedux.external.setup_extra.statefullTimer.StatefullTimerProcessing;
 import com.rubbishman.rubbishRedux.internal.statefullTimer.logic.TimerLogic;
 import redux.api.Store;
 

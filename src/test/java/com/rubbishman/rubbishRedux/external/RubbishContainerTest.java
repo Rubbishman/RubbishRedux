@@ -1,24 +1,25 @@
 package com.rubbishman.rubbishRedux.external;
 
 import com.google.gson.Gson;
-import com.rubbishman.rubbishRedux.internal.createObjectCallback.interfaces.ICreateObjectCallback;
+import com.rubbishman.rubbishRedux.external.setup.RubbishContainerCreator;
+import com.rubbishman.rubbishRedux.external.setup.RubbishContainerOptions;
+import com.rubbishman.rubbishRedux.external.operational.action.createObject.ICreateObjectCallback;
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.GsonInstance;
-import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.Identifier;
-import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
+import com.rubbishman.rubbishRedux.external.operational.store.Identifier;
+import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
 import com.rubbishman.rubbishRedux.internal.misc.MyLoggingMiddleware;
 import com.rubbishman.rubbishRedux.internal.multistageActionTest.action.IncrementCounter;
 import com.rubbishman.rubbishRedux.internal.multistageActionTest.action.IncrementCounterResolved;
 import com.rubbishman.rubbishRedux.internal.multistageActionTest.action.multistageAction.IncrementCounterResolution;
 
 import com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter;
-import com.rubbishman.rubbishRedux.internal.multistageActions.action.MultistageCreateObject;
+import com.rubbishman.rubbishRedux.external.operational.action.createObject.IMultistageCreateObject;
 import com.rubbishman.rubbishRedux.internal.multistageCreateObjectTest.action.mulitstageAction.CounterCreateResolution;
 import com.rubbishman.rubbishRedux.internal.multistageCreateObjectTest.action.CreateCounter;
 import org.junit.Before;
 import org.junit.Test;
 import redux.api.Reducer;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
@@ -36,7 +37,7 @@ public class RubbishContainerTest {
 
         options
             .addMultistageAction(IncrementCounter.class, new IncrementCounterResolution(1234))
-            .addMultistageAction(MultistageCreateObject.class, new CounterCreateResolution(1234))
+            .addMultistageAction(IMultistageCreateObject.class, new CounterCreateResolution(1234))
             .setReducer(getReducer());
 
         rubbish = RubbishContainerCreator.getRubbishContainer(options);
@@ -79,13 +80,13 @@ public class RubbishContainerTest {
         rubbish.performActions();
 
         assertEquals("Output was: " + stringBuilder.toString(),
-                        "MOO MultistageCreateObject {\"createObject\":{\"diceNumMin\":1,\"diceNumMax\":6,\"diceSizeMin\":1,\"diceSizeMax\":12}}" +
+                        "MOO IMultistageCreateObject {\"createObject\":{\"diceNumMin\":1,\"diceNumMax\":6,\"diceSizeMin\":1,\"diceSizeMax\":12}}" +
                         "MOO CreateObject {\"createObject\":{\"count\":0,\"incrementDiceNum\":5,\"incrementDiceSize\":12}}" +
                         "We just created: IdObject {\"id\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter\"},\"object\":{\"count\":0,\"incrementDiceNum\":5,\"incrementDiceSize\":12}}" +
-                        "MOO MultistageCreateObject {\"createObject\":{\"diceNumMin\":1,\"diceNumMax\":6,\"diceSizeMin\":1,\"diceSizeMax\":12}}" +
+                        "MOO IMultistageCreateObject {\"createObject\":{\"diceNumMin\":1,\"diceNumMax\":6,\"diceSizeMin\":1,\"diceSizeMax\":12}}" +
                         "MOO CreateObject {\"createObject\":{\"count\":0,\"incrementDiceNum\":5,\"incrementDiceSize\":7}}" +
                         "We just created: IdObject {\"id\":{\"id\":2,\"clazz\":\"com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter\"},\"object\":{\"count\":0,\"incrementDiceNum\":5,\"incrementDiceSize\":7}}" +
-                        "MOO MultistageCreateObject {\"createObject\":{\"diceNumMin\":1,\"diceNumMax\":6,\"diceSizeMin\":1,\"diceSizeMax\":12}}" +
+                        "MOO IMultistageCreateObject {\"createObject\":{\"diceNumMin\":1,\"diceNumMax\":6,\"diceSizeMin\":1,\"diceSizeMax\":12}}" +
                         "MOO CreateObject {\"createObject\":{\"count\":0,\"incrementDiceNum\":2,\"incrementDiceSize\":9}}" +
                         "We just created: IdObject {\"id\":{\"id\":3,\"clazz\":\"com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter\"},\"object\":{\"count\":0,\"incrementDiceNum\":2,\"incrementDiceSize\":9}}" +
                         "MOO IncrementCounter {\"targetCounterId\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter\"}}" +
@@ -110,8 +111,8 @@ public class RubbishContainerTest {
         assertEquals(13,rubbish.getState().<Counter>getObject(counter3).count);
     }
 
-    private MultistageCreateObject<CreateCounter> createObjectTest(PrintStream printStream, int incrementDiceNum, int incrementDiceSize) {
-        return (MultistageCreateObject<CreateCounter>) new MultistageCreateObject(
+    private IMultistageCreateObject<CreateCounter> createObjectTest(PrintStream printStream, int incrementDiceNum, int incrementDiceSize) {
+        return (IMultistageCreateObject<CreateCounter>) new IMultistageCreateObject(
                 new CreateCounter(1, incrementDiceNum, 1, incrementDiceSize),
 
                 new ICreateObjectCallback() {

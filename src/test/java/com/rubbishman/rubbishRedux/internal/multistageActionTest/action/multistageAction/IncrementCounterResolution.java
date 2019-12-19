@@ -1,12 +1,12 @@
 package com.rubbishman.rubbishRedux.internal.multistageActionTest.action.multistageAction;
 
-import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
+import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
 import com.rubbishman.rubbishRedux.internal.multistageActionTest.action.IncrementCounter;
 import com.rubbishman.rubbishRedux.internal.multistageActionTest.action.IncrementCounterResolved;
 import com.rubbishman.rubbishRedux.internal.multistageActionTest.stage.StageConstants;
 import com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter;
-import com.rubbishman.rubbishRedux.internal.multistageActions.action.MultistageActionResolver;
-import com.rubbishman.rubbishRedux.internal.multistageActions.stage.Stage;
+import com.rubbishman.rubbishRedux.external.operational.action.multistageAction.MultistageActionResolver;
+import com.rubbishman.rubbishRedux.external.operational.action.multistageAction.Stage.Stage;
 
 import java.util.Random;
 

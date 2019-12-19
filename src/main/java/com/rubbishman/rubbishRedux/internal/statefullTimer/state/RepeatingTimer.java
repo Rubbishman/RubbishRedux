@@ -8,21 +8,21 @@ public class RepeatingTimer {
 
     public final Object action;
 
-    public RepeatingTimer (long startTime, long period, Object action) {
-        this.startTime = startTime;
-        this.period = period;
-        this.repeats = 1;
-        this.currentRepeats = 0;
-        this.action = action;
-    }
-
-    public RepeatingTimer(long startTime, long period, int repeats, Object action) {
-        this.startTime = startTime;
-        this.period = period;
-        this.repeats = repeats;
-        this.currentRepeats = 0;
-        this.action = action;
-    }
+//    public RepeatingTimer (long startTime, long period, Object action) {
+//        this.startTime = startTime;
+//        this.period = period;
+//        this.repeats = 1;
+//        this.currentRepeats = 0;
+//        this.action = action;
+//    }
+//
+//    public RepeatingTimer(long startTime, long period, int repeats, Object action) {
+//        this.startTime = startTime;
+//        this.period = period;
+//        this.repeats = repeats;
+//        this.currentRepeats = 0;
+//        this.action = action;
+//    }
 
     public RepeatingTimer(long startTime, long period, int repeats, int currentRepeats, Object action) {
         this.startTime = startTime;

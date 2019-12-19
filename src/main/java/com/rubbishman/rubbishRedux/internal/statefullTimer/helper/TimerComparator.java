@@ -1,6 +1,6 @@
 package com.rubbishman.rubbishRedux.internal.statefullTimer.helper;
 
-import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
+import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
 import com.rubbishman.rubbishRedux.internal.statefullTimer.logic.TimerLogic;
 import redux.api.Store;
 

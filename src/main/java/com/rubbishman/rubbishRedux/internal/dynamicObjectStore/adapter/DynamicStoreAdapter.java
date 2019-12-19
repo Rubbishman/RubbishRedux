@@ -5,8 +5,8 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.GsonInstance;
-import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.Identifier;
-import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
+import com.rubbishman.rubbishRedux.external.operational.store.Identifier;
+import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
 
 import java.io.IOException;
 import java.util.Iterator;

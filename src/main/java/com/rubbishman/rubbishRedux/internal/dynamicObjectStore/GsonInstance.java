@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.adapter.DynamicStoreAdapter;
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.adapter.IdentifierAdapter;
-import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.Identifier;
-import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
+import com.rubbishman.rubbishRedux.external.operational.store.Identifier;
+import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
 
 public class GsonInstance {
     private static Gson gson;
