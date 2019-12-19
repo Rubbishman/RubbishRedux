@@ -1,6 +1,6 @@
-package com.rubbishman.rubbishRedux.statefullTimer.helper;
+package com.rubbishman.rubbishRedux.internal.statefullTimer.helper;
 
-import com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer;
+import com.rubbishman.rubbishRedux.internal.statefullTimer.state.RepeatingTimer;
 
 public class TimerHelper {
     public static int calculateNewRepeats(long nowTime, RepeatingTimer perInc) {

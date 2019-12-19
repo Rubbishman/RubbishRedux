@@ -5,14 +5,13 @@ import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.Identifier;
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
 import com.rubbishman.rubbishRedux.internal.middlewareEnhancer.MiddlewareEnhancer;
 import com.rubbishman.rubbishRedux.internal.misc.MyLoggingMiddleware;
-import com.rubbishman.rubbishRedux.statefullTimer.TimerExecutor;
-import com.rubbishman.rubbishRedux.statefullTimer.helper.TimerHelper;
-import com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer;
+import com.rubbishman.rubbishRedux.internal.statefullTimer.TimerExecutor;
+import com.rubbishman.rubbishRedux.internal.statefullTimer.helper.TimerHelper;
+import com.rubbishman.rubbishRedux.internal.statefullTimer.state.RepeatingTimer;
 import org.junit.Before;
 import org.junit.Test;
 import redux.api.Store;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Iterator;
@@ -101,12 +100,12 @@ public class TimerExecutorTest {
                         "moo CreateObject {\"createObject\":{\"startTime\":30,\"period\":100,\"repeats\":5,\"currentRepeats\":0,\"action\":\"ACTION4\"}}" +
                         "moo CreateObject {\"createObject\":{\"startTime\":40,\"period\":100,\"repeats\":5,\"currentRepeats\":0,\"action\":\"ACTION5\"}}" +
                         "moo CreateObject {\"createObject\":{\"startTime\":50,\"period\":100,\"repeats\":5,\"currentRepeats\":0,\"action\":\"ACTION6\"}}" +
-                        "moo IncrementTimer {\"nowTime\":100,\"subject\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer\"}}" +
-                        "moo IncrementTimer {\"nowTime\":150,\"subject\":{\"id\":2,\"clazz\":\"com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer\"}}" +
-                        "moo IncrementTimer {\"nowTime\":150,\"subject\":{\"id\":3,\"clazz\":\"com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer\"}}" +
-                        "moo IncrementTimer {\"nowTime\":150,\"subject\":{\"id\":4,\"clazz\":\"com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer\"}}" +
-                        "moo IncrementTimer {\"nowTime\":150,\"subject\":{\"id\":5,\"clazz\":\"com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer\"}}" +
-                        "moo IncrementTimer {\"nowTime\":150,\"subject\":{\"id\":6,\"clazz\":\"com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer\"}}",
+                        "moo IncrementTimer {\"nowTime\":100,\"subject\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.internal.statefullTimer.state.RepeatingTimer\"}}" +
+                        "moo IncrementTimer {\"nowTime\":150,\"subject\":{\"id\":2,\"clazz\":\"com.rubbishman.rubbishRedux.internal.statefullTimer.state.RepeatingTimer\"}}" +
+                        "moo IncrementTimer {\"nowTime\":150,\"subject\":{\"id\":3,\"clazz\":\"com.rubbishman.rubbishRedux.internal.statefullTimer.state.RepeatingTimer\"}}" +
+                        "moo IncrementTimer {\"nowTime\":150,\"subject\":{\"id\":4,\"clazz\":\"com.rubbishman.rubbishRedux.internal.statefullTimer.state.RepeatingTimer\"}}" +
+                        "moo IncrementTimer {\"nowTime\":150,\"subject\":{\"id\":5,\"clazz\":\"com.rubbishman.rubbishRedux.internal.statefullTimer.state.RepeatingTimer\"}}" +
+                        "moo IncrementTimer {\"nowTime\":150,\"subject\":{\"id\":6,\"clazz\":\"com.rubbishman.rubbishRedux.internal.statefullTimer.state.RepeatingTimer\"}}",
                 stringBuilder.toString().replaceAll(System.lineSeparator(), ""));
 
         Identifier rt6id = new Identifier(

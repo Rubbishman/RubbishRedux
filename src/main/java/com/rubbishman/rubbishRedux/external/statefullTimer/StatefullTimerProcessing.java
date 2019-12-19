@@ -3,10 +3,10 @@ package com.rubbishman.rubbishRedux.external.statefullTimer;
 import com.rubbishman.rubbishRedux.internal.createObjectCallback.action.CreateObject;
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.IdObject;
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
-import com.rubbishman.rubbishRedux.statefullTimer.helper.TimerComparator;
-import com.rubbishman.rubbishRedux.statefullTimer.helper.TimerHelper;
-import com.rubbishman.rubbishRedux.statefullTimer.logic.TimerLogic;
-import com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer;
+import com.rubbishman.rubbishRedux.internal.statefullTimer.helper.TimerComparator;
+import com.rubbishman.rubbishRedux.internal.statefullTimer.helper.TimerHelper;
+import com.rubbishman.rubbishRedux.internal.statefullTimer.logic.TimerLogic;
+import com.rubbishman.rubbishRedux.internal.statefullTimer.state.RepeatingTimer;
 import redux.api.Store;
 
 import java.util.LinkedList;

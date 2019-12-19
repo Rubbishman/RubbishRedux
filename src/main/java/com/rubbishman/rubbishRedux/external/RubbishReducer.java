@@ -5,8 +5,8 @@ import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.reducer.CreateObj
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
 import com.rubbishman.rubbishRedux.external.multiStageActions.MultiStageActionsProcessing;
 import com.rubbishman.rubbishRedux.internal.multistageActions.action.MultistageAction;
-import com.rubbishman.rubbishRedux.statefullTimer.action.IncrementTimer;
-import com.rubbishman.rubbishRedux.statefullTimer.reducer.TimerReducer;
+import com.rubbishman.rubbishRedux.internal.statefullTimer.action.IncrementTimer;
+import com.rubbishman.rubbishRedux.internal.statefullTimer.reducer.TimerReducer;
 import redux.api.Reducer;
 
 public class RubbishReducer implements Reducer<ObjectStore> {

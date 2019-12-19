@@ -1,16 +1,14 @@
-package com.rubbishman.rubbishRedux.statefullTimer;
+package com.rubbishman.rubbishRedux.internal.statefullTimer;
 
 import com.rubbishman.rubbishRedux.internal.createObjectCallback.enhancer.CreateObjectEnhancer;
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.reducer.CreateObjectReducer;
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
 import com.rubbishman.rubbishRedux.external.statefullTimer.StatefullTimerProcessing;
-import com.rubbishman.rubbishRedux.statefullTimer.helper.TimerComparator;
-import com.rubbishman.rubbishRedux.statefullTimer.logic.TimerLogic;
-import com.rubbishman.rubbishRedux.statefullTimer.reducer.TimerReducer;
+import com.rubbishman.rubbishRedux.internal.statefullTimer.logic.TimerLogic;
+import com.rubbishman.rubbishRedux.internal.statefullTimer.reducer.TimerReducer;
 import redux.api.Store;
 
 import java.util.LinkedList;
-import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

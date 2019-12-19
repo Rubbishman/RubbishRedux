@@ -1,7 +1,7 @@
-package com.rubbishman.rubbishRedux.statefullTimer.helper;
+package com.rubbishman.rubbishRedux.internal.statefullTimer.helper;
 
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
-import com.rubbishman.rubbishRedux.statefullTimer.logic.TimerLogic;
+import com.rubbishman.rubbishRedux.internal.statefullTimer.logic.TimerLogic;
 import redux.api.Store;
 
 import java.util.Comparator;

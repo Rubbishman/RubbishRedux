@@ -1,4 +1,4 @@
-package com.rubbishman.rubbishRedux.statefullTimer.state;
+package com.rubbishman.rubbishRedux.internal.statefullTimer.state;
 
 public class RepeatingTimer {
     public final long startTime;

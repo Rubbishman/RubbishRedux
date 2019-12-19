@@ -1,10 +1,10 @@
-package com.rubbishman.rubbishRedux.statefullTimer.logic;
+package com.rubbishman.rubbishRedux.internal.statefullTimer.logic;
 
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.Identifier;
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
-import com.rubbishman.rubbishRedux.statefullTimer.action.IncrementTimer;
-import com.rubbishman.rubbishRedux.statefullTimer.helper.TimerHelper;
-import com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer;
+import com.rubbishman.rubbishRedux.internal.statefullTimer.action.IncrementTimer;
+import com.rubbishman.rubbishRedux.internal.statefullTimer.helper.TimerHelper;
+import com.rubbishman.rubbishRedux.internal.statefullTimer.state.RepeatingTimer;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
