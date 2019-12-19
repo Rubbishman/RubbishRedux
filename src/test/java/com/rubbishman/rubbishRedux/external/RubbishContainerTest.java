@@ -1,22 +1,19 @@
-package com.rubbishman.rubbishRedux;
+package com.rubbishman.rubbishRedux.external;
 
 import com.google.gson.Gson;
 import com.rubbishman.rubbishRedux.internal.createObjectCallback.interfaces.ICreateObjectCallback;
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.GsonInstance;
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.Identifier;
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
-import com.rubbishman.rubbishRedux.external.RubbishContainer;
-import com.rubbishman.rubbishRedux.external.RubbishContainerCreator;
-import com.rubbishman.rubbishRedux.external.RubbishContainerOptions;
-import com.rubbishman.rubbishRedux.misc.MyLoggingMiddleware;
-import com.rubbishman.rubbishRedux.multistageActionTest.action.IncrementCounter;
-import com.rubbishman.rubbishRedux.multistageActionTest.action.IncrementCounterResolved;
-import com.rubbishman.rubbishRedux.multistageActionTest.action.multistageAction.IncrementCounterResolution;
+import com.rubbishman.rubbishRedux.internal.misc.MyLoggingMiddleware;
+import com.rubbishman.rubbishRedux.internal.multistageActionTest.action.IncrementCounter;
+import com.rubbishman.rubbishRedux.internal.multistageActionTest.action.IncrementCounterResolved;
+import com.rubbishman.rubbishRedux.internal.multistageActionTest.action.multistageAction.IncrementCounterResolution;
 
-import com.rubbishman.rubbishRedux.multistageActionTest.state.Counter;
+import com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter;
 import com.rubbishman.rubbishRedux.internal.multistageActions.action.MultistageCreateObject;
-import com.rubbishman.rubbishRedux.multistageCreateObjectTest.action.mulitstageAction.CounterCreateResolution;
-import com.rubbishman.rubbishRedux.multistageCreateObjectTest.action.CreateCounter;
+import com.rubbishman.rubbishRedux.internal.multistageCreateObjectTest.action.mulitstageAction.CounterCreateResolution;
+import com.rubbishman.rubbishRedux.internal.multistageCreateObjectTest.action.CreateCounter;
 import org.junit.Before;
 import org.junit.Test;
 import redux.api.Reducer;
@@ -28,7 +25,9 @@ import java.io.PrintStream;
 import static org.junit.Assert.assertEquals;
 
 public class RubbishContainerTest {
-    RubbishContainer rubbish;
+    private RubbishContainer rubbish;
+    private StringBuilder stringBuilder = new StringBuilder();
+    private PrintStream printStream;
 
     @Before
     public void setup() {
@@ -43,12 +42,10 @@ public class RubbishContainerTest {
         rubbish = RubbishContainerCreator.getRubbishContainer(options);
     }
 
-    StringBuilder stringBuilder = new StringBuilder();
-    PrintStream printStream;
 
     public void setupStringLogger(RubbishContainerOptions options) {
         OutputStream myOutput = new OutputStream() {
-            public void write(int b) throws IOException {
+            public void write(int b) {
                 stringBuilder.append((char)b);
             }
         };
@@ -88,20 +85,20 @@ public class RubbishContainerTest {
                         "MOO CreateObject {\"createObject\":{\"count\":0,\"incrementDiceNum\":5,\"incrementDiceSize\":7}}" +
                         "MOO MultistageCreateObject {\"createObject\":{\"diceNumMin\":1,\"diceNumMax\":6,\"diceSizeMin\":1,\"diceSizeMax\":12}}" +
                         "MOO CreateObject {\"createObject\":{\"count\":0,\"incrementDiceNum\":2,\"incrementDiceSize\":9}}" +
-                        "MOO IncrementCounter {\"targetCounterId\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.multistageActionTest.state.Counter\"}}" +
-                        "MOO IncrementCounterResolved {\"targetCounterId\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.multistageActionTest.state.Counter\"},\"incrementAmount\":25}" +
-                        "MOO IncrementCounter {\"targetCounterId\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.multistageActionTest.state.Counter\"}}" +
-                        "MOO IncrementCounterResolved {\"targetCounterId\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.multistageActionTest.state.Counter\"},\"incrementAmount\":4}" +
-                        "MOO IncrementCounter {\"targetCounterId\":{\"id\":2,\"clazz\":\"com.rubbishman.rubbishRedux.multistageActionTest.state.Counter\"}}" +
-                        "MOO IncrementCounterResolved {\"targetCounterId\":{\"id\":2,\"clazz\":\"com.rubbishman.rubbishRedux.multistageActionTest.state.Counter\"},\"incrementAmount\":26}" +
-                        "MOO IncrementCounter {\"targetCounterId\":{\"id\":3,\"clazz\":\"com.rubbishman.rubbishRedux.multistageActionTest.state.Counter\"}}" +
-                        "MOO IncrementCounterResolved {\"targetCounterId\":{\"id\":3,\"clazz\":\"com.rubbishman.rubbishRedux.multistageActionTest.state.Counter\"},\"incrementAmount\":12}" +
-                        "MOO IncrementCounter {\"targetCounterId\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.multistageActionTest.state.Counter\"}}" +
-                        "MOO IncrementCounterResolved {\"targetCounterId\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.multistageActionTest.state.Counter\"},\"incrementAmount\":5}" +
-                        "MOO IncrementCounter {\"targetCounterId\":{\"id\":2,\"clazz\":\"com.rubbishman.rubbishRedux.multistageActionTest.state.Counter\"}}" +
-                        "MOO IncrementCounterResolved {\"targetCounterId\":{\"id\":2,\"clazz\":\"com.rubbishman.rubbishRedux.multistageActionTest.state.Counter\"},\"incrementAmount\":6}" +
-                        "MOO IncrementCounter {\"targetCounterId\":{\"id\":3,\"clazz\":\"com.rubbishman.rubbishRedux.multistageActionTest.state.Counter\"}}" +
-                        "MOO IncrementCounterResolved {\"targetCounterId\":{\"id\":3,\"clazz\":\"com.rubbishman.rubbishRedux.multistageActionTest.state.Counter\"},\"incrementAmount\":1}"
+                        "MOO IncrementCounter {\"targetCounterId\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter\"}}" +
+                        "MOO IncrementCounterResolved {\"targetCounterId\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter\"},\"incrementAmount\":25}" +
+                        "MOO IncrementCounter {\"targetCounterId\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter\"}}" +
+                        "MOO IncrementCounterResolved {\"targetCounterId\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter\"},\"incrementAmount\":4}" +
+                        "MOO IncrementCounter {\"targetCounterId\":{\"id\":2,\"clazz\":\"com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter\"}}" +
+                        "MOO IncrementCounterResolved {\"targetCounterId\":{\"id\":2,\"clazz\":\"com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter\"},\"incrementAmount\":26}" +
+                        "MOO IncrementCounter {\"targetCounterId\":{\"id\":3,\"clazz\":\"com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter\"}}" +
+                        "MOO IncrementCounterResolved {\"targetCounterId\":{\"id\":3,\"clazz\":\"com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter\"},\"incrementAmount\":12}" +
+                        "MOO IncrementCounter {\"targetCounterId\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter\"}}" +
+                        "MOO IncrementCounterResolved {\"targetCounterId\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter\"},\"incrementAmount\":5}" +
+                        "MOO IncrementCounter {\"targetCounterId\":{\"id\":2,\"clazz\":\"com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter\"}}" +
+                        "MOO IncrementCounterResolved {\"targetCounterId\":{\"id\":2,\"clazz\":\"com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter\"},\"incrementAmount\":6}" +
+                        "MOO IncrementCounter {\"targetCounterId\":{\"id\":3,\"clazz\":\"com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter\"}}" +
+                        "MOO IncrementCounterResolved {\"targetCounterId\":{\"id\":3,\"clazz\":\"com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter\"},\"incrementAmount\":1}"
                 ,
                 stringBuilder.toString().replaceAll(System.lineSeparator(), ""));
 
@@ -111,7 +108,7 @@ public class RubbishContainerTest {
     }
 
     private MultistageCreateObject<CreateCounter> createObjectTest(PrintStream printStream, int incrementDiceNum, int incrementDiceSize) {
-        MultistageCreateObject<CreateCounter> newObjectCreator = new MultistageCreateObject(
+        return (MultistageCreateObject<CreateCounter>) new MultistageCreateObject(
                 new CreateCounter(1, incrementDiceNum, 1, incrementDiceSize),
 
                 new ICreateObjectCallback() {
@@ -121,8 +118,6 @@ public class RubbishContainerTest {
                     }
                 }
         );
-
-        return newObjectCreator;
     }
 
     private Reducer<ObjectStore> getReducer() {

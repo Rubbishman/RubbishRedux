@@ -1,9 +1,9 @@
 package com.rubbishman.rubbishRedux;
 
 import com.rubbishman.rubbishRedux.internal.middlewareEnhancer.MiddlewareEnhancer;
-import com.rubbishman.rubbishRedux.misc.MyLoggingMiddleware;
-import com.rubbishman.rubbishRedux.misc.MyReducer;
-import com.rubbishman.rubbishRedux.misc.MyState;
+import com.rubbishman.rubbishRedux.internal.misc.MyLoggingMiddleware;
+import com.rubbishman.rubbishRedux.internal.misc.MyReducer;
+import com.rubbishman.rubbishRedux.internal.misc.MyState;
 import com.rubbishman.rubbishRedux.internal.timeStampedLogger.middleware.TimeStampedMiddleware;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,16 +16,16 @@ import java.io.PrintStream;
 import static org.junit.Assert.assertEquals;
 
 public class TimeStampedActionTest {
-    Store<MyState> store;
-    StringBuilder stringBuilder;
-    TimeStampedMiddleware timeStampedMiddleware;
+    private Store<MyState> store;
+    private StringBuilder stringBuilder;
+    private TimeStampedMiddleware timeStampedMiddleware;
 
     @Before
     public void setup() {
         stringBuilder = new StringBuilder();
 
         OutputStream myOutput = new OutputStream() {
-            public void write(int b) throws IOException {
+            public void write(int b) {
                 stringBuilder.append((char)b);
             }
         };

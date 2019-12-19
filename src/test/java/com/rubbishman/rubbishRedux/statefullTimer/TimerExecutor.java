@@ -1,5 +1,6 @@
 package com.rubbishman.rubbishRedux.statefullTimer;
 
+import com.rubbishman.rubbishRedux.internal.createObjectCallback.enhancer.CreateObjectEnhancer;
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.reducer.CreateObjectReducer;
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
 import com.rubbishman.rubbishRedux.external.statefullTimer.StatefullTimerProcessing;
@@ -22,6 +23,9 @@ public class TimerExecutor {
     private StatefullTimerProcessing timerProcessing;
 
     public TimerExecutor(Store.Creator<ObjectStore> creator) {
+        CreateObjectEnhancer enhancer = new CreateObjectEnhancer();
+        creator = enhancer.enhance(creator);
+
         CreateObjectReducer reducer = new CreateObjectReducer();
         reducer.setWrappedReducer(new TimerReducer());
         timerState = creator.create(reducer, new ObjectStore());

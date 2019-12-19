@@ -1,4 +1,4 @@
-package com.rubbishman.rubbishRedux.misc;
+package com.rubbishman.rubbishRedux.internal.misc;
 
 import java.util.ArrayList;
 

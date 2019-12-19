@@ -7,7 +7,7 @@ import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.GsonInstance;
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.reducer.CreateObjectReducer;
 import com.rubbishman.rubbishRedux.internal.middlewareEnhancer.MiddlewareEnhancer;
-import com.rubbishman.rubbishRedux.misc.MyLoggingMiddleware;
+import com.rubbishman.rubbishRedux.internal.misc.MyLoggingMiddleware;
 import org.junit.Before;
 import org.junit.Test;
 import redux.api.Store;
@@ -19,15 +19,15 @@ import java.io.PrintStream;
 import static org.junit.Assert.assertEquals;
 
 public class DynamicCreateObjectTest {
-    Store<ObjectStore> store;
-    StringBuilder stringBuilder = new StringBuilder();
-    PrintStream printStream;
-    CreateObjectReducer reducer;
+    private Store<ObjectStore> store;
+    private StringBuilder stringBuilder = new StringBuilder();
+    private PrintStream printStream;
+    private CreateObjectReducer reducer;
 
     @Before
     public void setup() {
         OutputStream myOutput = new OutputStream() {
-            public void write(int b) throws IOException {
+            public void write(int b) {
                 stringBuilder.append((char)b);
             }
         };
@@ -52,16 +52,16 @@ public class DynamicCreateObjectTest {
         // And then the multistage stuff -> how are the reducers going to end up after doing this...
         store.dispatch(createObjectTest("String!", printStream));
         reducer.postDispatch();
-        store.dispatch(createObjectTest(new Integer(5), printStream));
+        store.dispatch(createObjectTest(5, printStream));
         reducer.postDispatch();
-        store.dispatch(createObjectTest(new Long(5), printStream));
+        store.dispatch(createObjectTest(5, printStream));
         reducer.postDispatch();
 
         store.dispatch(createObjectTest("String!", printStream));
         reducer.postDispatch();
-        store.dispatch(createObjectTest(new Integer(5), printStream));
+        store.dispatch(createObjectTest(5, printStream));
         reducer.postDispatch();
-        store.dispatch(createObjectTest(new Long(5), printStream));
+        store.dispatch(createObjectTest(5, printStream));
         reducer.postDispatch();
 
         Gson gson = GsonInstance.getInstance();
@@ -85,17 +85,15 @@ public class DynamicCreateObjectTest {
     }
 
     private CreateObject createObjectTest(Object object, PrintStream printStream) {
-        CreateObject newObjectCreator = new CreateObject(
+        return new CreateObject(
                 object,
 
                 new ICreateObjectCallback() {
-                    public void postCreateState(Object object) {
+                    public void postCreateState(Object object1) {
                         Gson gson = GsonInstance.getInstance();
-                        printStream.println("We just created: " + object.getClass().getSimpleName() + " " + gson.toJson(object));
+                        printStream.println("We just created: " + object1.getClass().getSimpleName() + " " + gson.toJson(object1));
                     }
                 }
         );
-
-        return newObjectCreator;
     }
 }

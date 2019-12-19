@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.rubbishman.rubbishRedux.internal.createObjectCallback.action.CreateObject;
 import com.rubbishman.rubbishRedux.internal.createObjectCallback.enhancer.CreateObjectEnhancer;
 import com.rubbishman.rubbishRedux.internal.createObjectCallback.interfaces.ICreateObjectCallback;
-import com.rubbishman.rubbishRedux.createObjectCallbackTest.state.CreateObjectStateObject;
+import com.rubbishman.rubbishRedux.internal.createObjectCallbackTest.state.CreateObjectStateObject;
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.GsonInstance;
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
 import org.junit.Before;
@@ -18,9 +18,9 @@ import java.io.PrintStream;
 import static org.junit.Assert.assertEquals;
 
 public class CreateObjectCallbackTest {
-    Store<ObjectStore> store;
-    StringBuilder stringBuilder;
-    CreateObject newObjectCreator;
+    private Store<ObjectStore> store;
+    private StringBuilder stringBuilder;
+    private CreateObject newObjectCreator;
 
     @Before
     public void setup() {
@@ -50,17 +50,17 @@ public class CreateObjectCallbackTest {
         store.dispatch(newObjectCreator);
         store.dispatch(newObjectCreator);
 
-        assertEquals("We just created: IdObject {\"id\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.createObjectCallbackTest.state.CreateObjectStateObject\"}," +
+        assertEquals("We just created: IdObject {\"id\":{\"id\":1,\"clazz\":\"com.rubbishman.rubbishRedux.internal.createObjectCallbackTest.state.CreateObjectStateObject\"}," +
                             "\"object\":{\"message\":\"MOOOOO\"}}" +
-                        "We just created: IdObject {\"id\":{\"id\":2,\"clazz\":\"com.rubbishman.rubbishRedux.createObjectCallbackTest.state.CreateObjectStateObject\"}," +
+                        "We just created: IdObject {\"id\":{\"id\":2,\"clazz\":\"com.rubbishman.rubbishRedux.internal.createObjectCallbackTest.state.CreateObjectStateObject\"}," +
                             "\"object\":{\"message\":\"MOOOOO\"}}" +
-                        "We just created: IdObject {\"id\":{\"id\":3,\"clazz\":\"com.rubbishman.rubbishRedux.createObjectCallbackTest.state.CreateObjectStateObject\"}," +
+                        "We just created: IdObject {\"id\":{\"id\":3,\"clazz\":\"com.rubbishman.rubbishRedux.internal.createObjectCallbackTest.state.CreateObjectStateObject\"}," +
                             "\"object\":{\"message\":\"MOOOOO\"}}",
                 stringBuilder.toString().replaceAll(System.lineSeparator(), ""));
     }
 
     private CreateObject createObjectTest(PrintStream printStream) {
-        CreateObject<CreateObjectStateObject> newObjectCreator = new CreateObject(
+        return (CreateObject<CreateObjectStateObject>) new CreateObject(
                 new CreateObjectStateObject("MOOOOO"),
                 new ICreateObjectCallback() {
                     public void postCreateState(Object object) {
@@ -69,7 +69,5 @@ public class CreateObjectCallbackTest {
                     }
                 }
         );
-
-        return newObjectCreator;
     }
 }

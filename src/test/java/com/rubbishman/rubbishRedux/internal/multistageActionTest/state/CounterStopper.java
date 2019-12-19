@@ -1,8 +1,8 @@
-package com.rubbishman.rubbishRedux.multistageActionTest.state;
+package com.rubbishman.rubbishRedux.internal.multistageActionTest.state;
 
 public class CounterStopper {
-    public final int targetCounterId;
-    public final int stopNumber;
+    private final int targetCounterId;
+    private final int stopNumber;
 
     public CounterStopper(int targetCounterId, int stopNumber) {
         this.targetCounterId = targetCounterId;

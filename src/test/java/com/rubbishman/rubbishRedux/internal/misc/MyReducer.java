@@ -1,4 +1,4 @@
-package com.rubbishman.rubbishRedux.misc;
+package com.rubbishman.rubbishRedux.internal.misc;
 
 import com.google.gson.Gson;
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.GsonInstance;

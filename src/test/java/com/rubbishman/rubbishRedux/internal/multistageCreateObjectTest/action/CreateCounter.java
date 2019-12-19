@@ -1,4 +1,4 @@
-package com.rubbishman.rubbishRedux.multistageCreateObjectTest.action;
+package com.rubbishman.rubbishRedux.internal.multistageCreateObjectTest.action;
 
 public class CreateCounter {
     public final int diceNumMin;

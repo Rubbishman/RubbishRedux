@@ -4,7 +4,7 @@ import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.IdObject;
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.Identifier;
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
 import com.rubbishman.rubbishRedux.internal.middlewareEnhancer.MiddlewareEnhancer;
-import com.rubbishman.rubbishRedux.misc.MyLoggingMiddleware;
+import com.rubbishman.rubbishRedux.internal.misc.MyLoggingMiddleware;
 import com.rubbishman.rubbishRedux.statefullTimer.TimerExecutor;
 import com.rubbishman.rubbishRedux.statefullTimer.helper.TimerHelper;
 import com.rubbishman.rubbishRedux.statefullTimer.state.RepeatingTimer;
@@ -21,15 +21,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class TimerExecutorTest {
-    TimerExecutor timer;
-    StringBuilder stringBuilder;
+    private TimerExecutor timer;
+    private StringBuilder stringBuilder;
 
     @Before
     public void setup() {
         stringBuilder = new StringBuilder();
 
         OutputStream myOutput = new OutputStream() {
-            public void write(int b) throws IOException {
+            public void write(int b) {
                 stringBuilder.append((char)b);
             }
         };

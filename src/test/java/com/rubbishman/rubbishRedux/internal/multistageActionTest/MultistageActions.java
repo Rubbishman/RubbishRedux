@@ -1,4 +1,4 @@
-package com.rubbishman.rubbishRedux.multistageActionTest;
+package com.rubbishman.rubbishRedux.internal.multistageActionTest;
 
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.ObjectStore;
 import com.rubbishman.rubbishRedux.external.RubbishReducer;
@@ -34,7 +34,7 @@ public class MultistageActions {
         ConcurrentLinkedQueue<Object> internalQueue;
         synchronized (actionQueue) {
             internalQueue = actionQueue;
-            actionQueue = new ConcurrentLinkedQueue<Object>();
+            actionQueue = new ConcurrentLinkedQueue<>();
         }
         Object action = internalQueue.poll();
         while(action != null) {

@@ -1,4 +1,4 @@
-package com.rubbishman.rubbishRedux.multistageActionTest.state;
+package com.rubbishman.rubbishRedux.internal.multistageActionTest.state;
 
 public class Counter {
     public final int count;
@@ -6,7 +6,7 @@ public class Counter {
     public final int incrementDiceNum;
     public final int incrementDiceSize;
 
-    public Counter(int count) {
+    private Counter(int count) {
         this.count = count;
         incrementDiceNum = 1;
         incrementDiceSize = 6;

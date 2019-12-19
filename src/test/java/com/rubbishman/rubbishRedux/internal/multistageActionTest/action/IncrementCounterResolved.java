@@ -1,4 +1,4 @@
-package com.rubbishman.rubbishRedux.multistageActionTest.action;
+package com.rubbishman.rubbishRedux.internal.multistageActionTest.action;
 
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.Identifier;
 
