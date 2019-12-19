@@ -11,10 +11,6 @@ import redux.api.enhancer.Middleware;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class RubbishContainerCreator {
-    public static RubbishContainer getRubbishContainer() {
-        return getRubbishContainer(null);
-    }
-
     public static RubbishContainer getRubbishContainer(RubbishContainerOptions options) {
         Store.Creator<ObjectStore> creator;
         StatefullTimerProcessing timer;
