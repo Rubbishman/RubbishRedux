@@ -52,16 +52,16 @@ public class DynamicCreateObjectTest {
         // And then the multistage stuff -> how are the reducers going to end up after doing this...
         store.dispatch(createObjectTest("String!", printStream));
         reducer.postDispatch();
-        store.dispatch(createObjectTest(5, printStream));
+        store.dispatch(createObjectTest(new Integer(5), printStream));
         reducer.postDispatch();
-        store.dispatch(createObjectTest(5, printStream));
+        store.dispatch(createObjectTest(new Long(5), printStream));
         reducer.postDispatch();
 
         store.dispatch(createObjectTest("String!", printStream));
         reducer.postDispatch();
-        store.dispatch(createObjectTest(5, printStream));
+        store.dispatch(createObjectTest(new Integer(5), printStream));
         reducer.postDispatch();
-        store.dispatch(createObjectTest(5, printStream));
+        store.dispatch(createObjectTest(new Long(5), printStream));
         reducer.postDispatch();
 
         Gson gson = GsonInstance.getInstance();
