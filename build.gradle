@@ -1,7 +1,7 @@
 plugins {
     id 'java'
-//    id 'net.saliman.cobertura' version '2.6.1'
-//    id 'com.github.kt3k.coveralls' version '2.8.4'
+    id 'net.saliman.cobertura' version '2.6.1'
+    id 'com.github.kt3k.coveralls' version '2.8.4'
 }
 
 group 'rubbishRedux'
@@ -12,11 +12,11 @@ sourceCompatibility = 1.8
 repositories {
     mavenCentral()
     maven { url 'https://jitpack.io' }
-//    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
 }
 
-//cobertura.coverageFormats = ['html', 'xml'] // coveralls plugin depends on xml format report
-//cobertura.coberturaVersion = '2.1.2-SNAPSHOT'
+cobertura.coverageFormats = ['html', 'xml'] // coveralls plugin depends on xml format report
+cobertura.coberturaVersion = '2.1.2-SNAPSHOT'
 
 dependencies {
     compile 'com.github.glung:redux-java:1.0'
