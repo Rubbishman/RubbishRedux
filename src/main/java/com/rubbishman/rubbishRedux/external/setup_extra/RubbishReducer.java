@@ -26,12 +26,16 @@ public class RubbishReducer implements Reducer<ObjectStore> {
 
     public void setMultiStageActions(MultiStageActionsProcessing multistageAction) {
         this.multistageAction = multistageAction;
-        wrappedReducer.setMultiStageActions(multistageAction);
+        if(wrappedReducer != null) {
+            wrappedReducer.setMultiStageActions(multistageAction);
+        }
     }
 
     public void setRubbishContainer(RubbishContainer rubbishContainer) {
         this.rubbishContainer = rubbishContainer;
-        wrappedReducer.setRubbishContainer(rubbishContainer);
+        if(wrappedReducer != null) {
+            wrappedReducer.setRubbishContainer(rubbishContainer);
+        }
     }
 
 //    public void postDispatch() {

@@ -32,10 +32,11 @@ public class CreateObjectReducer implements Reducer<ObjectStore> {
                 state.objectMap.assoc(identifier, idObject),
                 new IdGenerator(idGenerator.idSequence)
         );
-
-        this.postDispatchRunnable = () -> {
-            action.callback.postCreateState(idObject);
-        };
+        if(action.callback != null) {
+            this.postDispatchRunnable = () -> {
+                action.callback.postCreateState(idObject);
+            };
+        }
 
         return cloned;
     }
