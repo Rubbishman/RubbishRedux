@@ -1,6 +1,7 @@
 package com.rubbishman.rubbishRedux.external;
 
 import com.google.gson.Gson;
+import com.rubbishman.rubbishRedux.external.setup.IRubbishReducer;
 import com.rubbishman.rubbishRedux.external.setup.RubbishContainerCreator;
 import com.rubbishman.rubbishRedux.external.setup.RubbishContainerOptions;
 import com.rubbishman.rubbishRedux.external.operational.action.createObject.ICreateObjectCallback;
@@ -124,8 +125,8 @@ public class RubbishContainerTest {
         );
     }
 
-    private Reducer<ObjectStore> getReducer() {
-        return new Reducer<ObjectStore>() {
+    private IRubbishReducer getReducer() {
+        return new IRubbishReducer() {
             @Override
             public ObjectStore reduce(ObjectStore state, Object action) {
                 if(action instanceof IncrementCounterResolved) {

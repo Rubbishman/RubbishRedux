@@ -1,31 +1,56 @@
 package com.rubbishman.rubbishRedux.experimental.nestedHistoryScratcher;
 
-import java.util.List;
+import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
+
+import java.util.*;
 
 public class ScratchHistory {
-    public ScratchHistory parent;
-    public ScratchHistory child;
-    public List past;
-    public List future;
-    public Object present;
+    public LinkedList past;
+    public Iterator future;
+
+    public ObjectStore state;
 
     public void nextUntilParent() {
-
+        while(future.hasNext()) {
+            Object next = future.next();
+            if(next instanceof ScratchHistory) {
+                ((ScratchHistory)next).next();
+            } else {
+                //Do an actual action
+            }
+        }
     }
 
     public void previousUntilParent() {
 
     }
 
-    public void previous() {
-        if(child != null) {
-            child.previous();
+    public boolean previous() {
+        Object previous = past.poll();
+        if(previous == null) {
+            return false;
         }
+        if(previous instanceof ScratchHistory) {
+            ((ScratchHistory)previous).previous();
+        } else if(previous instanceof ScratchHistoryItem) {
+
+
+        }
+
+        return true;
     }
 
-    public void next() {
-        if(child != null) {
-            child.next();
+    public boolean next() {
+        if(future.hasNext()) {
+            Object next = future.next();
+            if(next instanceof ScratchHistory) {
+                ((ScratchHistory)next).next();
+            } else {
+                //Do an actual action
+            }
+            return true;
         }
+
+        return false;
     }
 }

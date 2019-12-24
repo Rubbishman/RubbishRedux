@@ -1,6 +1,7 @@
 package com.rubbishman.rubbishRedux.internal.multistageActionTest.reducer;
 
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
+import com.rubbishman.rubbishRedux.external.setup.IRubbishReducer;
 import com.rubbishman.rubbishRedux.external.setup_extra.RubbishReducer;
 import com.rubbishman.rubbishRedux.internal.multistageActionTest.action.IncrementCounter;
 import com.rubbishman.rubbishRedux.internal.multistageActionTest.action.IncrementCounterResolved;

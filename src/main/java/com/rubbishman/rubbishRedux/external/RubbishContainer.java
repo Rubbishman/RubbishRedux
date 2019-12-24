@@ -1,6 +1,7 @@
 package com.rubbishman.rubbishRedux.external;
 
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
+import com.rubbishman.rubbishRedux.external.setup_extra.RubbishReducer;
 import com.rubbishman.rubbishRedux.external.setup_extra.multiStageActions.MultiStageActionsProcessing;
 import com.rubbishman.rubbishRedux.external.setup_extra.statefullTimer.StatefullTimerProcessing;
 import com.rubbishman.rubbishRedux.internal.statefullTimer.logic.TimerLogic;
@@ -15,11 +16,16 @@ public class RubbishContainer {
     private StatefullTimerProcessing timer;
     private MultiStageActionsProcessing multistageActions;
 
-    public RubbishContainer(ConcurrentLinkedQueue<Object> actionQueue, MultiStageActionsProcessing multistageActions, StatefullTimerProcessing timer, Store<ObjectStore> store) {
+    public RubbishContainer(ConcurrentLinkedQueue<Object> actionQueue, MultiStageActionsProcessing multistageActions, StatefullTimerProcessing timer, Store<ObjectStore> store, RubbishReducer reducer) {
         this.actionQueue = actionQueue;
         this.timer = timer;
         this.store = store;
         this.multistageActions = multistageActions;
+        reducer.setRubbishContainer(this);
+    }
+
+    public int actionQueueSize() {
+        return actionQueue.size();
     }
 
     public ObjectStore getState() {
@@ -46,7 +52,9 @@ public class RubbishContainer {
         Object action = internalQueue.poll();
         while(action != null) {
             store.dispatch(action);
-            multistageActions.afterDispatch(nowTime); // If an action has triggered multistage actions they resolve before the next action.
+            if(multistageActions != null) { // TODO, extract this so we don't have to do null check...
+                multistageActions.afterDispatch(nowTime); // If an action has triggered multistage actions they resolve before the next action.
+            }
             action = internalQueue.poll();
         }
 

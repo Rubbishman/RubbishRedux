@@ -1,7 +1,9 @@
 package com.rubbishman.rubbishRedux.external.setup_extra;
 
+import com.rubbishman.rubbishRedux.external.RubbishContainer;
 import com.rubbishman.rubbishRedux.external.operational.action.createObject.CreateObject;
 import com.rubbishman.rubbishRedux.external.operational.action.multistageAction.IMultistageAction;
+import com.rubbishman.rubbishRedux.external.setup.IRubbishReducer;
 import com.rubbishman.rubbishRedux.external.setup_extra.createObject.reducer.CreateObjectReducer;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
 import com.rubbishman.rubbishRedux.external.setup_extra.multiStageActions.MultiStageActionsProcessing;
@@ -12,17 +14,24 @@ import redux.api.Reducer;
 public class RubbishReducer implements Reducer<ObjectStore> {
     private TimerReducer timerReducer = new TimerReducer();
     private CreateObjectReducer createObjectReducer = new CreateObjectReducer();
-    private Reducer<ObjectStore> wrappedReducer;
+    private IRubbishReducer wrappedReducer;
     protected MultiStageActionsProcessing multistageAction;
+    protected RubbishContainer rubbishContainer;
 
     public RubbishReducer() {}
 
-    public RubbishReducer(Reducer<ObjectStore> wrappedReducer) {
+    public RubbishReducer(IRubbishReducer wrappedReducer) {
         this.wrappedReducer = wrappedReducer;
     }
 
     public void setMultiStageActions(MultiStageActionsProcessing multistageAction) {
         this.multistageAction = multistageAction;
+        wrappedReducer.setMultiStageActions(multistageAction);
+    }
+
+    public void setRubbishContainer(RubbishContainer rubbishContainer) {
+        this.rubbishContainer = rubbishContainer;
+        wrappedReducer.setRubbishContainer(rubbishContainer);
     }
 
 //    public void postDispatch() {

@@ -14,9 +14,9 @@ public class IdentifierAdapter extends TypeAdapter<Identifier> {
 
         out.beginObject();
         out.name("id");
-        out.value(value.id);
+        out.value(value != null ? value.id : null);
         out.name("clazz");
-        out.value(value.clazz.getName());
+        out.value(value != null ? value.clazz.getName() : null);
         out.endObject();
     }
 

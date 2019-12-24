@@ -13,7 +13,7 @@ import java.util.Map;
 public class RubbishContainerOptions {
     protected List<Middleware<ObjectStore>> middlewareList = new ArrayList<>();
     protected Map<Class,MultistageActionResolver<ObjectStore>> multistageActionList = new HashMap<>();
-    protected Reducer<ObjectStore> reducer;
+    protected IRubbishReducer reducer;
     public RubbishContainerOptions addMiddleware(Middleware<ObjectStore> middleware) {
         middlewareList.add(middleware);
 
@@ -26,7 +26,7 @@ public class RubbishContainerOptions {
         return this;
     }
 
-    public void setReducer(Reducer<ObjectStore> reducer) {
+    public void setReducer(IRubbishReducer reducer) {
         this.reducer = reducer;
     }
 }

@@ -46,6 +46,6 @@ public class RubbishContainerCreator {
 
         timer = new StatefullTimerProcessing(store);
 
-        return new RubbishContainer(actionQueue, multistageActions, timer, store);
+        return new RubbishContainer(actionQueue, multistageActions, timer, store, rubbishReducer);
     }
 }
