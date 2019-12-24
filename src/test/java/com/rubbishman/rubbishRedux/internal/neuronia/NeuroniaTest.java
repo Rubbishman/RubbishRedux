@@ -92,7 +92,7 @@ public class NeuroniaTest {
                 new CardMovementComponent(Movement.EAST, false, 0),
                 new CardMovementComponent(Movement.NORTH, false, 0),
                 new CardMovementComponent(Movement.EAST, false, 0),
-                new CardMovementComponent(Movement.SOUTH, false, 0),
+                new CardMovementComponent(Movement.SOUTH, true, 0),
         });
 
         final Identifier[] cardId = new Identifier[1];

@@ -16,7 +16,7 @@ public class NeuroniaReducer extends IRubbishReducer {
     public ObjectStore playCard(ObjectStore state, PlayCard playCard) {
         Card card = state.getObject(playCard.cardId);
         for(CardMovementComponent cmComp: card.movements) {
-            if(cmComp.costTeir <= 1) { // This would check the player level...
+            if(cmComp.costTier <= 1) { // This would check the player level...
                 rubbishContainer.addAction(new CardThoughtMovement(
                         cmComp.movement,
                         cmComp.pickup
