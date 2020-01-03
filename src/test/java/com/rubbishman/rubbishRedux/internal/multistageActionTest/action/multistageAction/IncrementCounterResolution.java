@@ -22,7 +22,7 @@ public class IncrementCounterResolution implements MultistageActionResolver<Incr
     }
 
     public Object provideAction(IncrementCounter action, ObjectStore state, long nowTime) {
-        Counter counter = (Counter)state.objectMap.get(action.targetCounterId).object;
+        Counter counter = state.getObject(action.targetCounterId);
 
         int increment = 0;
         for(int i = 0; i < counter.incrementDiceNum; i++) {
