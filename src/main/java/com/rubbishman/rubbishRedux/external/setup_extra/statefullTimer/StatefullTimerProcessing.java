@@ -1,6 +1,7 @@
 package com.rubbishman.rubbishRedux.external.setup_extra.statefullTimer;
 
 import com.rubbishman.rubbishRedux.external.operational.action.createObject.CreateObject;
+import com.rubbishman.rubbishRedux.external.operational.action.createObject.ICreateObjectCallback;
 import com.rubbishman.rubbishRedux.external.operational.store.IdObject;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
 import com.rubbishman.rubbishRedux.internal.statefullTimer.helper.TimerComparator;
@@ -66,8 +67,11 @@ public class StatefullTimerProcessing {
     public CreateObject createTimer(ConcurrentLinkedQueue<Object> actionQueue, Long nowTime, Object action, int period, int repeats) {
         CreateObject<RepeatingTimer> createObj = new CreateObject(
                 new RepeatingTimer(nowTime, period, repeats, 0 , action),
-                (repeatingTimer) -> {
-                    addTimer(new TimerLogic(((IdObject)repeatingTimer).id));
+                new ICreateObjectCallback() {
+                    @Override
+                    public void postCreateState(Object repeatingTimer) {
+                        StatefullTimerProcessing.this.addTimer(new TimerLogic(((IdObject) repeatingTimer).id));
+                    }
                 }
         );
 

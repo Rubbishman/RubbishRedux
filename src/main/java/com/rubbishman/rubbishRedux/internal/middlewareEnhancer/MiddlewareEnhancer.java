@@ -1,5 +1,6 @@
 package com.rubbishman.rubbishRedux.internal.middlewareEnhancer;
 
+import redux.api.Dispatcher;
 import redux.api.Reducer;
 import redux.api.Store;
 import redux.api.enhancer.Middleware;
@@ -19,7 +20,12 @@ public class MiddlewareEnhancer<S> implements Store.Enhancer<S> {
         if(iterator.hasNext()) {
             return middleware.dispatch(
                     baseStore,
-                    action_recurse -> processMiddleware(baseStore, action_recurse, iterator.next(), iterator),
+                    new Dispatcher() {
+                        @Override
+                        public Object dispatch(Object action_recurse) {
+                            return MiddlewareEnhancer.this.processMiddleware(baseStore, action_recurse, iterator.next(), iterator);
+                        }
+                    },
                     action
             );
         }
@@ -28,29 +34,34 @@ public class MiddlewareEnhancer<S> implements Store.Enhancer<S> {
     }
 
     public Store.Creator<S> enhance(Store.Creator<S> next) {
-        return (reducer, initialState) -> {
-            Store<S> baseStore = next.create(reducer, initialState);
+        return new Store.Creator<S>() {
+            @Override
+            public Store<S> create(Reducer<S> reducer, S initialState) {
+                Store<S> baseStore = next.create(reducer, initialState);
 
-            return new Store<S>() {
-                public Object dispatch(Object action) {
-                    if(middleware.size() > 0) {
-                        Iterator<Middleware<S>> iter = middleware.iterator();
+                return new Store<S>() {
+                    public Object dispatch(Object action) {
+                        if (middleware.size() > 0) {
+                            Iterator<Middleware<S>> iter = middleware.iterator();
 
-                        return processMiddleware(baseStore, action, iter.next(), iter);
+                            return processMiddleware(baseStore, action, iter.next(), iter);
+                        }
+                        return baseStore.dispatch(action);
                     }
-                    return baseStore.dispatch(action);
-                }
 
-                public S getState() {
-                    return baseStore.getState();
-                }
-                public Subscription subscribe(Subscriber subscriber) {
-                    return baseStore.subscribe(subscriber);
-                }
-                public void replaceReducer(Reducer<S> reducer1) {
-                    baseStore.replaceReducer(reducer1);
-                }
-            };
+                    public S getState() {
+                        return baseStore.getState();
+                    }
+
+                    public Subscription subscribe(Subscriber subscriber) {
+                        return baseStore.subscribe(subscriber);
+                    }
+
+                    public void replaceReducer(Reducer<S> reducer1) {
+                        baseStore.replaceReducer(reducer1);
+                    }
+                };
+            }
         };
     }
 }

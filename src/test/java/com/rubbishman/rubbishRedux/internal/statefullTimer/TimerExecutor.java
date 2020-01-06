@@ -55,9 +55,12 @@ public class TimerExecutor {
     }
 
     public void startTimer() {
-        Runnable runner = () -> {
-            Long nowTime = System.nanoTime();
-            timerLogic(nowTime);
+        Runnable runner = new Runnable() {
+            @Override
+            public void run() {
+                Long nowTime = System.nanoTime();
+                TimerExecutor.this.timerLogic(nowTime);
+            }
         };
 
         executor.scheduleAtFixedRate(runner, 0, 15, TimeUnit.MILLISECONDS);

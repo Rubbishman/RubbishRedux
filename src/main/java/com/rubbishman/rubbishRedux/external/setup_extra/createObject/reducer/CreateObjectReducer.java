@@ -23,8 +23,11 @@ public class CreateObjectReducer implements Reducer<ObjectStore> {
     public ObjectStore reduceCreateObject(ObjectStore state, CreateObject action) {
         CreatedObjectStore createdObject = state.createObject(action.createObject);
         if(action.callback != null) {
-            this.postDispatchRunnable = () -> {
-                action.callback.postCreateState(createdObject.createdObject);
+            this.postDispatchRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    action.callback.postCreateState(createdObject.createdObject);
+                }
             };
         }
 
