@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/rubbishRedux.iml" filepath="$PROJECT_DIR$/.idea/modules/rubbishRedux.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RubbishRedux.iml" filepath="$PROJECT_DIR$/RubbishRedux.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/rubbishRedux.iml" filepath="$PROJECT_DIR$/.idea/modules/rubbishRedux.iml" group="rubbishRedux" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/rubbishRedux_main.iml" filepath="$PROJECT_DIR$/.idea/modules/rubbishRedux_main.iml" group="rubbishRedux" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/rubbishRedux_test.iml" filepath="$PROJECT_DIR$/.idea/modules/rubbishRedux_test.iml" group="rubbishRedux" />
     </modules>
