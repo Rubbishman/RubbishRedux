@@ -58,8 +58,8 @@ public class TimerExecutorTest {
 
         timer.timerLogic(nowTime);
 
-        assertEquals(6, timer.getState().objectMap.size());
-        Iterator<IdObject> iter = timer.getState().objectMap.valIterator();
+        assertEquals(6, timer.getState().getObjectsByClass(RepeatingTimer.class).size());
+        Iterator<IdObject> iter = timer.getState().getObjectsByClass(RepeatingTimer.class).valIterator();
         while(iter.hasNext()) {
             IdObject obj = iter.next();
             assertEquals(0, ((RepeatingTimer)obj.object).currentRepeats);
@@ -83,11 +83,11 @@ public class TimerExecutorTest {
         );
 
         timer.timerLogic(nowTime + 100);
-        assertEquals(1, ((RepeatingTimer)timer.getState().objectMap.get(new Identifier(1, RepeatingTimer.class)).object).currentRepeats);
+        assertEquals(1, ((RepeatingTimer)timer.getState().getObject(rt1id)).currentRepeats);
 
         timer.timerLogic(nowTime + 150);
 
-        iter = timer.getState().objectMap.valIterator();
+        iter = timer.getState().getObjectsByClass(RepeatingTimer.class).valIterator();
         while(iter.hasNext()) {
             IdObject obj = iter.next();
             assertEquals(1, ((RepeatingTimer)obj.object).currentRepeats);

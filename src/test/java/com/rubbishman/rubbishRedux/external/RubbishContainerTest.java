@@ -132,7 +132,7 @@ public class RubbishContainerTest {
                 if(action instanceof IncrementCounterResolved) {
                     IncrementCounterResolved resolved = (IncrementCounterResolved) action;
 
-                    Counter counter = (Counter)state.objectMap.get(resolved.targetCounterId).object;
+                    Counter counter = state.getObject(resolved.targetCounterId);
 
                     return state.setObject(
                             resolved.targetCounterId,

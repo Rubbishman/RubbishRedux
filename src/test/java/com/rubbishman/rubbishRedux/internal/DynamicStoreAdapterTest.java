@@ -14,18 +14,13 @@ public class DynamicStoreAdapterTest {
     public void testDynamicStoreAdapter() {
         ObjectStore store = new ObjectStore();
 
-        Identifier counterId = new Identifier(1, Counter.class);
+        store = store.createObject(new Counter(
+                        0,
+                        1,
+                        6
+                )).state;
 
-        store = store.setObject(counterId,
-                new IdObject(
-                        counterId,
-                        new Counter(
-                              0,
-                              1,
-                              6
-                        )
-                ));
-
-        assertEquals("{\"objectMap\":[{\"key\":\"{\\\"id\\\":1,\\\"clazz\\\":\\\"com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter\\\"}\",\"value\":\"{\\\"id\\\":{\\\"id\\\":1,\\\"clazz\\\":\\\"com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter\\\"},\\\"object\\\":{\\\"id\\\":{\\\"id\\\":1,\\\"clazz\\\":\\\"com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter\\\"},\\\"object\\\":{\\\"count\\\":0,\\\"incrementDiceNum\\\":1,\\\"incrementDiceSize\\\":6}}}\"}],\"idGenerator\":\"{\\\"idSequence\\\":{}}\"}", GsonInstance.getInstance().toJson(store));
+        assertEquals("{\"objectMap\":[{\"key\":\"{\\\"id\\\":1,\\\"clazz\\\":\\\"com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter\\\"}\",\"value\":\"{\\\"id\\\":{\\\"id\\\":1,\\\"clazz\\\":\\\"com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter\\\"},\\\"object\\\":{\\\"count\\\":0,\\\"incrementDiceNum\\\":1,\\\"incrementDiceSize\\\":6}}\"}],\"idGenerator\":\"{\\\"idSequence\\\":{\\\"class com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter\\\":1}}\"}",
+                GsonInstance.getInstance().toJson(store));
     }
 }

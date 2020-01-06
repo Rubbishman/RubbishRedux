@@ -4,6 +4,7 @@ import com.rubbishman.rubbishRedux.external.operational.store.Identifier;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
 import com.rubbishman.rubbishRedux.external.setup.IRubbishReducer;
 import com.rubbishman.rubbishRedux.internal.neuronia.actions.CardThoughtMovement;
+import com.rubbishman.rubbishRedux.internal.neuronia.actions.EndTurn;
 import com.rubbishman.rubbishRedux.internal.neuronia.actions.PlayCard;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.CurrentThoughtLocation;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.ThoughtLocationTransition;
@@ -52,6 +53,11 @@ public class NeuroniaReducer extends IRubbishReducer {
 
         state = state.setObject(curLocID, curLocation);
         state = state.setObject(transitionId, locTransition);
+
+        return state;
+    }
+
+    public ObjectStore endTurn(ObjectStore state, EndTurn endTurn) {
 
         return state;
     }

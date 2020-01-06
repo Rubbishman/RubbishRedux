@@ -1,9 +1,7 @@
 package com.rubbishman.rubbishRedux.external.setup_extra.createObject.reducer;
 
 import com.rubbishman.rubbishRedux.external.operational.action.createObject.CreateObject;
-import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.IdGenerator;
-import com.rubbishman.rubbishRedux.external.operational.store.IdObject;
-import com.rubbishman.rubbishRedux.external.operational.store.Identifier;
+import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.CreatedObjectStore;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
 import redux.api.Reducer;
 
@@ -23,22 +21,14 @@ public class CreateObjectReducer implements Reducer<ObjectStore> {
     }
 
     public ObjectStore reduceCreateObject(ObjectStore state, CreateObject action) {
-        IdGenerator idGenerator = new IdGenerator(state.idGenerator.idSequence);
-
-        Identifier identifier = idGenerator.nextId(action.createObject.getClass());
-        IdObject idObject = new IdObject(identifier, action.createObject);
-
-        ObjectStore cloned = new ObjectStore(
-                state.objectMap.assoc(identifier, idObject),
-                new IdGenerator(idGenerator.idSequence)
-        );
+        CreatedObjectStore createdObject = state.createObject(action.createObject);
         if(action.callback != null) {
             this.postDispatchRunnable = () -> {
-                action.callback.postCreateState(idObject);
+                action.callback.postCreateState(createdObject.createdObject);
             };
         }
 
-        return cloned;
+        return createdObject.state;
     }
 
     public ObjectStore reduce(ObjectStore state, Object action) {

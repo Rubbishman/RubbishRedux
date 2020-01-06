@@ -9,14 +9,11 @@ import redux.api.Reducer;
 
 public class TimerReducer implements Reducer<ObjectStore> {
     public ObjectStore reduce(ObjectStore state, IncrementTimer action) {
-        RepeatingTimer timer = (RepeatingTimer)state.objectMap.get(action.subject).object;
+        RepeatingTimer timer = state.getObject(action.subject);
 
         RepeatingTimer newTimer = timer.changeRepeats(TimerHelper.calculateNewRepeats(action.nowTime, timer));
 
-        ObjectStore cloned = new ObjectStore(
-                state.objectMap.assoc(action.subject, new IdObject(action.subject, newTimer)),
-                state.idGenerator
-        );
+        ObjectStore cloned = state.setObject(action.subject, newTimer);
 
         int diff = newTimer.currentRepeats - timer.currentRepeats;
 

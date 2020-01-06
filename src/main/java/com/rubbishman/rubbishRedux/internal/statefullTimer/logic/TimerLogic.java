@@ -16,7 +16,7 @@ public class TimerLogic {
     }
 
     public boolean logic(ConcurrentLinkedQueue<Object> actionQueue, ObjectStore state, long nowTime) {
-        if(state.objectMap.get(subject) == null) {
+        if(state.getObject(subject) == null) {
             return false;
         }
 
@@ -33,7 +33,7 @@ public class TimerLogic {
     }
 
     public RepeatingTimer getRepeatingTimer(ObjectStore state) {
-        return (RepeatingTimer)state.objectMap.get(subject).object;
+        return (RepeatingTimer)state.getObject(subject);
     }
 
 }
