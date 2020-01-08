@@ -10,6 +10,7 @@ import com.rubbishman.rubbishRedux.external.setup.RubbishContainerOptions;
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.GsonInstance;
 import com.rubbishman.rubbishRedux.internal.misc.MyLoggingMiddleware;
 import com.rubbishman.rubbishRedux.internal.neuronia.Reducers.NeuroniaReducer;
+import com.rubbishman.rubbishRedux.internal.neuronia.actions.EndTurn;
 import com.rubbishman.rubbishRedux.internal.neuronia.actions.PlayCard;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.CurrentThoughtLocation;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.InitialThoughtLocation;
@@ -24,8 +25,12 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class NeuroniaTest {
+    public static final Identifier curLocID = new Identifier(1, CurrentThoughtLocation.class);
+    public static final Identifier initLocID = new Identifier(1, InitialThoughtLocation.class);
+
     private RubbishContainer rubbish;
     private PrintStream printStream;
     private StringBuilder stringBuilder = new StringBuilder();
@@ -60,17 +65,35 @@ public class NeuroniaTest {
         rubbish.performActions();
         assertEquals(6, rubbish.actionQueueSize());
         rubbish.performActions();
-        CurrentThoughtLocation curLoc = rubbish.getState().getObject(new Identifier(1, CurrentThoughtLocation.class));
+        CurrentThoughtLocation curLoc = rubbish.getState().getObject(curLocID);
 
         assertEquals(2, curLoc.x);
         assertEquals(-2, curLoc.y);
 
-        System.out.println(stringBuilder.toString());
+        assertEquals(6, rubbish.getState().getObjectsByClass(ThoughtLocationTransition.class).size());
 
-        System.out.println(GsonInstance.getInstance().toJson(curLoc));
         ThoughtLocationTransition thoughtLocTrans = rubbish.getState().getObject(curLoc.thoughtLocationTransition);
-        System.out.println(GsonInstance.getInstance().toJson(thoughtLocTrans));
+        thoughtLocTrans = rubbish.getState().getObject(thoughtLocTrans.prev);
 
+        assertEquals(2, thoughtLocTrans.x);
+        assertEquals(-3, thoughtLocTrans.y);
+
+        rubbish.performAction(new EndTurn(initLocID, curLocID));
+
+        assertEquals(0, rubbish.getState().getObjectsByClass(ThoughtLocationTransition.class).size());
+
+        curLoc = rubbish.getState().getObject(curLocID);
+        assertEquals(2, curLoc.x);
+        assertEquals(-2, curLoc.y);
+        assertNull(curLoc.thoughtLocationTransition);
+
+        InitialThoughtLocation initLoc = rubbish.getState().getObject(initLocID);
+        assertEquals(2, initLoc.x);
+        assertEquals(-2, initLoc.y);
+    }
+
+    private void printThoughtTransition(ThoughtLocationTransition thoughtLocTrans) {
+        System.out.println(GsonInstance.getInstance().toJson(thoughtLocTrans));
         while(thoughtLocTrans.prev != null) {
             thoughtLocTrans = rubbish.getState().getObject(thoughtLocTrans.prev);
             System.out.println(GsonInstance.getInstance().toJson(thoughtLocTrans));

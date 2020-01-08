@@ -49,6 +49,13 @@ public class ObjectStore {
         );
     }
 
+    public ObjectStore clearObjects(Class clazz) {
+        return new ObjectStore(
+                objectMap.assoc(clazz, PersistentHashMap.empty()),
+                this.idGenerator
+        );
+    }
+
     public <T> T getObject(Identifier id) {
         return (T) objectMap.get(id.clazz).get(id).object;
     }

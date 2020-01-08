@@ -7,12 +7,14 @@ import com.rubbishman.rubbishRedux.internal.neuronia.actions.CardThoughtMovement
 import com.rubbishman.rubbishRedux.internal.neuronia.actions.EndTurn;
 import com.rubbishman.rubbishRedux.internal.neuronia.actions.PlayCard;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.CurrentThoughtLocation;
+import com.rubbishman.rubbishRedux.internal.neuronia.state.InitialThoughtLocation;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.ThoughtLocationTransition;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.card.Card;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.card.CardMovementComponent;
 
 public class NeuroniaReducer extends IRubbishReducer {
     public static final Identifier curLocID = new Identifier(1, CurrentThoughtLocation.class);
+    public static final Identifier initLocID = new Identifier(1, InitialThoughtLocation.class);
 
     public ObjectStore playCard(ObjectStore state, PlayCard playCard) {
         Card card = state.getObject(playCard.cardId);
@@ -58,6 +60,12 @@ public class NeuroniaReducer extends IRubbishReducer {
     }
 
     public ObjectStore endTurn(ObjectStore state, EndTurn endTurn) {
+        state = state.clearObjects(ThoughtLocationTransition.class);
+
+        CurrentThoughtLocation prevLocation = state.getObject(curLocID);
+
+        state = state.setObject(initLocID, new InitialThoughtLocation(prevLocation.x, prevLocation.y));
+        state = state.setObject(curLocID, new CurrentThoughtLocation(prevLocation.x, prevLocation.y, null));
 
         return state;
     }
@@ -67,6 +75,8 @@ public class NeuroniaReducer extends IRubbishReducer {
             return cardThoughtMovement(state, (CardThoughtMovement)action);
         } else if (action instanceof PlayCard) {
             return playCard(state, (PlayCard)action);
+        } else if (action instanceof EndTurn) {
+            return endTurn(state, (EndTurn)action);
         }
         return state;
     }
