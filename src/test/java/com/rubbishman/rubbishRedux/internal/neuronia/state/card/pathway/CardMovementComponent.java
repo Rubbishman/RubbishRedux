@@ -1,4 +1,4 @@
-package com.rubbishman.rubbishRedux.internal.neuronia.state.card;
+package com.rubbishman.rubbishRedux.internal.neuronia.state.card.pathway;
 
 public class CardMovementComponent {
     public final Movement movement;
