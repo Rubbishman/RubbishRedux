@@ -69,7 +69,7 @@ public class NeuroniaTest {
         createExperienceCard();
         assertEquals(1, rubbish.actionQueueSize());
         rubbish.performActions();
-        assertEquals(4, rubbish.actionQueueSize());
+        assertEquals(5, rubbish.actionQueueSize());
         rubbish.performActions();
 
         createPathwayCard();
@@ -90,7 +90,12 @@ public class NeuroniaTest {
         assertEquals(2, thoughtLocTrans.x);
         assertEquals(-3, thoughtLocTrans.y);
 
-        rubbish.performAction(new EndTurn(initLocID, curLocID));
+        Brain brain = rubbish.getState().getObject(brainId);
+
+        assertEquals(1, brain.activeMemory.size());
+        assertEquals(0, brain.conceptReserve.size());
+
+        rubbish.performAction(new EndTurn(brainId, initLocID, curLocID));
 
         assertEquals(0, rubbish.getState().getObjectsByClass(ThoughtLocationTransition.class).size());
 
@@ -103,7 +108,11 @@ public class NeuroniaTest {
         assertEquals(2, initLoc.x);
         assertEquals(-2, initLoc.y);
 
-        System.out.println(GsonInstance.getInstance().toJson(rubbish.getState()));
+        brain = rubbish.getState().getObject(brainId);
+
+        assertEquals(0, brain.activeMemory.size());
+        assertEquals(1, brain.conceptReserve.size());
+//        System.out.println(GsonInstance.getInstance().toJson(rubbish.getState()));
     }
 
     private void printThoughtTransition(ThoughtLocationTransition thoughtLocTrans) {
@@ -141,7 +150,8 @@ public class NeuroniaTest {
             new ConceptPlacement(ConceptTypes.RED, 4, 5, 0),
             new ConceptPlacement(ConceptTypes.TEAL, -6, 3, 0),
             new ConceptPlacement(ConceptTypes.PURPLE, 5, -2, 0),
-            new ConceptPlacement(ConceptTypes.ORANGE, -8, -3, 0)
+            new ConceptPlacement(ConceptTypes.ORANGE, -8, -3, 0),
+            new ConceptPlacement(ConceptTypes.GREEN, 2, -2, 0)
         });
 
         final Identifier[] cardId = new Identifier[1];

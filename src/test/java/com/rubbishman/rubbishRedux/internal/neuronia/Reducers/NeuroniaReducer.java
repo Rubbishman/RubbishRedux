@@ -12,12 +12,12 @@ import com.rubbishman.rubbishRedux.internal.neuronia.state.Brain;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.CurrentThoughtLocation;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.InitialThoughtLocation;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.ThoughtLocationTransition;
+import com.rubbishman.rubbishRedux.internal.neuronia.state.brain.BrainConcept;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.card.experience.ConceptPlacement;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.card.experience.ExperienceCard;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.card.pathway.PathwayCard;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.card.pathway.CardMovementComponent;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.concept.Concept;
-import com.rubbishman.rubbishRedux.internal.neuronia.state.concept.ConceptLocation;
 
 public class NeuroniaReducer extends IRubbishReducer {
     public static final Identifier curLocID = new Identifier(1, CurrentThoughtLocation.class);
@@ -47,6 +47,7 @@ public class NeuroniaReducer extends IRubbishReducer {
         for(CardMovementComponent cmComp: pathwayCard.movements) {
             if(cmComp.costTier <= 1) { // This would check the player level...
                 rubbishContainer.addAction(new PathwayMovement(
+                        pathwayCard.brainId,
                         cmComp.movement,
                         cmComp.pickup
                 ));
@@ -73,6 +74,14 @@ public class NeuroniaReducer extends IRubbishReducer {
                 break;
         }
 
+        if(ctMovement.pickup) {
+            Brain brain = state.getObject(ctMovement.brainId);
+            if(brain.hasConcept(locTransition.x, locTransition.y)) {
+                BrainConcept brainConcept = brain.pickupConcept(locTransition.x, locTransition.y);
+                state = state.setObject(ctMovement.brainId, brainConcept.brain);
+            }
+        }
+
         Identifier transitionId = state.idGenerator.nextId(ThoughtLocationTransition.class);
 
         curLocation = new CurrentThoughtLocation(locTransition.x, locTransition.y, transitionId);
@@ -87,6 +96,9 @@ public class NeuroniaReducer extends IRubbishReducer {
         state = state.clearObjects(ThoughtLocationTransition.class);
 
         CurrentThoughtLocation prevLocation = state.getObject(curLocID);
+
+        Brain brain = state.getObject(endTurn.brainId);
+        state = state.setObject(endTurn.brainId, brain.endTurn());
 
         state = state.setObject(initLocID, new InitialThoughtLocation(prevLocation.x, prevLocation.y));
         state = state.setObject(curLocID, new CurrentThoughtLocation(prevLocation.x, prevLocation.y, null));
