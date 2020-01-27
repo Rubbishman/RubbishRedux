@@ -1,7 +1,8 @@
-package com.rubbishman.rubbishRedux.internal.neuronia.state;
+package com.rubbishman.rubbishRedux.internal.neuronia.state.brain;
 
 import com.google.common.collect.ImmutableList;
-import com.rubbishman.rubbishRedux.internal.neuronia.state.brain.ConceptTree;
+import com.rubbishman.rubbishRedux.internal.neuronia.state.InitialThoughtLocation;
+import com.rubbishman.rubbishRedux.internal.neuronia.state.ThoughtLocationTransition;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.concept.Concept;
 import org.organicdesign.fp.collections.PersistentHashMap;
 
@@ -11,6 +12,7 @@ public class Brain {
     public final ImmutableList<Concept> conceptReserve;
     public final ThoughtLocationTransition currentThoughtLocation;
     public final InitialThoughtLocation initialThoughtLocation;
+    // public final ImmutableList<Skill> activeSkills;
 
     public Brain() {
         inBrainConcepts = PersistentHashMap.empty();

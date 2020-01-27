@@ -1,20 +1,17 @@
 package com.rubbishman.rubbishRedux.internal.neuronia.Reducers;
 
-import com.rubbishman.rubbishRedux.external.operational.store.Identifier;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
 import com.rubbishman.rubbishRedux.external.setup.IRubbishReducer;
 import com.rubbishman.rubbishRedux.internal.neuronia.actions.PathwayMovement;
 import com.rubbishman.rubbishRedux.internal.neuronia.actions.EndTurn;
 import com.rubbishman.rubbishRedux.internal.neuronia.actions.PlaceConcept;
 import com.rubbishman.rubbishRedux.internal.neuronia.actions.PlayCard;
-import com.rubbishman.rubbishRedux.internal.neuronia.state.Brain;
-import com.rubbishman.rubbishRedux.internal.neuronia.state.CurrentThoughtLocation;
+import com.rubbishman.rubbishRedux.internal.neuronia.state.brain.Brain;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.ThoughtLocationTransition;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.card.experience.ConceptPlacement;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.card.experience.ExperienceCard;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.card.pathway.PathwayCard;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.card.pathway.CardMovementComponent;
-import com.rubbishman.rubbishRedux.internal.neuronia.state.concept.Concept;
 
 public class NeuroniaReducer extends IRubbishReducer {
     private ObjectStore playCard(ObjectStore state, PlayCard playCard) {
