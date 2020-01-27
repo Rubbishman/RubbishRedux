@@ -1,9 +1,10 @@
 package com.rubbishman.rubbishRedux.internal.neuronia.state.concept;
 
-public class Concept {
-    public final ConceptTypes type;
-
-    public Concept(ConceptTypes type) {
-        this.type = type;
-    }
+public enum Concept {
+    RED,
+    GREEN,
+    BLUE,
+    ORANGE,
+    PURPLE,
+    TEAL
 }

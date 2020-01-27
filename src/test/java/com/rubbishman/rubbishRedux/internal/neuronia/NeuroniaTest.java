@@ -13,7 +13,6 @@ import com.rubbishman.rubbishRedux.internal.neuronia.Reducers.NeuroniaReducer;
 import com.rubbishman.rubbishRedux.internal.neuronia.actions.EndTurn;
 import com.rubbishman.rubbishRedux.internal.neuronia.actions.PlayCard;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.Brain;
-import com.rubbishman.rubbishRedux.internal.neuronia.state.CurrentThoughtLocation;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.InitialThoughtLocation;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.ThoughtLocationTransition;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.card.experience.ConceptPlacement;
@@ -21,7 +20,7 @@ import com.rubbishman.rubbishRedux.internal.neuronia.state.card.experience.Exper
 import com.rubbishman.rubbishRedux.internal.neuronia.state.card.pathway.PathwayCard;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.card.pathway.CardMovementComponent;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.card.pathway.Movement;
-import com.rubbishman.rubbishRedux.internal.neuronia.state.concept.ConceptTypes;
+import com.rubbishman.rubbishRedux.internal.neuronia.state.concept.Concept;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,8 +31,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 public class NeuroniaTest {
-    public static final Identifier curLocID = new Identifier(1, CurrentThoughtLocation.class);
-    public static final Identifier initLocID = new Identifier(1, InitialThoughtLocation.class);
     public static Identifier brainId;
 
     private RubbishContainer rubbish;
@@ -64,8 +61,9 @@ public class NeuroniaTest {
 
     @Test
     public void testNeuronia() {
-        createInitialThoughtLocation();
         createBrain();
+        Brain brain = rubbish.getState().getObject(brainId);
+
         createExperienceCard();
         assertEquals(1, rubbish.actionQueueSize());
         rubbish.performActions();
@@ -77,34 +75,37 @@ public class NeuroniaTest {
         rubbish.performActions();
         assertEquals(8, rubbish.actionQueueSize());
         rubbish.performActions();
-        CurrentThoughtLocation curLoc = rubbish.getState().getObject(curLocID);
+
+        brain = rubbish.getState().getObject(brainId);
+        ThoughtLocationTransition curLoc = brain.currentThoughtLocation;
 
         assertEquals(2, curLoc.x);
         assertEquals(-2, curLoc.y);
 
-        assertEquals(8, rubbish.getState().getObjectsByClass(ThoughtLocationTransition.class).size());
+        brain = rubbish.getState().getObject(brainId);
 
-        ThoughtLocationTransition thoughtLocTrans = rubbish.getState().getObject(curLoc.thoughtLocationTransition);
-        thoughtLocTrans = rubbish.getState().getObject(thoughtLocTrans.prev);
+        ThoughtLocationTransition thoughtLocTrans = curLoc.prev;
 
         assertEquals(2, thoughtLocTrans.x);
         assertEquals(-3, thoughtLocTrans.y);
 
-        Brain brain = rubbish.getState().getObject(brainId);
+        brain = rubbish.getState().getObject(brainId);
 
         assertEquals(1, brain.activeMemory.size());
         assertEquals(0, brain.conceptReserve.size());
 
-        rubbish.performAction(new EndTurn(brainId, initLocID, curLocID));
+        rubbish.performAction(new EndTurn(brainId));
 
         assertEquals(0, rubbish.getState().getObjectsByClass(ThoughtLocationTransition.class).size());
 
-        curLoc = rubbish.getState().getObject(curLocID);
+        brain = rubbish.getState().getObject(brainId);
+
+        curLoc = brain.currentThoughtLocation;
         assertEquals(2, curLoc.x);
         assertEquals(-2, curLoc.y);
-        assertNull(curLoc.thoughtLocationTransition);
+        assertNull(curLoc.prev);
 
-        InitialThoughtLocation initLoc = rubbish.getState().getObject(initLocID);
+        InitialThoughtLocation initLoc = brain.initialThoughtLocation;
         assertEquals(2, initLoc.x);
         assertEquals(-2, initLoc.y);
 
@@ -113,22 +114,6 @@ public class NeuroniaTest {
         assertEquals(0, brain.activeMemory.size());
         assertEquals(1, brain.conceptReserve.size());
 //        System.out.println(GsonInstance.getInstance().toJson(rubbish.getState()));
-    }
-
-    private void printThoughtTransition(ThoughtLocationTransition thoughtLocTrans) {
-        System.out.println(GsonInstance.getInstance().toJson(thoughtLocTrans));
-        while(thoughtLocTrans.prev != null) {
-            thoughtLocTrans = rubbish.getState().getObject(thoughtLocTrans.prev);
-            System.out.println(GsonInstance.getInstance().toJson(thoughtLocTrans));
-        }
-    }
-
-    private void createInitialThoughtLocation() {
-        InitialThoughtLocation initLocation = new InitialThoughtLocation(0,0);
-        CurrentThoughtLocation curLocation = new CurrentThoughtLocation(0,0, null);
-
-        rubbish.performAction(new CreateObject<>(initLocation));
-        rubbish.performAction(new CreateObject<>(curLocation));
     }
 
     private void createBrain() {
@@ -147,11 +132,11 @@ public class NeuroniaTest {
 
     private void createExperienceCard() {
         ExperienceCard experienceCard = new ExperienceCard(brainId, new ConceptPlacement[]{
-            new ConceptPlacement(ConceptTypes.RED, 4, 5, 0),
-            new ConceptPlacement(ConceptTypes.TEAL, -6, 3, 0),
-            new ConceptPlacement(ConceptTypes.PURPLE, 5, -2, 0),
-            new ConceptPlacement(ConceptTypes.ORANGE, -8, -3, 0),
-            new ConceptPlacement(ConceptTypes.GREEN, 2, -2, 0)
+            new ConceptPlacement(Concept.RED, 4, 5, 0),
+            new ConceptPlacement(Concept.TEAL, -6, 3, 0),
+            new ConceptPlacement(Concept.PURPLE, 5, -2, 0),
+            new ConceptPlacement(Concept.ORANGE, -8, -3, 0),
+            new ConceptPlacement(Concept.GREEN, 2, -2, 0)
         });
 
         final Identifier[] cardId = new Identifier[1];

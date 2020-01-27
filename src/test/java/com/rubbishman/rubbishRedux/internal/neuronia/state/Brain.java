@@ -1,95 +1,107 @@
 package com.rubbishman.rubbishRedux.internal.neuronia.state;
 
 import com.google.common.collect.ImmutableList;
-import com.rubbishman.rubbishRedux.external.operational.store.Identifier;
-import com.rubbishman.rubbishRedux.internal.neuronia.state.brain.BrainConcept;
+import com.rubbishman.rubbishRedux.internal.neuronia.state.brain.ConceptTree;
+import com.rubbishman.rubbishRedux.internal.neuronia.state.concept.Concept;
 import org.organicdesign.fp.collections.PersistentHashMap;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Brain {
-    private final PersistentHashMap<Integer, PersistentHashMap<Integer, List<Identifier>>> concepts;
-    public final ImmutableList<Identifier> activeMemory;
-    public final ImmutableList<Identifier> conceptReserve;
+    private final PersistentHashMap<Integer, PersistentHashMap<Integer, ImmutableList<Concept>>> inBrainConcepts;
+    public final ImmutableList<Concept> activeMemory;
+    public final ImmutableList<Concept> conceptReserve;
+    public final ThoughtLocationTransition currentThoughtLocation;
+    public final InitialThoughtLocation initialThoughtLocation;
 
     public Brain() {
-        concepts = PersistentHashMap.empty();
+        inBrainConcepts = PersistentHashMap.empty();
         activeMemory = ImmutableList.of();
         conceptReserve = ImmutableList.of();
+        currentThoughtLocation = new ThoughtLocationTransition(0, 0, false, null);
+        initialThoughtLocation = new InitialThoughtLocation(0, 0);
     }
 
-    public Brain(PersistentHashMap<Integer, PersistentHashMap<Integer, List<Identifier>>> concepts) {
-        this.concepts = concepts;
+    public Brain(PersistentHashMap<Integer, PersistentHashMap<Integer, ImmutableList<Concept>>> inBrainConcepts) {
+        this.inBrainConcepts = inBrainConcepts;
         activeMemory = ImmutableList.of();
         conceptReserve = ImmutableList.of();
+        currentThoughtLocation = new ThoughtLocationTransition(0, 0, false, null);
+        initialThoughtLocation = new InitialThoughtLocation(0, 0);
     }
 
-    public Brain(PersistentHashMap<Integer, PersistentHashMap<Integer, List<Identifier>>> concepts,
-                 ImmutableList<Identifier> activeMemory,
-                 ImmutableList<Identifier> conceptReserve) {
+    public Brain(PersistentHashMap<Integer, PersistentHashMap<Integer, ImmutableList<Concept>>> inBrainConcepts,
+                 ImmutableList<Concept> activeMemory,
+                 ImmutableList<Concept> conceptReserve,
+                 ThoughtLocationTransition currentThoughtLocation,
+                 InitialThoughtLocation initialThoughtLocation) {
         this.activeMemory = activeMemory;
         this.conceptReserve = conceptReserve;
-        this.concepts = concepts;
+        this.inBrainConcepts = inBrainConcepts;
+        this.currentThoughtLocation = currentThoughtLocation;
+        this.initialThoughtLocation = initialThoughtLocation;
+    }
+
+    public Brain setCurrentLocation(ThoughtLocationTransition currentThoughtLocation) {
+        return new Brain(
+                inBrainConcepts,
+                activeMemory,
+                conceptReserve,
+                currentThoughtLocation,
+                initialThoughtLocation
+        );
     }
 
     public boolean hasConcept(int x, int y) {
-        PersistentHashMap<Integer, List<Identifier>> xCoord;
-        if(concepts.containsKey(x)) {
-            xCoord = concepts.get(x);
-            if(xCoord.containsKey(y)) {
-                List<Identifier> xyCoord = xCoord.get(y);
-                return !xyCoord.isEmpty();
-            }
-        }
-        return false;
+        ConceptTree conceptTree = traverseConceptTree(x, y);
+        return conceptTree.concepts != null;
     }
 
-    public BrainConcept pickupConcept(int x, int y) {
-        PersistentHashMap<Integer, List<Identifier>> xCoord;
-        if(concepts.containsKey(x)) {
-            xCoord = concepts.get(x);
-            if(xCoord.containsKey(y)) {
-                List<Identifier> xyCoord = xCoord.get(y);
-                if(!xyCoord.isEmpty()) {
-                    Identifier conceptId = xyCoord.get(xyCoord.size()-1);
-                    Brain newBrain = new Brain(
-                        concepts.assoc(x, xCoord.assoc(y, xyCoord.subList(0, xyCoord.size()-1))),
-                        ImmutableList.<Identifier>builder().addAll(activeMemory).add(conceptId).build(),
-                        conceptReserve
-                    );
-                    return new BrainConcept(newBrain, conceptId);
-                }
-            }
+    public ConceptTree traverseConceptTree(int x, int y) {
+        PersistentHashMap<Integer, ImmutableList<Concept>> xCoord;
+        if(inBrainConcepts.containsKey(x)) {
+            xCoord = inBrainConcepts.get(x);
+
+            return new ConceptTree(xCoord.get(y), xCoord);
         }
-        return new BrainConcept(this, null);
+
+        return new ConceptTree(null,PersistentHashMap.empty());
     }
 
-    public Brain addConcept(Identifier concept, int x, int y) {
-        PersistentHashMap<Integer, List<Identifier>> xCoord;
-
-        if(concepts.containsKey(x)) {
-            xCoord = concepts.get(x);
-            if(xCoord.containsKey(y)) {
-                List<Identifier> xyCoord = xCoord.get(y);
-                xyCoord.add(concept);
-                return new Brain(concepts.assoc(x, xCoord.assoc(y, xyCoord)));
-            }
-        } else {
-            xCoord = PersistentHashMap.empty();
+    public Brain pickupConcept(int x, int y) {
+        ConceptTree conceptTree = traverseConceptTree(x, y);
+        if(conceptTree.concepts != null) {
+            Concept concept = conceptTree.concepts.get(conceptTree.concepts.size()-1);
+            Brain newBrain = new Brain(
+                    inBrainConcepts.assoc(x, conceptTree.xCoord.assoc(y, conceptTree.concepts.subList(0, conceptTree.concepts.size()-1))),
+                    ImmutableList.<Concept>builder().addAll(activeMemory).add(concept).build(),
+                    conceptReserve,
+                    currentThoughtLocation,
+                    initialThoughtLocation
+            );
+            return newBrain;
         }
 
-        ArrayList<Identifier> cp = new ArrayList<Identifier>();
-        cp.add(concept);
+        return this;
+    }
 
-        return new Brain(concepts.assoc(x, xCoord.assoc(y, cp)));
+    public Brain addConcept(Concept concept, int x, int y) {
+        ConceptTree conceptTree = traverseConceptTree(x, y);
+        if(conceptTree.concepts != null) {
+            ImmutableList<Concept> newConcepts = ImmutableList.<Concept>builder().addAll(conceptTree.concepts).add(concept).build();
+            return new Brain(inBrainConcepts.assoc(x, conceptTree.xCoord.assoc(y, newConcepts)));
+        }
+
+        ImmutableList<Concept> cp = ImmutableList.of(concept);
+
+        return new Brain(inBrainConcepts.assoc(x, conceptTree.xCoord.assoc(y, cp)));
     }
 
     public Brain endTurn() {
         return new Brain(
-                concepts,
+                inBrainConcepts,
                 ImmutableList.of(),
-                ImmutableList.<Identifier>builder().addAll(conceptReserve).addAll(activeMemory).build()
+                ImmutableList.<Concept>builder().addAll(conceptReserve).addAll(activeMemory).build(),
+                new ThoughtLocationTransition(currentThoughtLocation.x, currentThoughtLocation.y, false, null),
+                new InitialThoughtLocation(currentThoughtLocation.x, currentThoughtLocation.y)
         );
     }
 }

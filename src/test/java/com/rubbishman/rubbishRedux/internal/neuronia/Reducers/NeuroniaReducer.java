@@ -3,16 +3,13 @@ package com.rubbishman.rubbishRedux.internal.neuronia.Reducers;
 import com.rubbishman.rubbishRedux.external.operational.store.Identifier;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
 import com.rubbishman.rubbishRedux.external.setup.IRubbishReducer;
-import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.CreatedObjectStore;
 import com.rubbishman.rubbishRedux.internal.neuronia.actions.PathwayMovement;
 import com.rubbishman.rubbishRedux.internal.neuronia.actions.EndTurn;
 import com.rubbishman.rubbishRedux.internal.neuronia.actions.PlaceConcept;
 import com.rubbishman.rubbishRedux.internal.neuronia.actions.PlayCard;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.Brain;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.CurrentThoughtLocation;
-import com.rubbishman.rubbishRedux.internal.neuronia.state.InitialThoughtLocation;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.ThoughtLocationTransition;
-import com.rubbishman.rubbishRedux.internal.neuronia.state.brain.BrainConcept;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.card.experience.ConceptPlacement;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.card.experience.ExperienceCard;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.card.pathway.PathwayCard;
@@ -20,9 +17,6 @@ import com.rubbishman.rubbishRedux.internal.neuronia.state.card.pathway.CardMove
 import com.rubbishman.rubbishRedux.internal.neuronia.state.concept.Concept;
 
 public class NeuroniaReducer extends IRubbishReducer {
-    public static final Identifier curLocID = new Identifier(1, CurrentThoughtLocation.class);
-    public static final Identifier initLocID = new Identifier(1, InitialThoughtLocation.class);
-
     private ObjectStore playCard(ObjectStore state, PlayCard playCard) {
         Object card = state.getObject(playCard.cardId);
         if(card instanceof PathwayCard) {
@@ -56,63 +50,54 @@ public class NeuroniaReducer extends IRubbishReducer {
     }
 
     private ObjectStore cardThoughtMovement(ObjectStore state, PathwayMovement ctMovement) {
-        CurrentThoughtLocation prevLocation = state.getObject(curLocID), curLocation = prevLocation;
+        Brain brain = state.getObject(ctMovement.brainId);
+        ThoughtLocationTransition prevLocation = brain.currentThoughtLocation, curLocation = prevLocation;
         ThoughtLocationTransition locTransition;
 
         switch(ctMovement.move) {
             case NORTH:
-                locTransition = new ThoughtLocationTransition(curLocation.x, curLocation.y - 1, ctMovement.pickup, prevLocation.thoughtLocationTransition);
+                locTransition = new ThoughtLocationTransition(curLocation.x, curLocation.y - 1, ctMovement.pickup, prevLocation.prev);
                 break;
             case EAST:
-                locTransition = new ThoughtLocationTransition(curLocation.x + 1, curLocation.y, ctMovement.pickup, prevLocation.thoughtLocationTransition);
+                locTransition = new ThoughtLocationTransition(curLocation.x + 1, curLocation.y, ctMovement.pickup, prevLocation.prev);
                 break;
             case SOUTH:
-                locTransition = new ThoughtLocationTransition(curLocation.x, curLocation.y + 1, ctMovement.pickup, prevLocation.thoughtLocationTransition);
+                locTransition = new ThoughtLocationTransition(curLocation.x, curLocation.y + 1, ctMovement.pickup, prevLocation.prev);
                 break;
             default: //WEST
-                locTransition = new ThoughtLocationTransition(curLocation.x - 1, curLocation.y, ctMovement.pickup, prevLocation.thoughtLocationTransition);
+                locTransition = new ThoughtLocationTransition(curLocation.x - 1, curLocation.y, ctMovement.pickup, prevLocation.prev);
                 break;
         }
 
         if(ctMovement.pickup) {
-            Brain brain = state.getObject(ctMovement.brainId);
             if(brain.hasConcept(locTransition.x, locTransition.y)) {
-                BrainConcept brainConcept = brain.pickupConcept(locTransition.x, locTransition.y);
-                state = state.setObject(ctMovement.brainId, brainConcept.brain);
+                brain = brain.pickupConcept(locTransition.x, locTransition.y);
+                state = state.setObject(ctMovement.brainId, brain);
             }
         }
 
-        Identifier transitionId = state.idGenerator.nextId(ThoughtLocationTransition.class);
+        curLocation = new ThoughtLocationTransition(locTransition.x, locTransition.y, ctMovement.pickup, prevLocation);
 
-        curLocation = new CurrentThoughtLocation(locTransition.x, locTransition.y, transitionId);
-
-        state = state.setObject(curLocID, curLocation);
-        state = state.setObject(transitionId, locTransition);
+        state = state.setObject(ctMovement.brainId, brain.setCurrentLocation(curLocation));
 
         return state;
     }
 
     private ObjectStore endTurn(ObjectStore state, EndTurn endTurn) {
+        Brain brain = state.getObject(endTurn.brainId);
+
         state = state.clearObjects(ThoughtLocationTransition.class);
 
-        CurrentThoughtLocation prevLocation = state.getObject(curLocID);
-
-        Brain brain = state.getObject(endTurn.brainId);
         state = state.setObject(endTurn.brainId, brain.endTurn());
-
-        state = state.setObject(initLocID, new InitialThoughtLocation(prevLocation.x, prevLocation.y));
-        state = state.setObject(curLocID, new CurrentThoughtLocation(prevLocation.x, prevLocation.y, null));
 
         return state;
     }
 
     private ObjectStore placeConcept(ObjectStore state, PlaceConcept placeConcept) {
-        CreatedObjectStore createdObjectStoreConcept = state.createObject(new Concept(placeConcept.type));
+        Brain brain = state.getObject(placeConcept.brainId);
+        brain = brain.addConcept(placeConcept.type, placeConcept.x, placeConcept.y);
 
-        Brain brain = createdObjectStoreConcept.state.getObject(placeConcept.brainId);
-        brain = brain.addConcept(createdObjectStoreConcept.createdObject.id, placeConcept.x, placeConcept.y);
-
-        return createdObjectStoreConcept.state.setObject(placeConcept.brainId, brain);
+        return state.setObject(placeConcept.brainId, brain);
     }
 
     public ObjectStore reduce(ObjectStore state, Object action) {
