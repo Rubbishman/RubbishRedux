@@ -8,9 +8,9 @@ import com.rubbishman.rubbishRedux.external.operational.store.Identifier;
 import com.rubbishman.rubbishRedux.external.setup.RubbishContainerCreator;
 import com.rubbishman.rubbishRedux.external.setup.RubbishContainerOptions;
 import com.rubbishman.rubbishRedux.internal.misc.MyLoggingMiddleware;
-import com.rubbishman.rubbishRedux.internal.neuronia.Reducers.NeuroniaReducer;
-import com.rubbishman.rubbishRedux.internal.neuronia.actions.EndTurn;
-import com.rubbishman.rubbishRedux.internal.neuronia.actions.PlayCard;
+import com.rubbishman.rubbishRedux.internal.neuronia.reducer.NeuroniaReducer;
+import com.rubbishman.rubbishRedux.internal.neuronia.action.EndTurn;
+import com.rubbishman.rubbishRedux.internal.neuronia.action.PlayCard;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.brain.Brain;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.InitialThoughtLocation;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.ThoughtLocationTransition;
@@ -19,7 +19,7 @@ import com.rubbishman.rubbishRedux.internal.neuronia.state.card.experience.Exper
 import com.rubbishman.rubbishRedux.internal.neuronia.state.card.pathway.PathwayCard;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.card.pathway.CardMovementComponent;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.card.pathway.Movement;
-import com.rubbishman.rubbishRedux.internal.neuronia.state.concept.Concept;
+import com.rubbishman.rubbishRedux.internal.neuronia.state.brain.Concept;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -61,7 +61,7 @@ public class NeuroniaTest {
     @Test
     public void testNeuronia() {
         createBrain();
-        Brain brain = rubbish.getState().getObject(brainId);
+        Brain brain;
 
         createExperienceCard();
         assertEquals(1, rubbish.actionQueueSize());
@@ -80,8 +80,6 @@ public class NeuroniaTest {
 
         assertEquals(2, curLoc.x);
         assertEquals(-2, curLoc.y);
-
-        brain = rubbish.getState().getObject(brainId);
 
         ThoughtLocationTransition thoughtLocTrans = curLoc.prev;
 
@@ -135,7 +133,8 @@ public class NeuroniaTest {
             new ConceptPlacement(Concept.TEAL, -6, 3, 0),
             new ConceptPlacement(Concept.PURPLE, 5, -2, 0),
             new ConceptPlacement(Concept.ORANGE, -8, -3, 0),
-            new ConceptPlacement(Concept.GREEN, 2, -2, 0)
+            new ConceptPlacement(Concept.GREEN, 2, -2, 0),
+            new ConceptPlacement(Concept.BLUE, 0, -1, 0)
         });
 
         final Identifier[] cardId = new Identifier[1];

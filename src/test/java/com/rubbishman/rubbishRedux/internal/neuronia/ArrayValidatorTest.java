@@ -1,7 +1,8 @@
 package com.rubbishman.rubbishRedux.internal.neuronia;
 
 import com.google.common.collect.ImmutableList;
-import com.rubbishman.rubbishRedux.internal.neuronia.state.concept.Concept;
+import com.rubbishman.rubbishRedux.internal.neuronia.CostValidator.CostValidator;
+import com.rubbishman.rubbishRedux.internal.neuronia.state.brain.Concept;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.cost.ArrayValidator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -86,6 +87,6 @@ public class ArrayValidatorTest {
     public void testArrayValidator() {
         ArrayValidator arrayVal = new ArrayValidator(requiredConcepts);
 
-        assertEquals("Required: " + requiredConcepts + ", available: " + availableConcepts, pass, arrayVal.validate(availableConcepts));
+        assertEquals("Required: " + requiredConcepts + ", available: " + availableConcepts, pass, CostValidator.validate(arrayVal, availableConcepts));
     }
 }

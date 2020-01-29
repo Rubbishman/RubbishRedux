@@ -1,7 +1,6 @@
 package com.rubbishman.rubbishRedux.internal.neuronia.state.brain;
 
 import com.google.common.collect.ImmutableList;
-import com.rubbishman.rubbishRedux.internal.neuronia.state.concept.Concept;
 import org.organicdesign.fp.collections.PersistentHashMap;
 
 public class ConceptTree {

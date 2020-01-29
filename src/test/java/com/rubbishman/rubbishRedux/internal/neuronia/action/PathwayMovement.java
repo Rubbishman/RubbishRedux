@@ -1,4 +1,4 @@
-package com.rubbishman.rubbishRedux.internal.neuronia.actions;
+package com.rubbishman.rubbishRedux.internal.neuronia.action;
 
 import com.rubbishman.rubbishRedux.external.operational.store.Identifier;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.card.pathway.Movement;

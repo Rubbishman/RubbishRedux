@@ -3,7 +3,6 @@ package com.rubbishman.rubbishRedux.internal.neuronia.state.brain;
 import com.google.common.collect.ImmutableList;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.InitialThoughtLocation;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.ThoughtLocationTransition;
-import com.rubbishman.rubbishRedux.internal.neuronia.state.concept.Concept;
 import org.organicdesign.fp.collections.PersistentHashMap;
 
 public class Brain {
@@ -72,14 +71,13 @@ public class Brain {
         ConceptTree conceptTree = traverseConceptTree(x, y);
         if(conceptTree.concepts != null) {
             Concept concept = conceptTree.concepts.get(conceptTree.concepts.size()-1);
-            Brain newBrain = new Brain(
+            return new Brain(
                     inBrainConcepts.assoc(x, conceptTree.xCoord.assoc(y, conceptTree.concepts.subList(0, conceptTree.concepts.size()-1))),
                     ImmutableList.<Concept>builder().addAll(activeMemory).add(concept).build(),
                     conceptReserve,
                     currentThoughtLocation,
                     initialThoughtLocation
             );
-            return newBrain;
         }
 
         return this;

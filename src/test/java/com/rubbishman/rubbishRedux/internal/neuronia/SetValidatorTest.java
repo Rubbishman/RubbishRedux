@@ -1,7 +1,8 @@
 package com.rubbishman.rubbishRedux.internal.neuronia;
 
 import com.google.common.collect.ImmutableList;
-import com.rubbishman.rubbishRedux.internal.neuronia.state.concept.Concept;
+import com.rubbishman.rubbishRedux.internal.neuronia.CostValidator.CostValidator;
+import com.rubbishman.rubbishRedux.internal.neuronia.state.brain.Concept;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.cost.SetValidator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -84,6 +85,6 @@ public class SetValidatorTest {
     public void testSetValidator() {
         SetValidator setVal = new SetValidator(requiredConcepts);
 
-        assertEquals("Required: " + requiredConcepts + ", available: " + availableConcepts, pass, setVal.validate(availableConcepts));
+        assertEquals("Required: " + requiredConcepts + ", available: " + availableConcepts, pass, CostValidator.validate(setVal, availableConcepts));
     }
 }

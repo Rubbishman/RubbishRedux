@@ -1,6 +1,6 @@
 package com.rubbishman.rubbishRedux.internal.neuronia.state.card.experience;
 
-import com.rubbishman.rubbishRedux.internal.neuronia.state.concept.Concept;
+import com.rubbishman.rubbishRedux.internal.neuronia.state.brain.Concept;
 
 public class ConceptPlacement {
     public final Concept type;

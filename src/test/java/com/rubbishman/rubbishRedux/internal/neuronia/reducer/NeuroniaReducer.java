@@ -1,11 +1,11 @@
-package com.rubbishman.rubbishRedux.internal.neuronia.Reducers;
+package com.rubbishman.rubbishRedux.internal.neuronia.reducer;
 
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
 import com.rubbishman.rubbishRedux.external.setup.IRubbishReducer;
-import com.rubbishman.rubbishRedux.internal.neuronia.actions.PathwayMovement;
-import com.rubbishman.rubbishRedux.internal.neuronia.actions.EndTurn;
-import com.rubbishman.rubbishRedux.internal.neuronia.actions.PlaceConcept;
-import com.rubbishman.rubbishRedux.internal.neuronia.actions.PlayCard;
+import com.rubbishman.rubbishRedux.internal.neuronia.action.PathwayMovement;
+import com.rubbishman.rubbishRedux.internal.neuronia.action.EndTurn;
+import com.rubbishman.rubbishRedux.internal.neuronia.action.PlaceConcept;
+import com.rubbishman.rubbishRedux.internal.neuronia.action.PlayCard;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.brain.Brain;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.ThoughtLocationTransition;
 import com.rubbishman.rubbishRedux.internal.neuronia.state.card.experience.ConceptPlacement;

@@ -1,7 +1,7 @@
-package com.rubbishman.rubbishRedux.internal.neuronia.actions;
+package com.rubbishman.rubbishRedux.internal.neuronia.action;
 
 import com.rubbishman.rubbishRedux.external.operational.store.Identifier;
-import com.rubbishman.rubbishRedux.internal.neuronia.state.concept.Concept;
+import com.rubbishman.rubbishRedux.internal.neuronia.state.brain.Concept;
 
 public class PlaceConcept {
     public final Identifier brainId;
