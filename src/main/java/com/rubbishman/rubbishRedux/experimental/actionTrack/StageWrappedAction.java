@@ -4,14 +4,14 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.HashMap;
 
-public class StageWrappedAction<T> implements Comparable {
-    public final T originalAction;
+public class StageWrappedAction implements Comparable {
+    public final Object originalAction;
     public final Object currentAction;
     public final HashMap<Long, Object> stageResults;
     public final ImmutableList<StageWrap> stages;
     public final int currentStage;
 
-    public StageWrappedAction(T action, ImmutableList<StageWrap> stages) {
+    public StageWrappedAction(Object action, ImmutableList<StageWrap> stages) {
         this.originalAction = action;
         currentAction = action;
         this.stages = stages;
@@ -19,7 +19,7 @@ public class StageWrappedAction<T> implements Comparable {
         stageResults = new HashMap<>();
     }
 
-    public StageWrappedAction(T action, ImmutableList<StageWrap> stages, int currentStage) {
+    public StageWrappedAction(Object action, ImmutableList<StageWrap> stages, int currentStage) {
         this.originalAction = action;
         currentAction = action;
         this.stages = stages;
@@ -27,7 +27,7 @@ public class StageWrappedAction<T> implements Comparable {
         stageResults = new HashMap<>();
     }
 
-    public StageWrappedAction(T action, Object currentAction, HashMap<Long, Object> stageResults, ImmutableList<StageWrap> stages, int currentStage) {
+    public StageWrappedAction(Object action, Object currentAction, HashMap<Long, Object> stageResults, ImmutableList<StageWrap> stages, int currentStage) {
         this.originalAction = action;
         this.currentAction = currentAction;
         this.stageResults = stageResults;

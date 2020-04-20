@@ -34,6 +34,10 @@ public class RubbishContainerCreator {
             }
         }
 
+        if(options.reducer == null) {
+            throw new NullPointerException("The reducer can not be null");
+        }
+
         rubbishReducer = new RubbishReducer(options.reducer);
 
         store = creator.create(rubbishReducer, new ObjectStore());
