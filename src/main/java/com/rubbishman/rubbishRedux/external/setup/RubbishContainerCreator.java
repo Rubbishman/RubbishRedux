@@ -1,5 +1,7 @@
 package com.rubbishman.rubbishRedux.external.setup;
 
+import com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrack;
+import com.rubbishman.rubbishRedux.experimental.actionTrack.stage.StageStack;
 import com.rubbishman.rubbishRedux.external.RubbishContainer;
 import com.rubbishman.rubbishRedux.external.setup_extra.RubbishReducer;
 import com.rubbishman.rubbishRedux.external.setup_extra.createObject.CreateObjectEnhancer;
@@ -41,15 +43,13 @@ public class RubbishContainerCreator {
         rubbishReducer = new RubbishReducer(options.reducer);
 
         store = creator.create(rubbishReducer, new ObjectStore());
-        if(!options.multistageActionList.isEmpty()) {
-            multistageActions = new MultiStageActionsProcessing(store, rubbishReducer);
-            for(Class clazz: options.multistageActionList.keySet()) {
-                multistageActions.addMultistageProcessor(clazz, options.multistageActionList.get(clazz));
-            }
-        }
 
         timer = new StatefullTimerProcessing(store);
 
-        return new RubbishContainer(actionQueue, multistageActions, timer, store, rubbishReducer);
+        StageStack stageStack = new StageStack(
+                options.actionStageMap
+        );
+
+        return new RubbishContainer(stageStack, timer, store, rubbishReducer);
     }
 }

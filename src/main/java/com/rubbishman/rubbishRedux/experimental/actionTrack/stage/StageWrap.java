@@ -1,12 +1,12 @@
-package com.rubbishman.rubbishRedux.experimental.actionTrack;
+package com.rubbishman.rubbishRedux.experimental.actionTrack.stage;
 
 import com.rubbishman.rubbishRedux.external.operational.action.multistageAction.Stage.Stage;
 
-public class StageWrap<T> implements Comparable {
+public class StageWrap implements Comparable {
     public final Stage stage;
-    public final StageProcessor<T> stageProcessor;
+    public final StageProcessor stageProcessor;
 
-    public StageWrap(Stage stage, StageProcessor<T> stageProcessor) {
+    public StageWrap(Stage stage, StageProcessor stageProcessor) {
         this.stage = stage;
         this.stageProcessor = stageProcessor;
     }

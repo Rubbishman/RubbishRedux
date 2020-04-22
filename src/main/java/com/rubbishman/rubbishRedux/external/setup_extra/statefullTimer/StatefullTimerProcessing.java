@@ -1,5 +1,6 @@
 package com.rubbishman.rubbishRedux.external.setup_extra.statefullTimer;
 
+import com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrack;
 import com.rubbishman.rubbishRedux.external.operational.action.createObject.CreateObject;
 import com.rubbishman.rubbishRedux.external.operational.action.createObject.ICreateObjectCallback;
 import com.rubbishman.rubbishRedux.external.operational.store.IdObject;
@@ -25,7 +26,7 @@ public class StatefullTimerProcessing {
         timerList = new PriorityQueue<>(comparator);
     }
 
-    public LinkedList<TimerLogic> beforeDispatchStarted(ConcurrentLinkedQueue<Object> actionQueue, Long nowTime) {
+    public LinkedList<TimerLogic> beforeDispatchStarted(ActionTrack actionTrack, Long nowTime) {
         LinkedList<TimerLogic> toAdd = new LinkedList();
 
         synchronized (timerState) {
@@ -36,7 +37,7 @@ public class StatefullTimerProcessing {
                 if(TimerHelper.repeatsChanged(logic.getRepeatingTimer(state), nowTime)) {
                     logic = timerList.poll();
 
-                    if(logic.logic(actionQueue, state, nowTime)) {
+                    if(logic.logic(actionTrack, state, nowTime)) {
                         toAdd.add(logic);
                     }
                     logic = timerList.peek();
@@ -64,7 +65,7 @@ public class StatefullTimerProcessing {
     }
 
     //TODO, this is simple, we also want one where we allow a wrapper on the callback.
-    public CreateObject createTimer(ConcurrentLinkedQueue<Object> actionQueue, Long nowTime, Object action, int period, int repeats) {
+    public CreateObject createTimer(ActionTrack actionTrack, Long nowTime, Object action, int period, int repeats) {
         CreateObject<RepeatingTimer> createObj = new CreateObject(
                 new RepeatingTimer(nowTime, period, repeats, 0 , action),
                 new ICreateObjectCallback() {
@@ -75,7 +76,7 @@ public class StatefullTimerProcessing {
                 }
         );
 
-        actionQueue.add(createObj);
+        actionTrack.addAction(createObj);
 
         return createObj;
     }

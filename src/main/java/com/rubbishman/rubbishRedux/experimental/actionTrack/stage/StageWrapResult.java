@@ -1,4 +1,4 @@
-package com.rubbishman.rubbishRedux.experimental.actionTrack;
+package com.rubbishman.rubbishRedux.experimental.actionTrack.stage;
 
 public class StageWrapResult {
     public final Object processedAction;
