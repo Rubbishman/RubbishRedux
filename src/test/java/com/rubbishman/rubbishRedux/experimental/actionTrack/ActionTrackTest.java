@@ -131,7 +131,7 @@ public class ActionTrackTest {
     private class StageOneProcessor implements StageProcessor {
 
         @Override
-        public StageWrapResult processStage(StageWrappedAction action) {
+        public StageWrapResult processStage(ObjectStore state, StageWrappedAction action) {
             return new StageWrapResult(
                     "StageOne: " + action.currentAction,
                     "StageOne: " + action.currentAction,
@@ -143,7 +143,7 @@ public class ActionTrackTest {
     private class StageTwoProcessor implements StageProcessor {
 
         @Override
-        public StageWrapResult processStage(StageWrappedAction action) {
+        public StageWrapResult processStage(ObjectStore state, StageWrappedAction action) {
             return new StageWrapResult(
                     null,
                     "StageTwo: " + action.currentAction,
@@ -155,7 +155,7 @@ public class ActionTrackTest {
     private class StageTwo2Processor implements StageProcessor {
 
         @Override
-        public StageWrapResult processStage(StageWrappedAction action) {
+        public StageWrapResult processStage(ObjectStore state, StageWrappedAction action) {
             return new StageWrapResult(
                     "StageTwo2: " + action.currentAction,
                     "StageTwo2: " + action.currentAction,
@@ -167,7 +167,7 @@ public class ActionTrackTest {
     private class StageThreeProcessor implements StageProcessor {
 
         @Override
-        public StageWrapResult processStage(StageWrappedAction action) {
+        public StageWrapResult processStage(ObjectStore state, StageWrappedAction action) {
             return new StageWrapResult(
                     null,
                     "StageThree: " + action.currentAction,
@@ -179,7 +179,7 @@ public class ActionTrackTest {
     private class StageThree3Processor implements StageProcessor {
 
         @Override
-        public StageWrapResult processStage(StageWrappedAction action) {
+        public StageWrapResult processStage(ObjectStore state, StageWrappedAction action) {
             return new StageWrapResult(
                     "StageThree3: " + action.currentAction,
                     "StageThree3: " + action.currentAction,
@@ -191,7 +191,7 @@ public class ActionTrackTest {
     private class StageFourProcessor implements StageProcessor {
 
         @Override
-        public StageWrapResult processStage(StageWrappedAction action) {
+        public StageWrapResult processStage(ObjectStore state, StageWrappedAction action) {
             return new StageWrapResult(
                     null,
                     "StageFour: " + action.currentAction,

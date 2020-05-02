@@ -3,7 +3,6 @@ package com.rubbishman.rubbishRedux.experimental.actionTrack;
 import com.google.common.collect.ImmutableList;
 import com.rubbishman.rubbishRedux.experimental.actionTrack.stage.*;
 import com.rubbishman.rubbishRedux.experimental.nestedHistoryScratcher.ScratchHistoryItem;
-import com.rubbishman.rubbishRedux.external.RubbishContainer;
 import com.rubbishman.rubbishRedux.external.operational.action.multistageAction.Stage.Stage;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
 import redux.api.Store;
@@ -26,8 +25,10 @@ public class ActionTrack {
             ),
             new StageProcessor() {
                 @Override
-                public StageWrapResult processStage(StageWrappedAction action) {
+                public StageWrapResult processStage(ObjectStore state, StageWrappedAction action) {
                     return new StageWrapResult(
+                            null,
+                            action.originalAction,
                             action.originalAction
                     );
                 }
@@ -100,7 +101,7 @@ public class ActionTrack {
 
         if(wrappedAction != null) {
             StageWrap currentStage = wrappedAction.stages.get(wrappedAction.currentStage);
-            StageWrapResult result = currentStage.stageProcessor.processStage(wrappedAction);
+            StageWrapResult result = currentStage.stageProcessor.processStage(store.getState(), wrappedAction);
 
             if(result.dispatchAction != null) {
                 store.dispatch(result.dispatchAction);

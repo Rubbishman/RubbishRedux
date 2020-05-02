@@ -1,35 +1,43 @@
 package com.rubbishman.rubbishRedux.internal.multistageCreateObjectTest.action.mulitstageAction;
 
+import com.rubbishman.rubbishRedux.experimental.actionTrack.stage.StageProcessor;
+import com.rubbishman.rubbishRedux.experimental.actionTrack.stage.StageWrapResult;
+import com.rubbishman.rubbishRedux.experimental.actionTrack.stage.StageWrappedAction;
 import com.rubbishman.rubbishRedux.external.operational.action.createObject.CreateObject;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
+import com.rubbishman.rubbishRedux.internal.multistageActionTest.action.IncrementCounter;
 import com.rubbishman.rubbishRedux.internal.multistageActionTest.stage.StageConstants;
 import com.rubbishman.rubbishRedux.internal.multistageActionTest.state.Counter;
 import com.rubbishman.rubbishRedux.external.operational.action.createObject.IMultistageCreateObject;
-import com.rubbishman.rubbishRedux.external.operational.action.multistageAction.MultistageActionResolver;
 import com.rubbishman.rubbishRedux.external.operational.action.multistageAction.Stage.Stage;
 import com.rubbishman.rubbishRedux.internal.multistageCreateObjectTest.action.CreateCounter;
 
 import java.util.Random;
 
-public class CounterCreateResolution implements MultistageActionResolver<IMultistageCreateObject<CreateCounter>> {
+public class CounterCreateResolution implements StageProcessor {
     private final Random rand;
 
     public CounterCreateResolution(long seed) {
         rand = new Random(seed);
     }
 
-    public Stage getStage() {
-        return StageConstants.COUNTER_CREATE_RESOLUTION;
-    }
+    @Override
+    public StageWrapResult processStage(ObjectStore state, StageWrappedAction action) {
+        IMultistageCreateObject<CreateCounter> createCounter = (IMultistageCreateObject<CreateCounter>)action.originalAction;
 
-    public Object provideAction(IMultistageCreateObject<CreateCounter> action, ObjectStore state, long nowTime) {
-        int diceNum = (rand.nextInt(action.createObject.diceNumMax - action.createObject.diceNumMin)
+        int diceNum = (rand.nextInt(createCounter.createObject.diceNumMax - createCounter.createObject.diceNumMin)
                 + 1
-                + action.createObject.diceNumMin);
-        int diceSize = (rand.nextInt(action.createObject.diceSizeMax - action.createObject.diceSizeMin)
+                + createCounter.createObject.diceNumMin);
+        int diceSize = (rand.nextInt(createCounter.createObject.diceSizeMax - createCounter.createObject.diceSizeMin)
                 + 1
-                + action.createObject.diceSizeMin);
+                + createCounter.createObject.diceSizeMin);
 
-        return new CreateObject(new Counter(0, diceNum, diceSize), action.callback);
+        Counter counter = new Counter(0, diceNum, diceSize);
+
+        return new StageWrapResult(
+                null,
+                counter,
+                new CreateObject(new Counter(0, diceNum, diceSize), createCounter.callback)
+        );
     }
 }

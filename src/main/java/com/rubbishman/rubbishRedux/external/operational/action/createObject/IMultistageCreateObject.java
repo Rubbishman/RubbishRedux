@@ -1,9 +1,6 @@
 package com.rubbishman.rubbishRedux.external.operational.action.createObject;
 
-import com.rubbishman.rubbishRedux.external.operational.action.createObject.ICreateObjectCallback;
-import com.rubbishman.rubbishRedux.external.operational.action.multistageAction.IMultistageAction;
-
-public class IMultistageCreateObject<T> implements IMultistageAction {
+public class IMultistageCreateObject<T> {
     public final T createObject;
     public transient final ICreateObjectCallback callback;
 
