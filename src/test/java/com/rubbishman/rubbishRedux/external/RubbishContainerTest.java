@@ -23,7 +23,6 @@ import com.rubbishman.rubbishRedux.internal.multistageCreateObjectTest.action.mu
 import com.rubbishman.rubbishRedux.internal.multistageCreateObjectTest.action.CreateCounter;
 import org.junit.Before;
 import org.junit.Test;
-import redux.api.Reducer;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -50,7 +49,7 @@ public class RubbishContainerTest {
                     )
             );
 
-            options.setStageProcessor(IMultistageCreateObject.class,
+            options.setStageProcessor(CounterCreateObject.class,
                     ImmutableList.of(
                             new StageWrap(createStage, new CounterCreateResolution(1234))
                     )
@@ -81,9 +80,9 @@ public class RubbishContainerTest {
     @Test
     public void testMultistageActions() {
         // TODO, this need to be changed to point at multistage.
-        rubbish.performAction(createObjectTest(printStream, 6, 12));
-        rubbish.performAction(createObjectTest(printStream, 6, 12));
-        rubbish.performAction(createObjectTest(printStream, 6, 12));
+        rubbish.performAction(new CounterCreateObject(6, 12));
+        rubbish.performAction(new CounterCreateObject(6, 12));
+        rubbish.performAction(new CounterCreateObject(6, 12));
 
         Identifier counter1 = new Identifier(1, Counter.class);
         Identifier counter2 = new Identifier(2, Counter.class);
@@ -123,19 +122,6 @@ public class RubbishContainerTest {
         assertEquals(17,rubbish.getState().<Counter>getObject(counter3).count);
     }
 
-    private IMultistageCreateObject<CreateCounter> createObjectTest(PrintStream printStream, int incrementDiceNum, int incrementDiceSize) {
-        return (IMultistageCreateObject<CreateCounter>) new IMultistageCreateObject(
-                new CreateCounter(1, incrementDiceNum, 1, incrementDiceSize),
-
-                new ICreateObjectCallback() {
-                    public void postCreateState(Object object) {
-                        Gson gson = GsonInstance.getInstance();
-                        printStream.println("We just created: " + object.getClass().getSimpleName() + " " + gson.toJson(object));
-                    }
-                }
-        );
-    }
-
     private IRubbishReducer getReducer() {
         return new IRubbishReducer() {
             @Override
@@ -153,5 +139,19 @@ public class RubbishContainerTest {
                 return state;
             }
         };
+    }
+
+    public class CounterCreateObject extends IMultistageCreateObject<CreateCounter> {
+        public CounterCreateObject(int incrementDiceNum, int incrementDiceSize) {
+            super(
+                new CreateCounter(1, incrementDiceNum, 1, incrementDiceSize),
+                new ICreateObjectCallback() {
+                    public void postCreateState(Object object) {
+                        Gson gson = GsonInstance.getInstance();
+                        printStream.println("We just created: " + object.getClass().getSimpleName() + " " + gson.toJson(object));
+                    }
+                }
+            );
+        }
     }
 }
