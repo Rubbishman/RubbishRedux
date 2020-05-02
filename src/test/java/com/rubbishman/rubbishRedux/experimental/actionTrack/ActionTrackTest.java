@@ -94,22 +94,42 @@ public class ActionTrackTest {
             actionTrack.processNextAction();
         }
 
-        assertEquals("MOO String \"StageTwo: StageOne: com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrackTest$TestOne@289dd121\"" +
-                "MOO String \"StageTwo: StageOne: com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrackTest$TestOne@4049f72a\"" +
-                "MOO String \"StageThree: StageTwo2: com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrackTest$TestTwo@349d1bac\"" +
-                "MOO String \"StageFour: StageThree3: com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrackTest$TestThree@7ade4ea0\"" +
-                "MOO TestNoStage {}" +
-                "MOO TestNoStage {}",
+        assertEquals("MOO String \"StageTwo: StageOne: class com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrackTest$TestOne\"" +
+                        "MOO String \"StageTwo: StageOne: class com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrackTest$TestOne\"" +
+                        "MOO String \"StageThree: StageTwo2: class com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrackTest$TestTwo\"" +
+                        "MOO String \"StageFour: StageThree3: class com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrackTest$TestThree\"" +
+                        "MOO TestNoStage {}" +
+                        "MOO TestNoStage {}",
                 stringBuilder.toString().replaceAll(System.lineSeparator(), ""));
     }
 
-    private class TestOne {}
+    private class TestOne {
+        @Override
+        public String toString() {
+            return this.getClass().toString();
+        }
+    }
 
-    private class TestTwo {}
+    private class TestTwo {
+        @Override
+        public String toString() {
+            return this.getClass().toString();
+        }
+    }
 
-    private class TestThree {}
+    private class TestThree {
+        @Override
+        public String toString() {
+            return this.getClass().toString();
+        }
+    }
 
-    private class TestNoStage {}
+    private class TestNoStage {
+        @Override
+        public String toString() {
+            return this.getClass().toString();
+        }
+    }
 
     private class StageOneProcessor implements StageProcessor<TestOne> {
 
