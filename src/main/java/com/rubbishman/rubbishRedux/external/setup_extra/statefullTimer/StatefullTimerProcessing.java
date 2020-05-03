@@ -1,5 +1,7 @@
 package com.rubbishman.rubbishRedux.external.setup_extra.statefullTimer;
 
+import com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrack;
+import com.rubbishman.rubbishRedux.experimental.actionTrack.TickSystem;
 import com.rubbishman.rubbishRedux.external.operational.action.createObject.CreateObject;
 import com.rubbishman.rubbishRedux.external.operational.action.createObject.ICreateObjectCallback;
 import com.rubbishman.rubbishRedux.external.operational.store.IdObject;
@@ -9,34 +11,34 @@ import com.rubbishman.rubbishRedux.internal.statefullTimer.helper.TimerHelper;
 import com.rubbishman.rubbishRedux.internal.statefullTimer.logic.TimerLogic;
 import com.rubbishman.rubbishRedux.internal.statefullTimer.state.RepeatingTimer;
 import redux.api.Store;
-
 import java.util.LinkedList;
 import java.util.PriorityQueue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class StatefullTimerProcessing {
+public class StatefullTimerProcessing extends TickSystem {
     private TimerComparator comparator;
     private PriorityQueue<TimerLogic> timerList;
-    Store<ObjectStore> timerState;
 
-    public StatefullTimerProcessing(Store<ObjectStore> timerState) {
-        this.timerState = timerState;
-        comparator = new TimerComparator(timerState);
+    @Override
+    public void setStore(Store<ObjectStore> store) {
+        super.setStore(store);
+        comparator = new TimerComparator(store);
         timerList = new PriorityQueue<>(comparator);
     }
 
-    public LinkedList<TimerLogic> beforeDispatchStarted(ConcurrentLinkedQueue<Object> actionQueue, Long nowTime) {
-        LinkedList<TimerLogic> toAdd = new LinkedList();
+    LinkedList<TimerLogic> toAdd;
 
-        synchronized (timerState) {
-            ObjectStore state = timerState.getState();
+    public void beforeDispatchStarted(ActionTrack actionTrack, Long nowTime) {
+        toAdd = new LinkedList();
+
+        synchronized (store) {
+            ObjectStore state = store.getState();
 
             TimerLogic logic = timerList.peek();
             while(logic != null) {
                 if(TimerHelper.repeatsChanged(logic.getRepeatingTimer(state), nowTime)) {
                     logic = timerList.poll();
 
-                    if(logic.logic(actionQueue, state, nowTime)) {
+                    if(logic.logic(actionTrack, state, nowTime)) {
                         toAdd.add(logic);
                     }
                     logic = timerList.peek();
@@ -45,12 +47,10 @@ public class StatefullTimerProcessing {
                 }
             }
         }
-
-        return toAdd;
     }
 
-    public void afterDispatchFinished(LinkedList<TimerLogic> toAdd) {
-        synchronized (timerState) {
+    public void afterDispatchFinished() {
+        synchronized (store) {
             for(TimerLogic logicToAdd: toAdd) {
                 addTimer(logicToAdd);
             }
@@ -64,7 +64,7 @@ public class StatefullTimerProcessing {
     }
 
     //TODO, this is simple, we also want one where we allow a wrapper on the callback.
-    public CreateObject createTimer(ConcurrentLinkedQueue<Object> actionQueue, Long nowTime, Object action, int period, int repeats) {
+    public CreateObject createTimer(ActionTrack actionTrack, Long nowTime, Object action, int period, int repeats) {
         CreateObject<RepeatingTimer> createObj = new CreateObject(
                 new RepeatingTimer(nowTime, period, repeats, 0 , action),
                 new ICreateObjectCallback() {
@@ -75,7 +75,7 @@ public class StatefullTimerProcessing {
                 }
         );
 
-        actionQueue.add(createObj);
+        actionTrack.addAction(createObj);
 
         return createObj;
     }

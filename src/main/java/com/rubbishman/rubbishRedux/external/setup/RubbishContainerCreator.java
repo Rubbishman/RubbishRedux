@@ -1,16 +1,15 @@
 package com.rubbishman.rubbishRedux.external.setup;
 
+import com.rubbishman.rubbishRedux.experimental.actionTrack.TickSystem;
+import com.rubbishman.rubbishRedux.experimental.actionTrack.stage.StageStack;
 import com.rubbishman.rubbishRedux.external.RubbishContainer;
 import com.rubbishman.rubbishRedux.external.setup_extra.RubbishReducer;
 import com.rubbishman.rubbishRedux.external.setup_extra.createObject.CreateObjectEnhancer;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
-import com.rubbishman.rubbishRedux.external.setup_extra.multiStageActions.MultiStageActionsProcessing;
 import com.rubbishman.rubbishRedux.external.setup_extra.statefullTimer.StatefullTimerProcessing;
 import com.rubbishman.rubbishRedux.internal.middlewareEnhancer.MiddlewareEnhancer;
 import redux.api.Store;
 import redux.api.enhancer.Middleware;
-
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class RubbishContainerCreator {
     public static RubbishContainer getRubbishContainer(RubbishContainerOptions options) {
@@ -18,8 +17,6 @@ public class RubbishContainerCreator {
         StatefullTimerProcessing timer;
         RubbishReducer rubbishReducer;
         Store<ObjectStore> store;
-        MultiStageActionsProcessing multistageActions = null;
-        ConcurrentLinkedQueue<Object> actionQueue = new ConcurrentLinkedQueue<>();
         CreateObjectEnhancer coEnhancer = new CreateObjectEnhancer(); //TODO, make this so we don't have to enhance?
 
         creator = new com.glung.redux.Store.Creator();
@@ -41,15 +38,17 @@ public class RubbishContainerCreator {
         rubbishReducer = new RubbishReducer(options.reducer);
 
         store = creator.create(rubbishReducer, new ObjectStore());
-        if(!options.multistageActionList.isEmpty()) {
-            multistageActions = new MultiStageActionsProcessing(store, rubbishReducer);
-            for(Class clazz: options.multistageActionList.keySet()) {
-                multistageActions.addMultistageProcessor(clazz, options.multistageActionList.get(clazz));
-            }
+
+        options.registerTickSystem(new StatefullTimerProcessing());
+
+        for(TickSystem tickSystem : options.registeredTickSystems) {
+            tickSystem.setStore(store);
         }
 
-        timer = new StatefullTimerProcessing(store);
+        StageStack stageStack = new StageStack(
+                options.actionStageMap
+        );
 
-        return new RubbishContainer(actionQueue, multistageActions, timer, store, rubbishReducer);
+        return new RubbishContainer(stageStack, store, rubbishReducer, options.registeredTickSystems);
     }
 }

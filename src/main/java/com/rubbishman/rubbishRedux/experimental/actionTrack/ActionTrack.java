@@ -1,14 +1,16 @@
 package com.rubbishman.rubbishRedux.experimental.actionTrack;
 
 import com.google.common.collect.ImmutableList;
+import com.rubbishman.rubbishRedux.experimental.actionTrack.stage.*;
 import com.rubbishman.rubbishRedux.experimental.nestedHistoryScratcher.ScratchHistoryItem;
-import com.rubbishman.rubbishRedux.external.RubbishContainer;
 import com.rubbishman.rubbishRedux.external.operational.action.multistageAction.Stage.Stage;
+import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
+import redux.api.Store;
 
 import java.util.*;
 
 public class ActionTrack {
-    private RubbishContainer rubbish;
+    private Store<ObjectStore> store;
 
     public final ActionTrack parent;
     public final StageStack stageStack;
@@ -23,8 +25,10 @@ public class ActionTrack {
             ),
             new StageProcessor() {
                 @Override
-                public StageWrapResult processStage(StageWrappedAction action) {
+                public StageWrapResult processStage(ObjectStore state, StageWrappedAction action) {
                     return new StageWrapResult(
+                            null,
+                            action.originalAction,
                             action.originalAction
                     );
                 }
@@ -33,26 +37,34 @@ public class ActionTrack {
 
     public static final ImmutableList<StageWrap> FINAL_STAGE_LIST = ImmutableList.of(FINAL_STAGE);
 
-    public ActionTrack(RubbishContainer rubbish, StageStack stageStack, PriorityQueue<StageWrappedAction> actionQueue, Stack<ScratchHistoryItem> actionHistory) {
+    public ActionTrack(Store<ObjectStore> store, StageStack stageStack, PriorityQueue<StageWrappedAction> actionQueue, Stack<ScratchHistoryItem> actionHistory) {
         this.parent = null;
-        this.rubbish = rubbish;
+        this.store = store;
         this.stageStack = stageStack;
         this.actionHistory = actionHistory;
         this.actionQueue = actionQueue;
     }
 
-    public ActionTrack(RubbishContainer rubbish,ActionTrack parent, StageStack stageStack, PriorityQueue<StageWrappedAction> actionQueue, Stack<ScratchHistoryItem> actionHistory) {
+    public ActionTrack(Store<ObjectStore> store, ActionTrack parent, StageStack stageStack, PriorityQueue<StageWrappedAction> actionQueue, Stack<ScratchHistoryItem> actionHistory) {
         this.parent = parent;
-        this.rubbish = rubbish;
+        this.store = store;
         this.stageStack = stageStack;
         this.actionHistory = actionHistory;
         this.actionQueue = actionQueue;
     }
 
-    public ActionTrack(RubbishContainer rubbish,StageStack stageStack) {
+    public ActionTrack(Store<ObjectStore> store,StageStack stageStack) {
         this.parent = null;
-        this.rubbish = rubbish;
+        this.store = store;
         this.stageStack = stageStack;
+        actionHistory = new Stack<>();
+        actionQueue = new PriorityQueue<>();
+    }
+
+    public ActionTrack(Store<ObjectStore> store) {
+        this.parent = null;
+        this.store = store;
+        this.stageStack = new StageStack(new HashMap());
         actionHistory = new Stack<>();
         actionQueue = new PriorityQueue<>();
     }
@@ -89,10 +101,10 @@ public class ActionTrack {
 
         if(wrappedAction != null) {
             StageWrap currentStage = wrappedAction.stages.get(wrappedAction.currentStage);
-            StageWrapResult result = currentStage.stageProcessor.processStage(wrappedAction);
+            StageWrapResult result = currentStage.stageProcessor.processStage(store.getState(), wrappedAction);
 
             if(result.dispatchAction != null) {
-                rubbish.performAction(result.dispatchAction);
+                store.dispatch(result.dispatchAction);
             }
 
             if(result.processedAction != null
@@ -109,5 +121,18 @@ public class ActionTrack {
                 ));
             }
         }
+    }
+
+    public ActionTrack isolate() {
+        PriorityQueue<StageWrappedAction> isolateActionQueue = this.actionQueue;
+
+        this.actionQueue = new PriorityQueue();
+
+        return new ActionTrack(
+                store,
+                stageStack,
+                isolateActionQueue,
+                actionHistory
+        );
     }
 }

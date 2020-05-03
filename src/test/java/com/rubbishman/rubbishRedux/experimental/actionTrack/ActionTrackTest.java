@@ -1,6 +1,7 @@
 package com.rubbishman.rubbishRedux.experimental.actionTrack;
 
 import com.google.common.collect.ImmutableList;
+import com.rubbishman.rubbishRedux.experimental.actionTrack.stage.*;
 import com.rubbishman.rubbishRedux.external.RubbishContainer;
 import com.rubbishman.rubbishRedux.external.operational.action.multistageAction.Stage.Stage;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
@@ -33,6 +34,36 @@ public class ActionTrackTest {
             }
         });
 
+        try {
+            Stage stageOne = options.createStage("One");
+            Stage stageTwo = options.createStage("Two");
+            Stage stageThree = options.createStage("Three");
+            Stage stageFour = options.createStage("Four");
+
+            options.setStageProcessor(TestOne.class,
+                    ImmutableList.of(
+                            new StageWrap(stageOne, new StageOneProcessor()),
+                            new StageWrap(stageTwo, new StageTwoProcessor())
+                    )
+            );
+
+            options.setStageProcessor(TestTwo.class,
+                    ImmutableList.of(
+                            new StageWrap(stageTwo, new StageTwo2Processor()),
+                            new StageWrap(stageThree, new StageThreeProcessor())
+                    )
+            );
+
+            options.setStageProcessor(TestThree.class,
+                    ImmutableList.of(
+                            new StageWrap(stageThree, new StageThree3Processor()),
+                            new StageWrap(stageFour, new StageFourProcessor())
+                    )
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         rubbish = RubbishContainerCreator.getRubbishContainer(options);
     }
 
@@ -51,55 +82,21 @@ public class ActionTrackTest {
 
     @Test
     public void basicTest() {
-        Stage stageOne = new Stage("1", 1);
-        Stage stageTwo = new Stage("2", 2);
-        Stage stageThree = new Stage("3", 3);
-        Stage stageFour = new Stage("4", 4);
+        rubbish.addAction(new TestTwo());
+        rubbish.addAction(new TestThree());
+        rubbish.addAction(new TestOne());
+        rubbish.addAction(new TestOne());
+        rubbish.addAction(new TestNoStage());
+        rubbish.addAction(new TestNoStage());
 
-        HashMap<Class, ImmutableList<StageWrap>> actionStageMap = new HashMap<>();
-
-        actionStageMap.put(TestOne.class,
-                ImmutableList.of(
-                        new StageWrap(stageOne, new StageOneProcessor()),
-                        new StageWrap(stageTwo, new StageTwoProcessor())
-                )
-        );
-
-        actionStageMap.put(TestTwo.class,
-                ImmutableList.of(
-                        new StageWrap(stageTwo, new StageTwo2Processor()),
-                        new StageWrap(stageThree, new StageThreeProcessor())
-                )
-        );
-
-        actionStageMap.put(TestThree.class,
-                ImmutableList.of(
-                        new StageWrap(stageThree, new StageThree3Processor()),
-                        new StageWrap(stageFour, new StageFourProcessor())
-                )
-        );
-
-        StageStack stageStack = new StageStack(actionStageMap);
-
-        ActionTrack actionTrack = new ActionTrack(rubbish, stageStack);
-
-        actionTrack.addAction(new TestTwo());
-        actionTrack.addAction(new TestThree());
-        actionTrack.addAction(new TestOne());
-        actionTrack.addAction(new TestOne());
-        actionTrack.addAction(new TestNoStage());
-        actionTrack.addAction(new TestNoStage());
-
-        while(actionTrack.hasNext()) {
-            actionTrack.processNextAction();
-        }
+        rubbish.performActions();
 
         assertEquals("MOO String \"StageTwo: StageOne: class com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrackTest$TestOne\"" +
-                        "MOO String \"StageTwo: StageOne: class com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrackTest$TestOne\"" +
-                        "MOO String \"StageThree: StageTwo2: class com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrackTest$TestTwo\"" +
-                        "MOO String \"StageFour: StageThree3: class com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrackTest$TestThree\"" +
-                        "MOO TestNoStage {}" +
-                        "MOO TestNoStage {}",
+                "MOO String \"StageTwo: StageOne: class com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrackTest$TestOne\"" +
+                "MOO String \"StageThree: StageTwo2: class com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrackTest$TestTwo\"" +
+                "MOO String \"StageFour: StageThree3: class com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrackTest$TestThree\"" +
+                "MOO TestNoStage {}" +
+                "MOO TestNoStage {}",
                 stringBuilder.toString().replaceAll(System.lineSeparator(), ""));
     }
 
@@ -131,10 +128,10 @@ public class ActionTrackTest {
         }
     }
 
-    private class StageOneProcessor implements StageProcessor<TestOne> {
+    private class StageOneProcessor implements StageProcessor {
 
         @Override
-        public StageWrapResult processStage(StageWrappedAction action) {
+        public StageWrapResult processStage(ObjectStore state, StageWrappedAction action) {
             return new StageWrapResult(
                     "StageOne: " + action.currentAction,
                     "StageOne: " + action.currentAction,
@@ -143,10 +140,10 @@ public class ActionTrackTest {
         }
     }
 
-    private class StageTwoProcessor implements StageProcessor<TestOne> {
+    private class StageTwoProcessor implements StageProcessor {
 
         @Override
-        public StageWrapResult processStage(StageWrappedAction action) {
+        public StageWrapResult processStage(ObjectStore state, StageWrappedAction action) {
             return new StageWrapResult(
                     null,
                     "StageTwo: " + action.currentAction,
@@ -155,10 +152,10 @@ public class ActionTrackTest {
         }
     }
 
-    private class StageTwo2Processor implements StageProcessor<TestTwo> {
+    private class StageTwo2Processor implements StageProcessor {
 
         @Override
-        public StageWrapResult processStage(StageWrappedAction action) {
+        public StageWrapResult processStage(ObjectStore state, StageWrappedAction action) {
             return new StageWrapResult(
                     "StageTwo2: " + action.currentAction,
                     "StageTwo2: " + action.currentAction,
@@ -167,10 +164,10 @@ public class ActionTrackTest {
         }
     }
 
-    private class StageThreeProcessor implements StageProcessor<TestTwo> {
+    private class StageThreeProcessor implements StageProcessor {
 
         @Override
-        public StageWrapResult processStage(StageWrappedAction action) {
+        public StageWrapResult processStage(ObjectStore state, StageWrappedAction action) {
             return new StageWrapResult(
                     null,
                     "StageThree: " + action.currentAction,
@@ -179,10 +176,10 @@ public class ActionTrackTest {
         }
     }
 
-    private class StageThree3Processor implements StageProcessor<TestThree> {
+    private class StageThree3Processor implements StageProcessor {
 
         @Override
-        public StageWrapResult processStage(StageWrappedAction action) {
+        public StageWrapResult processStage(ObjectStore state, StageWrappedAction action) {
             return new StageWrapResult(
                     "StageThree3: " + action.currentAction,
                     "StageThree3: " + action.currentAction,
@@ -191,10 +188,10 @@ public class ActionTrackTest {
         }
     }
 
-    private class StageFourProcessor implements StageProcessor<TestThree> {
+    private class StageFourProcessor implements StageProcessor {
 
         @Override
-        public StageWrapResult processStage(StageWrappedAction action) {
+        public StageWrapResult processStage(ObjectStore state, StageWrappedAction action) {
             return new StageWrapResult(
                     null,
                     "StageFour: " + action.currentAction,

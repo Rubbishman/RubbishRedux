@@ -1,5 +1,6 @@
 package com.rubbishman.rubbishRedux.internal.statefullTimer.logic;
 
+import com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrack;
 import com.rubbishman.rubbishRedux.external.operational.store.Identifier;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
 import com.rubbishman.rubbishRedux.internal.statefullTimer.action.IncrementTimer;
@@ -15,7 +16,7 @@ public class TimerLogic {
         this.subject = subject;
     }
 
-    public boolean logic(ConcurrentLinkedQueue<Object> actionQueue, ObjectStore state, long nowTime) {
+    public boolean logic(ActionTrack actionTrack, ObjectStore state, long nowTime) {
         if(state.getObject(subject) == null) {
             return false;
         }
@@ -23,7 +24,7 @@ public class TimerLogic {
         RepeatingTimer periodicIncrementer = getRepeatingTimer(state);
 
         if(TimerHelper.repeatsChanged(periodicIncrementer, nowTime)) {
-            actionQueue.add(new IncrementTimer(nowTime, subject));
+            actionTrack.addAction(new IncrementTimer(nowTime, subject));
             if(periodicIncrementer.currentRepeats == periodicIncrementer.repeats - 1) {
                 return false; //Destruct is needed..?
             }

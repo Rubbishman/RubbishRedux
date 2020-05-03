@@ -1,5 +1,7 @@
 package com.rubbishman.rubbishRedux.internal.statefullTimer;
 
+import com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrack;
+import com.rubbishman.rubbishRedux.experimental.actionTrack.stage.StageStack;
 import com.rubbishman.rubbishRedux.external.setup_extra.createObject.CreateObjectEnhancer;
 import com.rubbishman.rubbishRedux.external.setup_extra.createObject.reducer.CreateObjectReducer;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
@@ -16,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 public class TimerExecutor {
     private Store<ObjectStore> timerState;
-    private ConcurrentLinkedQueue<Object> actionQueue = new ConcurrentLinkedQueue<>();
+    private ActionTrack actionTrack;
     private ScheduledExecutorService executor;
     private StatefullTimerProcessing timerProcessing;
 
@@ -28,6 +30,8 @@ public class TimerExecutor {
         reducer.setWrappedReducer(new TimerReducer());
         timerState = creator.create(reducer, new ObjectStore());
 
+        actionTrack = new ActionTrack(timerState);
+
         initialize(timerState);
     }
 
@@ -37,21 +41,22 @@ public class TimerExecutor {
 
     private void initialize(Store<ObjectStore> timerState) {
         this.timerState = timerState;
-        timerProcessing = new StatefullTimerProcessing(timerState);
-
+        timerProcessing = new StatefullTimerProcessing();
+        timerProcessing.setStore(timerState);
         executor = Executors.newSingleThreadScheduledExecutor();
     }
 
     public void timerLogic(Long nowTime) {
-        LinkedList<TimerLogic> toAdd = timerProcessing.beforeDispatchStarted(actionQueue, nowTime);
+        timerProcessing.beforeDispatchStarted(actionTrack, nowTime);
 
-        Object action = actionQueue.poll();
-        while(action != null) {
-            timerState.dispatch(action);
-            action = actionQueue.poll();
+        // Take a snapshot of the queue.
+        ActionTrack internalQueue = actionTrack.isolate();
+
+        while(internalQueue.hasNext()) {
+            internalQueue.processNextAction();
         }
 
-        timerProcessing.afterDispatchFinished(toAdd);
+        timerProcessing.afterDispatchFinished();
     }
 
     public void startTimer() {
@@ -67,6 +72,6 @@ public class TimerExecutor {
     }
 
     public void createTimer(Long nowTime, Object action, int period, int repeats) {
-        timerProcessing.createTimer(actionQueue, nowTime, action, period, repeats);
+        timerProcessing.createTimer(actionTrack, nowTime, action, period, repeats);
     }
 }
