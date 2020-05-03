@@ -1,5 +1,6 @@
 package com.rubbishman.rubbishRedux.external.setup;
 
+import com.rubbishman.rubbishRedux.experimental.actionTrack.TickSystem;
 import com.rubbishman.rubbishRedux.experimental.actionTrack.stage.StageStack;
 import com.rubbishman.rubbishRedux.external.RubbishContainer;
 import com.rubbishman.rubbishRedux.external.setup_extra.RubbishReducer;
@@ -9,8 +10,6 @@ import com.rubbishman.rubbishRedux.external.setup_extra.statefullTimer.Statefull
 import com.rubbishman.rubbishRedux.internal.middlewareEnhancer.MiddlewareEnhancer;
 import redux.api.Store;
 import redux.api.enhancer.Middleware;
-
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class RubbishContainerCreator {
     public static RubbishContainer getRubbishContainer(RubbishContainerOptions options) {
@@ -40,12 +39,16 @@ public class RubbishContainerCreator {
 
         store = creator.create(rubbishReducer, new ObjectStore());
 
-        timer = new StatefullTimerProcessing(store);
+        options.registerTickSystem(new StatefullTimerProcessing());
+
+        for(TickSystem tickSystem : options.registeredTickSystems) {
+            tickSystem.setStore(store);
+        }
 
         StageStack stageStack = new StageStack(
                 options.actionStageMap
         );
 
-        return new RubbishContainer(stageStack, timer, store, rubbishReducer);
+        return new RubbishContainer(stageStack, store, rubbishReducer, options.registeredTickSystems);
     }
 }

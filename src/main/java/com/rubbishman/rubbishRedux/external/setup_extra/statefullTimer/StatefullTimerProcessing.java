@@ -1,6 +1,7 @@
 package com.rubbishman.rubbishRedux.external.setup_extra.statefullTimer;
 
 import com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrack;
+import com.rubbishman.rubbishRedux.experimental.actionTrack.TickSystem;
 import com.rubbishman.rubbishRedux.external.operational.action.createObject.CreateObject;
 import com.rubbishman.rubbishRedux.external.operational.action.createObject.ICreateObjectCallback;
 import com.rubbishman.rubbishRedux.external.operational.store.IdObject;
@@ -10,27 +11,27 @@ import com.rubbishman.rubbishRedux.internal.statefullTimer.helper.TimerHelper;
 import com.rubbishman.rubbishRedux.internal.statefullTimer.logic.TimerLogic;
 import com.rubbishman.rubbishRedux.internal.statefullTimer.state.RepeatingTimer;
 import redux.api.Store;
-
 import java.util.LinkedList;
 import java.util.PriorityQueue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class StatefullTimerProcessing {
+public class StatefullTimerProcessing extends TickSystem {
     private TimerComparator comparator;
     private PriorityQueue<TimerLogic> timerList;
-    Store<ObjectStore> timerState;
 
-    public StatefullTimerProcessing(Store<ObjectStore> timerState) {
-        this.timerState = timerState;
-        comparator = new TimerComparator(timerState);
+    @Override
+    public void setStore(Store<ObjectStore> store) {
+        super.setStore(store);
+        comparator = new TimerComparator(store);
         timerList = new PriorityQueue<>(comparator);
     }
 
-    public LinkedList<TimerLogic> beforeDispatchStarted(ActionTrack actionTrack, Long nowTime) {
-        LinkedList<TimerLogic> toAdd = new LinkedList();
+    LinkedList<TimerLogic> toAdd;
 
-        synchronized (timerState) {
-            ObjectStore state = timerState.getState();
+    public void beforeDispatchStarted(ActionTrack actionTrack, Long nowTime) {
+        toAdd = new LinkedList();
+
+        synchronized (store) {
+            ObjectStore state = store.getState();
 
             TimerLogic logic = timerList.peek();
             while(logic != null) {
@@ -46,12 +47,10 @@ public class StatefullTimerProcessing {
                 }
             }
         }
-
-        return toAdd;
     }
 
-    public void afterDispatchFinished(LinkedList<TimerLogic> toAdd) {
-        synchronized (timerState) {
+    public void afterDispatchFinished() {
+        synchronized (store) {
             for(TimerLogic logicToAdd: toAdd) {
                 addTimer(logicToAdd);
             }

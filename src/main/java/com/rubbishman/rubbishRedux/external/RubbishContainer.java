@@ -1,24 +1,26 @@
 package com.rubbishman.rubbishRedux.external;
 
 import com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrack;
+import com.rubbishman.rubbishRedux.experimental.actionTrack.TickSystem;
 import com.rubbishman.rubbishRedux.experimental.actionTrack.stage.StageStack;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
 import com.rubbishman.rubbishRedux.external.setup_extra.RubbishReducer;
-import com.rubbishman.rubbishRedux.external.setup_extra.statefullTimer.StatefullTimerProcessing;
-import com.rubbishman.rubbishRedux.internal.statefullTimer.logic.TimerLogic;
 import redux.api.Store;
-
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class RubbishContainer {
     private ActionTrack actionTrack;
     private Store<ObjectStore> store;
-    private StatefullTimerProcessing timer;
+    private ArrayList<TickSystem> registeredTickSystems;
 
-    public RubbishContainer(StageStack stageStack, StatefullTimerProcessing timer, Store<ObjectStore> store, RubbishReducer reducer) {
+    public RubbishContainer(
+            StageStack stageStack,
+            Store<ObjectStore> store,
+            RubbishReducer reducer,
+            ArrayList<TickSystem> registeredTickSystems) {
         this.actionTrack = new ActionTrack(store, stageStack);
-        this.timer = timer;
         this.store = store;
+        this.registeredTickSystems = registeredTickSystems;
         reducer.setRubbishContainer(this);
     }
 
@@ -38,7 +40,9 @@ public class RubbishContainer {
     public void performActions() {
         Long nowTime = System.nanoTime();
 
-        LinkedList<TimerLogic> toAdd = timer.beforeDispatchStarted(actionTrack, nowTime);
+        for(TickSystem tickSystem : registeredTickSystems) {
+            tickSystem.beforeDispatchStarted(actionTrack, nowTime);
+        }
 
         // Take a snapshot of the queue.
         ActionTrack internalQueue = actionTrack.isolate();
@@ -47,6 +51,8 @@ public class RubbishContainer {
             internalQueue.processNextAction();
         }
 
-        timer.afterDispatchFinished(toAdd);
+        for(TickSystem tickSystem : registeredTickSystems) {
+            tickSystem.afterDispatchFinished();
+        }
     }
 }

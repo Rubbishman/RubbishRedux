@@ -1,11 +1,11 @@
 package com.rubbishman.rubbishRedux.external.setup;
 
 import com.google.common.collect.ImmutableList;
+import com.rubbishman.rubbishRedux.experimental.actionTrack.TickSystem;
 import com.rubbishman.rubbishRedux.experimental.actionTrack.stage.StageWrap;
 import com.rubbishman.rubbishRedux.external.operational.action.multistageAction.Stage.Stage;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
 import redux.api.enhancer.Middleware;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +16,14 @@ public class RubbishContainerOptions {
 
     protected ImmutableList<Stage> stages = ImmutableList.of();
     protected HashMap<String, Stage> stageNameMap = new HashMap<>();
-    HashMap<Class, ImmutableList<StageWrap>> actionStageMap = new HashMap<>();
+    protected HashMap<Class, ImmutableList<StageWrap>> actionStageMap = new HashMap<>();
+    protected ArrayList<TickSystem> registeredTickSystems = new ArrayList<>();
+
+    public RubbishContainerOptions registerTickSystem(TickSystem tickSystem) {
+        registeredTickSystems.add(tickSystem);
+
+        return this;
+    }
 
     public RubbishContainerOptions addMiddleware(Middleware<ObjectStore> middleware) {
         middlewareList.add(middleware);

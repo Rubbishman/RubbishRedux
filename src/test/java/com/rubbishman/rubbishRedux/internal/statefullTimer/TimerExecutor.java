@@ -41,13 +41,13 @@ public class TimerExecutor {
 
     private void initialize(Store<ObjectStore> timerState) {
         this.timerState = timerState;
-        timerProcessing = new StatefullTimerProcessing(timerState);
-
+        timerProcessing = new StatefullTimerProcessing();
+        timerProcessing.setStore(timerState);
         executor = Executors.newSingleThreadScheduledExecutor();
     }
 
     public void timerLogic(Long nowTime) {
-        LinkedList<TimerLogic> toAdd = timerProcessing.beforeDispatchStarted(actionTrack, nowTime);
+        timerProcessing.beforeDispatchStarted(actionTrack, nowTime);
 
         // Take a snapshot of the queue.
         ActionTrack internalQueue = actionTrack.isolate();
@@ -56,7 +56,7 @@ public class TimerExecutor {
             internalQueue.processNextAction();
         }
 
-        timerProcessing.afterDispatchFinished(toAdd);
+        timerProcessing.afterDispatchFinished();
     }
 
     public void startTimer() {
