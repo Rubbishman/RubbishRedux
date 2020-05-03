@@ -1,7 +1,7 @@
-package com.rubbishman.rubbishRedux.experimental.actionTrack;
+package com.rubbishman.rubbishRedux.external.setup_extra.actionTrack;
 
 import com.google.common.collect.ImmutableList;
-import com.rubbishman.rubbishRedux.experimental.actionTrack.stage.*;
+import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.stage.*;
 import com.rubbishman.rubbishRedux.external.RubbishContainer;
 import com.rubbishman.rubbishRedux.external.operational.action.multistageAction.Stage.Stage;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
@@ -13,7 +13,6 @@ import org.junit.Before;
 import org.junit.Test;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 
@@ -91,10 +90,10 @@ public class ActionTrackTest {
 
         rubbish.performActions();
 
-        assertEquals("MOO String \"StageTwo: StageOne: class com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrackTest$TestOne\"" +
-                "MOO String \"StageTwo: StageOne: class com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrackTest$TestOne\"" +
-                "MOO String \"StageThree: StageTwo2: class com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrackTest$TestTwo\"" +
-                "MOO String \"StageFour: StageThree3: class com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrackTest$TestThree\"" +
+        assertEquals("MOO String \"StageTwo: StageOne: class com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.ActionTrackTest$TestOne\"" +
+                "MOO String \"StageTwo: StageOne: class com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.ActionTrackTest$TestOne\"" +
+                "MOO String \"StageThree: StageTwo2: class com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.ActionTrackTest$TestTwo\"" +
+                "MOO String \"StageFour: StageThree3: class com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.ActionTrackTest$TestThree\"" +
                 "MOO TestNoStage {}" +
                 "MOO TestNoStage {}",
                 stringBuilder.toString().replaceAll(System.lineSeparator(), ""));

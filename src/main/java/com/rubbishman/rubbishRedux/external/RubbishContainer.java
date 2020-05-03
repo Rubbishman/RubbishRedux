@@ -1,10 +1,10 @@
 package com.rubbishman.rubbishRedux.external;
 
-import com.rubbishman.rubbishRedux.experimental.actionTrack.ActionTrack;
-import com.rubbishman.rubbishRedux.experimental.actionTrack.TickSystem;
-import com.rubbishman.rubbishRedux.experimental.actionTrack.stage.StageStack;
+import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.ActionTrack;
+import com.rubbishman.rubbishRedux.external.setup_extra.TickSystem;
+import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.stage.StageStack;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
-import com.rubbishman.rubbishRedux.external.setup_extra.RubbishReducer;
+import com.rubbishman.rubbishRedux.internal.RubbishReducer;
 import redux.api.Store;
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.rubbishman.rubbishRedux.external.setup_extra;
+package com.rubbishman.rubbishRedux.internal;
 
 import com.rubbishman.rubbishRedux.external.RubbishContainer;
 import com.rubbishman.rubbishRedux.external.operational.action.createObject.CreateObject;
