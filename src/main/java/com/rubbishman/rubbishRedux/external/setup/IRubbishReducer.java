@@ -11,5 +11,13 @@ public abstract class IRubbishReducer implements Reducer<ObjectStore> {
         this.rubbishContainer = rubbishContainer;
     }
 
+    public long getNowTime() {
+        return rubbishContainer.getNowTime();
+    }
+
+    public long getElapsedTime() {
+        return rubbishContainer.getElapsedTime();
+    }
+
     public abstract ObjectStore reduce(ObjectStore state, Object action);
 }

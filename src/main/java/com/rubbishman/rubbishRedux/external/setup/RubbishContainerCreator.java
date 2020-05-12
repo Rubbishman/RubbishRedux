@@ -39,8 +39,6 @@ public class RubbishContainerCreator {
 
         store = creator.create(rubbishReducer, new ObjectStore());
 
-        options.registerTickSystem(new StatefullTimerProcessing());
-
         for(TickSystem tickSystem : options.registeredTickSystems) {
             tickSystem.setStore(store);
         }

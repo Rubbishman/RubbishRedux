@@ -4,6 +4,7 @@ import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.ActionTrack;
 import com.rubbishman.rubbishRedux.external.setup_extra.TickSystem;
 import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.stage.StageStack;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
+import com.rubbishman.rubbishRedux.external.setup_extra.statefullTimer.StatefullTimerProcessing;
 import com.rubbishman.rubbishRedux.internal.RubbishReducer;
 import redux.api.Store;
 import java.util.ArrayList;
@@ -12,6 +13,9 @@ public class RubbishContainer {
     private ActionTrack actionTrack;
     private Store<ObjectStore> store;
     private ArrayList<TickSystem> registeredTickSystems;
+    private StatefullTimerProcessing statefullTimer;
+    protected long nowTime;
+    protected long elapsedTime;
 
     public RubbishContainer(
             StageStack stageStack,
@@ -22,6 +26,8 @@ public class RubbishContainer {
         this.store = store;
         this.registeredTickSystems = registeredTickSystems;
         reducer.setRubbishContainer(this);
+        statefullTimer = new StatefullTimerProcessing();
+        statefullTimer.setStore(store);
     }
 
     public ObjectStore getState() {
@@ -37,8 +43,18 @@ public class RubbishContainer {
         performActions();
     }
 
+    public long getNowTime() {
+        return nowTime;
+    }
+
+    public long getElapsedTime() {
+        return elapsedTime;
+    }
+
     public void performActions() {
         Long nowTime = System.nanoTime();
+        elapsedTime = nowTime - this.nowTime;
+        this.nowTime = nowTime;
 
         for(TickSystem tickSystem : registeredTickSystems) {
             tickSystem.beforeDispatchStarted(actionTrack, nowTime);
@@ -54,5 +70,9 @@ public class RubbishContainer {
         for(TickSystem tickSystem : registeredTickSystems) {
             tickSystem.afterDispatchFinished();
         }
+    }
+
+    public void createTimer(Long nowTime, Object action, int period, int repeats) {
+        statefullTimer.createTimer(actionTrack, nowTime, action, period, repeats);
     }
 }
