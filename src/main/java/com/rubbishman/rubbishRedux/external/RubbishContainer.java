@@ -28,6 +28,7 @@ public class RubbishContainer {
         reducer.setRubbishContainer(this);
         statefullTimer = new StatefullTimerProcessing();
         statefullTimer.setStore(store);
+        registeredTickSystems.add(statefullTimer);
     }
 
     public ObjectStore getState() {
