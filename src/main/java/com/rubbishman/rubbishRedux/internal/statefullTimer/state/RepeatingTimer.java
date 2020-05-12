@@ -3,28 +3,12 @@ package com.rubbishman.rubbishRedux.internal.statefullTimer.state;
 public class RepeatingTimer {
     public final long startTime;
     public final long period;
-    public final int repeats;
+    public final long repeats;
     public final int currentRepeats;
 
     public final Object action;
 
-//    public RepeatingTimer (long startTime, long period, Object action) {
-//        this.startTime = startTime;
-//        this.period = period;
-//        this.repeats = 1;
-//        this.currentRepeats = 0;
-//        this.action = action;
-//    }
-//
-//    public RepeatingTimer(long startTime, long period, int repeats, Object action) {
-//        this.startTime = startTime;
-//        this.period = period;
-//        this.repeats = repeats;
-//        this.currentRepeats = 0;
-//        this.action = action;
-//    }
-
-    public RepeatingTimer(long startTime, long period, int repeats, int currentRepeats, Object action) {
+    public RepeatingTimer(long startTime, long period, long repeats, int currentRepeats, Object action) {
         this.startTime = startTime;
         this.period = period;
         this.repeats = repeats;

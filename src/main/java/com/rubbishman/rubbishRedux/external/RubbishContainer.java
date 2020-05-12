@@ -72,7 +72,7 @@ public class RubbishContainer {
         }
     }
 
-    public void createTimer(Long nowTime, Object action, int period, int repeats) {
+    public void createTimer(Long nowTime, Object action, long period, long repeats) {
         statefullTimer.createTimer(actionTrack, nowTime, action, period, repeats);
     }
 }

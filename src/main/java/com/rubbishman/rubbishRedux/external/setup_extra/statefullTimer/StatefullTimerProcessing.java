@@ -64,7 +64,7 @@ public class StatefullTimerProcessing extends TickSystem {
     }
 
     //TODO, this is simple, we also want one where we allow a wrapper on the callback.
-    public CreateObject createTimer(ActionTrack actionTrack, Long nowTime, Object action, int period, int repeats) {
+    public CreateObject createTimer(ActionTrack actionTrack, Long nowTime, Object action, long period, long repeats) {
         CreateObject<RepeatingTimer> createObj = new CreateObject(
                 new RepeatingTimer(nowTime, period, repeats, 0 , action),
                 new ICreateObjectCallback() {
