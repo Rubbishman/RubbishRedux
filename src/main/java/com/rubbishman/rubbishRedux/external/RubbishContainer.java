@@ -15,11 +15,8 @@ import java.util.ArrayList;
 public class RubbishContainer {
     private ActionTrack actionTrack;
     private Store<ObjectStore> store;
-    private ArrayList<TickSystem> registeredTickSystems;
     private StatefullTimerProcessing statefullTimer;
     private TimeKeeper timeKeeper;
-    private ActionTrack internalQueue;
-    private Boolean processingAction = false;
 
     public RubbishContainer(
             StageStack stageStack,
@@ -27,19 +24,19 @@ public class RubbishContainer {
             RubbishReducer reducer,
             ArrayList<TickSystem> registeredTickSystems,
             TimeKeeper timeKeeper) {
-        this.actionTrack = new ActionTrack(store, stageStack);
-        this.store = store;
-        this.registeredTickSystems = registeredTickSystems;
-        reducer.setRubbishContainer(this);
-        statefullTimer = new StatefullTimerProcessing();
-        statefullTimer.setStore(store);
-        registeredTickSystems.add(statefullTimer);
-
         if(timeKeeper == null) {
             this.timeKeeper = new TimeKeeper();
         } else {
             this.timeKeeper = timeKeeper;
         }
+
+        this.actionTrack = new ActionTrack(this.timeKeeper, registeredTickSystems, store, reducer, stageStack);
+        this.store = store;
+
+        reducer.setRubbishContainer(this);
+        statefullTimer = new StatefullTimerProcessing();
+        statefullTimer.setStore(store);
+        registeredTickSystems.add(statefullTimer);
     }
 
     public ObjectStore getState() {
@@ -67,74 +64,9 @@ public class RubbishContainer {
         timeKeeper.progressTime();
 
         // Take a snapshot of the queue.
-        internalQueue = actionTrack.isolate();
+        ActionTrack internalQueue = actionTrack.isolate();
 
-        processActions(internalQueue);
-    }
-
-    private void processActions(ActionTrack actionTrack) {
-        for(TickSystem tickSystem : registeredTickSystems) {
-            tickSystem.beforeDispatchStarted(actionTrack, timeKeeper.getNowTime());
-        }
-
-        boolean wasProcessingActionTrue;
-        synchronized (processingAction) {
-            wasProcessingActionTrue = processingAction;
-        }
-
-        while(actionTrack.hasNext()) {
-            if(!wasProcessingActionTrue) {
-                synchronized (processingAction) {
-                    processingAction = true;
-                }
-                actionTrack.processNextAction();
-                synchronized (processingAction) {
-                    processingAction = false;
-                }
-            } else {
-                actionTrack.processNextAction();
-            }
-        }
-
-        for(TickSystem tickSystem : registeredTickSystems) {
-            tickSystem.afterDispatchFinished();
-        }
-    }
-
-    public void performActionThisTick(Object action) {
-        synchronized (processingAction) {
-            if(processingAction) {
-                internalQueue.addAction(action);
-            } else {
-                throw new RuntimeException();
-            }
-        }
-    }
-
-    public void performActionImmediately(Object action) {
-        synchronized (processingAction) {
-            if(processingAction) {
-                ActionTrack internalActionTrack = new ActionTrack(store, actionTrack.stageStack);
-                internalActionTrack.addAction(action);
-                processActions(internalActionTrack);
-            } else {
-                throw new RuntimeException();
-            }
-        }
-    }
-
-    public void performActionsImmediately(Object... actions) {
-        synchronized (processingAction) {
-            if(processingAction) {
-                ActionTrack internalActionTrack = new ActionTrack(store, actionTrack.stageStack);
-                for(Object action : actions) {
-                    internalActionTrack.addAction(action);
-                }
-                processActions(internalActionTrack);
-            } else {
-                throw new RuntimeException();
-            }
-        }
+        internalQueue.processActions();
     }
 
     public void createTimer(Long nowTime, Object action, long period, long repeats) {

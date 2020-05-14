@@ -3,6 +3,7 @@ package com.rubbishman.rubbishRedux.internal;
 import com.rubbishman.rubbishRedux.external.RubbishContainer;
 import com.rubbishman.rubbishRedux.external.operational.action.createObject.CreateObject;
 import com.rubbishman.rubbishRedux.external.setup.IRubbishReducer;
+import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.ActionTrack;
 import com.rubbishman.rubbishRedux.external.setup_extra.createObject.reducer.CreateObjectReducer;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
 import com.rubbishman.rubbishRedux.internal.statefullTimer.action.IncrementTimer;
@@ -25,6 +26,12 @@ public class RubbishReducer implements Reducer<ObjectStore> {
         this.rubbishContainer = rubbishContainer;
         if(wrappedReducer != null) {
             wrappedReducer.setRubbishContainer(rubbishContainer);
+        }
+    }
+
+    public void setCurrentActionTrack(ActionTrack currentActionTrack) {
+        if(wrappedReducer != null) {
+            wrappedReducer.setCurrentActionTrack(currentActionTrack);
         }
     }
 
