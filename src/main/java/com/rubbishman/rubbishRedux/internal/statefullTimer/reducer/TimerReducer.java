@@ -2,12 +2,13 @@ package com.rubbishman.rubbishRedux.internal.statefullTimer.reducer;
 
 import com.rubbishman.rubbishRedux.external.operational.store.IdObject;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
+import com.rubbishman.rubbishRedux.external.setup.IRubbishReducer;
 import com.rubbishman.rubbishRedux.internal.statefullTimer.action.IncrementTimer;
 import com.rubbishman.rubbishRedux.internal.statefullTimer.helper.TimerHelper;
 import com.rubbishman.rubbishRedux.internal.statefullTimer.state.RepeatingTimer;
 import redux.api.Reducer;
 
-public class TimerReducer implements Reducer<ObjectStore> {
+public class TimerReducer extends IRubbishReducer {
     public ObjectStore reduce(ObjectStore state, IncrementTimer action) {
         RepeatingTimer timer = state.getObject(action.subject);
 
@@ -18,7 +19,7 @@ public class TimerReducer implements Reducer<ObjectStore> {
         int diff = newTimer.currentRepeats - timer.currentRepeats;
 
         while(diff > 0) {
-            cloned = this.reduce(cloned, timer.action); //TODO, this is a bug...
+            this.currentActionTrack.performActionImmediately(timer.action); //These will happen before next action
             diff--;
         }
 
