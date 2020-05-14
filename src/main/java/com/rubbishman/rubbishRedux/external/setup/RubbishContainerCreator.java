@@ -14,7 +14,6 @@ import redux.api.enhancer.Middleware;
 public class RubbishContainerCreator {
     public static RubbishContainer getRubbishContainer(RubbishContainerOptions options) {
         Store.Creator<ObjectStore> creator;
-        StatefullTimerProcessing timer;
         RubbishReducer rubbishReducer;
         Store<ObjectStore> store;
         CreateObjectEnhancer coEnhancer = new CreateObjectEnhancer(); //TODO, make this so we don't have to enhance?
@@ -47,6 +46,6 @@ public class RubbishContainerCreator {
                 options.actionStageMap
         );
 
-        return new RubbishContainer(stageStack, store, rubbishReducer, options.registeredTickSystems);
+        return new RubbishContainer(stageStack, store, rubbishReducer, options.registeredTickSystems, options.timeKeeper);
     }
 }

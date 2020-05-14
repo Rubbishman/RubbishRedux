@@ -5,6 +5,7 @@ import com.rubbishman.rubbishRedux.external.setup_extra.TickSystem;
 import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.stage.StageWrap;
 import com.rubbishman.rubbishRedux.external.operational.action.multistageAction.Stage.Stage;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
+import com.rubbishman.rubbishRedux.internal.timekeeper.TimeKeeper;
 import redux.api.enhancer.Middleware;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +20,8 @@ public class RubbishContainerOptions {
     protected HashMap<Class, ImmutableList<StageWrap>> actionStageMap = new HashMap<>();
     protected ArrayList<TickSystem> registeredTickSystems = new ArrayList<>();
 
+    protected TimeKeeper timeKeeper;
+
     public RubbishContainerOptions registerTickSystem(TickSystem tickSystem) {
         registeredTickSystems.add(tickSystem);
 
@@ -27,6 +30,12 @@ public class RubbishContainerOptions {
 
     public RubbishContainerOptions addMiddleware(Middleware<ObjectStore> middleware) {
         middlewareList.add(middleware);
+
+        return this;
+    }
+
+    public RubbishContainerOptions setTimeKeeper(TimeKeeper timeKeeper) {
+        this.timeKeeper = timeKeeper;
 
         return this;
     }
