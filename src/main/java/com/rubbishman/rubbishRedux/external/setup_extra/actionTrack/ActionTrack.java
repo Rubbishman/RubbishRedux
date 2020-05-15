@@ -203,6 +203,7 @@ public class ActionTrack {
 
                 childActionQueue = new PriorityQueue<>();
                 child.internalProcessActions(); // Does not do tick systems, since those should only happen at top level.
+                reducer.setCurrentActionTrack(this); //Return to our current level...
             }
         }
     }
