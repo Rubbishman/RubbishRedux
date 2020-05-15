@@ -5,7 +5,7 @@ public class TimeKeeper {
     protected long elapsedTime;
 
     public void progressTime() {
-        Long newNowTime = System.nanoTime();
+        long newNowTime = System.nanoTime();
         elapsedTime = newNowTime - nowTime;
         nowTime = newNowTime;
     }
