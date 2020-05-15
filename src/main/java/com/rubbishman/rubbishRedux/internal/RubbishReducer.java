@@ -19,20 +19,21 @@ public class RubbishReducer implements Reducer<ObjectStore> {
     public RubbishReducer() {}
 
     public RubbishReducer(IRubbishReducer wrappedReducer) {
+        if(wrappedReducer == null) {
+            throw new RuntimeException();
+        }
         this.wrappedReducer = wrappedReducer;
     }
 
     public void setRubbishContainer(RubbishContainer rubbishContainer) {
         this.rubbishContainer = rubbishContainer;
-        if(wrappedReducer != null) {
-            wrappedReducer.setRubbishContainer(rubbishContainer);
-        }
+        wrappedReducer.setRubbishContainer(rubbishContainer);
     }
 
     public void setCurrentActionTrack(ActionTrack currentActionTrack) {
-        if(wrappedReducer != null) {
-            wrappedReducer.setCurrentActionTrack(currentActionTrack);
-        }
+        wrappedReducer.setCurrentActionTrack(currentActionTrack);
+        timerReducer.setCurrentActionTrack(currentActionTrack);
+        createObjectReducer.setCurrentActionTrack(currentActionTrack);
     }
 
     public ObjectStore reduce(ObjectStore state, Object action) {

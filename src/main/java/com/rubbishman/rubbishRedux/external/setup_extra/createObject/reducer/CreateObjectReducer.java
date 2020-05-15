@@ -1,11 +1,12 @@
 package com.rubbishman.rubbishRedux.external.setup_extra.createObject.reducer;
 
 import com.rubbishman.rubbishRedux.external.operational.action.createObject.CreateObject;
+import com.rubbishman.rubbishRedux.external.setup.IRubbishReducer;
 import com.rubbishman.rubbishRedux.internal.dynamicObjectStore.store.CreatedObjectStore;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
 import redux.api.Reducer;
 
-public class CreateObjectReducer implements Reducer<ObjectStore> {
+public class CreateObjectReducer extends IRubbishReducer {
     private Reducer<ObjectStore> wrappedReducer;
     private Runnable postDispatchRunnable;
 
