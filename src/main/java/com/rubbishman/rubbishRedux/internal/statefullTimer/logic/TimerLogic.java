@@ -21,9 +21,11 @@ public class TimerLogic {
 
         RepeatingTimer periodicIncrementer = getRepeatingTimer(state);
 
-        if(TimerHelper.repeatsChanged(periodicIncrementer, nowTime)) {
+        int newRepeats = TimerHelper.calculateNewRepeats(nowTime, periodicIncrementer);
+
+        if(periodicIncrementer.currentRepeats != newRepeats) {
             actionTrack.addAction(new IncrementTimer(nowTime, subject));
-            if(periodicIncrementer.currentRepeats == periodicIncrementer.repeats - 1) {
+            if(newRepeats == periodicIncrementer.repeats) {
                 return false; //Destruct is needed..?
             }
             return true;

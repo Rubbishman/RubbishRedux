@@ -14,9 +14,15 @@ public class TimerReducer extends IRubbishReducer {
 
         RepeatingTimer newTimer = timer.changeRepeats(TimerHelper.calculateNewRepeats(action.nowTime, timer));
 
-        ObjectStore cloned = state.setObject(action.subject, newTimer);
+        ObjectStore cloned;
 
         int diff = newTimer.currentRepeats - timer.currentRepeats;
+
+        if(newTimer.currentRepeats == timer.repeats) {
+            cloned = state.setObject(action.subject, null);
+        } else {
+            cloned = state.setObject(action.subject, newTimer);
+        }
 
         while(diff > 0) {
             this.currentActionTrack.performActionImmediately(timer.action); //These will happen before next action
