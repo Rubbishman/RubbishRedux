@@ -2,6 +2,7 @@ package com.rubbishman.rubbishRedux.external.setup;
 
 import com.google.common.collect.ImmutableList;
 import com.rubbishman.rubbishRedux.external.setup_extra.TickSystem;
+import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.ActionTrackListener;
 import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.stage.StageWrap;
 import com.rubbishman.rubbishRedux.external.operational.action.multistageAction.Stage.Stage;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
@@ -21,6 +22,18 @@ public class RubbishContainerOptions {
     protected ArrayList<TickSystem> registeredTickSystems = new ArrayList<>();
 
     protected TimeKeeper timeKeeper;
+
+    protected HashMap<Stage, ArrayList<ActionTrackListener>> listeners = new HashMap<>();
+
+    public RubbishContainerOptions addListener(Stage stage, ActionTrackListener listener) {
+        if(!listeners.containsKey(stage)) {
+            listeners.put(stage, new ArrayList<>());
+        }
+
+        listeners.get(stage).add(listener);
+
+        return this;
+    }
 
     public RubbishContainerOptions registerTickSystem(TickSystem tickSystem) {
         registeredTickSystems.add(tickSystem);

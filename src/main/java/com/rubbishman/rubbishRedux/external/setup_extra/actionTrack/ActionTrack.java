@@ -13,17 +13,20 @@ import java.util.*;
 
 public class ActionTrack {
     private Store<ObjectStore> store;
+//    private ObjectStore currentState;
     private RubbishReducer reducer;
     public final ActionTrack parent;
     public final StageStack stageStack;
 
-    public PriorityQueue<StageWrappedAction> actionQueue;
-    public Stack<ScratchHistoryItem> actionHistory;
+    private HashMap<Stage, ArrayList<ActionTrackListener>> listeners;
+
+    private PriorityQueue<StageWrappedAction> actionQueue;
+    private Stack<ScratchHistoryItem> actionHistory;
     private ArrayList<TickSystem> registeredTickSystems;
     private TimeKeeper timeKeeper;
     private Boolean processingAction = false;
 
-    public PriorityQueue<StageWrappedAction> childActionQueue;
+    private PriorityQueue<StageWrappedAction> childActionQueue;
 
     public static final StageWrap FINAL_STAGE = new StageWrap(
             new Stage(
@@ -44,7 +47,16 @@ public class ActionTrack {
 
     public static final ImmutableList<StageWrap> FINAL_STAGE_LIST = ImmutableList.of(FINAL_STAGE);
 
-    public ActionTrack(TimeKeeper timeKeeper, ArrayList<TickSystem> registeredTickSystems, Store<ObjectStore> store, RubbishReducer reducer, StageStack stageStack, PriorityQueue<StageWrappedAction> actionQueue, Stack<ScratchHistoryItem> actionHistory) {
+    public ActionTrack(
+        TimeKeeper timeKeeper,
+        ArrayList<TickSystem> registeredTickSystems,
+        Store<ObjectStore> store,
+        RubbishReducer reducer,
+        StageStack stageStack,
+        PriorityQueue<StageWrappedAction> actionQueue,
+        Stack<ScratchHistoryItem> actionHistory,
+        HashMap<Stage, ArrayList<ActionTrackListener>> listeners
+    ) {
         this.parent = null;
         this.store = store;
         this.stageStack = stageStack;
@@ -54,9 +66,20 @@ public class ActionTrack {
         this.registeredTickSystems = registeredTickSystems;
         this.timeKeeper = timeKeeper;
         this.reducer = reducer;
+        this.listeners = listeners;
     }
 
-    public ActionTrack(TimeKeeper timeKeeper, ArrayList<TickSystem> registeredTickSystems, Store<ObjectStore> store,RubbishReducer reducer, ActionTrack parent, StageStack stageStack, PriorityQueue<StageWrappedAction> actionQueue, Stack<ScratchHistoryItem> actionHistory) {
+    public ActionTrack(
+            TimeKeeper timeKeeper,
+            ArrayList<TickSystem> registeredTickSystems,
+            Store<ObjectStore> store,
+            RubbishReducer reducer,
+            ActionTrack parent,
+            StageStack stageStack,
+            PriorityQueue<StageWrappedAction> actionQueue,
+            Stack<ScratchHistoryItem> actionHistory,
+            HashMap<Stage, ArrayList<ActionTrackListener>> listeners
+    ) {
         this.parent = parent;
         this.store = store;
         this.stageStack = stageStack;
@@ -66,9 +89,17 @@ public class ActionTrack {
         this.registeredTickSystems = registeredTickSystems;
         this.timeKeeper = timeKeeper;
         this.reducer = reducer;
+        this.listeners = listeners;
     }
 
-    public ActionTrack(TimeKeeper timeKeeper, ArrayList<TickSystem> registeredTickSystems, Store<ObjectStore> store,RubbishReducer reducer, StageStack stageStack) {
+    public ActionTrack(
+            TimeKeeper timeKeeper,
+            ArrayList<TickSystem> registeredTickSystems,
+            Store<ObjectStore> store,
+            RubbishReducer reducer,
+            StageStack stageStack,
+            HashMap<Stage, ArrayList<ActionTrackListener>> listeners
+    ) {
         this.parent = null;
         this.store = store;
         this.stageStack = stageStack;
@@ -78,18 +109,7 @@ public class ActionTrack {
         this.registeredTickSystems = registeredTickSystems;
         this.timeKeeper = timeKeeper;
         this.reducer = reducer;
-    }
-
-    public ActionTrack(TimeKeeper timeKeeper, ArrayList<TickSystem> registeredTickSystems, Store<ObjectStore> store, RubbishReducer reducer) {
-        this.parent = null;
-        this.store = store;
-        this.stageStack = new StageStack(new HashMap());
-        actionHistory = new Stack<>();
-        actionQueue = new PriorityQueue<>();
-        childActionQueue = new PriorityQueue<>();
-        this.registeredTickSystems = registeredTickSystems;
-        this.timeKeeper = timeKeeper;
-        this.reducer = reducer;
+        this.listeners = listeners;
     }
 
     public void addAction(Object action) {
@@ -129,14 +149,20 @@ public class ActionTrack {
             StageWrap currentStage = wrappedAction.stages.get(wrappedAction.currentStage);
             StageWrapResult result = currentStage.stageProcessor.processStage(store.getState(), wrappedAction);
 
+            wrappedAction.stageResults.put(currentStage.stage.priority, result.stageObject);
+
             if(result.dispatchAction != null) {
                 store.dispatch(result.dispatchAction);
             }
 
+            if(listeners.containsKey(currentStage.stage)) {
+                for(ActionTrackListener listener: listeners.get(currentStage.stage)) {
+                    listener.listen(wrappedAction.stageResults);
+                }
+            }
+
             if(result.processedAction != null
                     && wrappedAction.currentStage < wrappedAction.stages.size() - 1) {
-
-                wrappedAction.stageResults.put(currentStage.stage.priority, result.stageObject);
 
                 actionQueue.add(new StageWrappedAction(
                     wrappedAction.originalAction,
@@ -198,7 +224,8 @@ public class ActionTrack {
                         this,
                         stageStack,
                         childActionQueue,
-                        actionHistory
+                        actionHistory,
+                        listeners
                 );
 
                 childActionQueue = new PriorityQueue<>();
@@ -252,7 +279,8 @@ public class ActionTrack {
                 reducer,
                 stageStack,
                 isolateActionQueue,
-                actionHistory
+                actionHistory,
+                listeners
         );
     }
 }

@@ -46,6 +46,13 @@ public class RubbishContainerCreator {
                 options.actionStageMap
         );
 
-        return new RubbishContainer(stageStack, store, rubbishReducer, options.registeredTickSystems, options.timeKeeper);
+        return new RubbishContainer(
+                stageStack,
+                store,
+                rubbishReducer,
+                options.registeredTickSystems,
+                options.timeKeeper,
+                options.listeners
+        );
     }
 }

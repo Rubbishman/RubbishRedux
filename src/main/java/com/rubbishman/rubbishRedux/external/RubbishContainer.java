@@ -1,7 +1,9 @@
 package com.rubbishman.rubbishRedux.external;
 
+import com.rubbishman.rubbishRedux.external.operational.action.multistageAction.Stage.Stage;
 import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.ActionTrack;
 import com.rubbishman.rubbishRedux.external.setup_extra.TickSystem;
+import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.ActionTrackListener;
 import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.stage.StageStack;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
 import com.rubbishman.rubbishRedux.external.setup_extra.statefullTimer.StatefullTimerProcessing;
@@ -11,6 +13,7 @@ import redux.api.Store;
 
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class RubbishContainer {
     private ActionTrack actionTrack;
@@ -23,14 +26,23 @@ public class RubbishContainer {
             Store<ObjectStore> store,
             RubbishReducer reducer,
             ArrayList<TickSystem> registeredTickSystems,
-            TimeKeeper timeKeeper) {
+            TimeKeeper timeKeeper,
+            HashMap<Stage, ArrayList<ActionTrackListener>> listeners
+    ) {
         if(timeKeeper == null) {
             this.timeKeeper = new TimeKeeper();
         } else {
             this.timeKeeper = timeKeeper;
         }
 
-        this.actionTrack = new ActionTrack(this.timeKeeper, registeredTickSystems, store, reducer, stageStack);
+        this.actionTrack = new ActionTrack(
+                this.timeKeeper,
+                registeredTickSystems,
+                store,
+                reducer,
+                stageStack,
+                listeners
+        );
         this.store = store;
 
         reducer.setRubbishContainer(this);

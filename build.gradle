@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'rubbishRedux'
-version '0.17-SNAPSHOT'
+version '0.18-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
