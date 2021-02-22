@@ -15,15 +15,17 @@ import java.util.List;
 public class RubbishContainerOptions {
     protected List<Middleware<ObjectStore>> middlewareList = new ArrayList<>();
     protected IRubbishReducer reducer;
-
     protected ImmutableList<Stage> stages = ImmutableList.of();
     protected HashMap<String, Stage> stageNameMap = new HashMap<>();
     protected HashMap<Class, ImmutableList<StageWrap>> actionStageMap = new HashMap<>();
     protected ArrayList<TickSystem> registeredTickSystems = new ArrayList<>();
-
     protected TimeKeeper timeKeeper;
-
     protected HashMap<Stage, ArrayList<ActionTrackListener>> listeners = new HashMap<>();
+    protected boolean isSteppedActionTracker;
+
+    public void setSteppedActionTracker(boolean isSteppedActionTracker) {
+        this.isSteppedActionTracker = isSteppedActionTracker;
+    }
 
     public RubbishContainerOptions addListener(Stage stage, ActionTrackListener listener) {
         if(!listeners.containsKey(stage)) {

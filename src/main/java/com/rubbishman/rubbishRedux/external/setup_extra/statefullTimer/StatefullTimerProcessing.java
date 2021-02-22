@@ -6,6 +6,7 @@ import com.rubbishman.rubbishRedux.external.operational.action.createObject.Crea
 import com.rubbishman.rubbishRedux.external.operational.action.createObject.ICreateObjectCallback;
 import com.rubbishman.rubbishRedux.external.operational.store.IdObject;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
+import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.IActionTrack;
 import com.rubbishman.rubbishRedux.internal.statefullTimer.helper.TimerComparator;
 import com.rubbishman.rubbishRedux.internal.statefullTimer.helper.TimerHelper;
 import com.rubbishman.rubbishRedux.internal.statefullTimer.logic.TimerLogic;
@@ -27,7 +28,7 @@ public class StatefullTimerProcessing extends TickSystem {
 
     LinkedList<TimerLogic> toAdd;
 
-    public void beforeDispatchStarted(ActionTrack actionTrack, Long nowTime) {
+    public void beforeDispatchStarted(IActionTrack actionTrack, Long nowTime) {
         toAdd = new LinkedList();
 
         synchronized (store) {
@@ -64,7 +65,7 @@ public class StatefullTimerProcessing extends TickSystem {
     }
 
     //TODO, this is simple, we also want one where we allow a wrapper on the callback.
-    public CreateObject createTimer(ActionTrack actionTrack, Long nowTime, Object action, long period, long repeats) {
+    public CreateObject createTimer(IActionTrack actionTrack, Long nowTime, Object action, long period, long repeats) {
         CreateObject<RepeatingTimer> createObj = new CreateObject(
                 new RepeatingTimer(nowTime, period, repeats, 0 , action),
                 new ICreateObjectCallback() {

@@ -3,6 +3,7 @@ package com.rubbishman.rubbishRedux.internal.statefullTimer.logic;
 import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.ActionTrack;
 import com.rubbishman.rubbishRedux.external.operational.store.Identifier;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
+import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.IActionTrack;
 import com.rubbishman.rubbishRedux.internal.statefullTimer.action.IncrementTimer;
 import com.rubbishman.rubbishRedux.internal.statefullTimer.helper.TimerHelper;
 import com.rubbishman.rubbishRedux.internal.statefullTimer.state.RepeatingTimer;
@@ -14,7 +15,7 @@ public class TimerLogic {
         this.subject = subject;
     }
 
-    public boolean logic(ActionTrack actionTrack, ObjectStore state, long nowTime) {
+    public boolean logic(IActionTrack actionTrack, ObjectStore state, long nowTime) {
         if(state.getObject(subject) == null) {
             return false;
         }

@@ -1,22 +1,26 @@
-package com.rubbishman.rubbishRedux.external.setup_extra.actionTrack;
+package com.rubbishman.rubbishRedux.experimental.steppedActionTrack;
 
 import com.google.common.collect.ImmutableList;
-import com.rubbishman.rubbishRedux.experimental.steppedActionTrack.SteppedSpecification;
-import com.rubbishman.rubbishRedux.external.setup_extra.TickSystem;
-import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.stage.*;
 import com.rubbishman.rubbishRedux.external.operational.action.multistageAction.Stage.Stage;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
+import com.rubbishman.rubbishRedux.external.setup_extra.TickSystem;
+import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.ActionTrackListener;
+import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.IActionTrack;
+import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.ScratchHistoryItem;
+import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.stage.*;
 import com.rubbishman.rubbishRedux.internal.RubbishReducer;
 import com.rubbishman.rubbishRedux.internal.timekeeper.TimeKeeper;
 import redux.api.Store;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.PriorityQueue;
+import java.util.Stack;
 
-public class ActionTrack implements IActionTrack {
+public class SteppedActionTrack implements IActionTrack, ISteppedActionTrack {
     private Store<ObjectStore> store;
-//    private ObjectStore currentState;
     private RubbishReducer reducer;
-    public final ActionTrack parent;
+    public final SteppedActionTrack parent;
     public final StageStack stageStack;
 
     private HashMap<Stage, ArrayList<ActionTrackListener>> listeners;
@@ -28,6 +32,8 @@ public class ActionTrack implements IActionTrack {
     private Boolean processingAction = false;
 
     private PriorityQueue<StageWrappedAction> childActionQueue;
+
+    private SteppedSpecification steppedSpec;
 
     public static final StageWrap FINAL_STAGE = new StageWrap(
             new Stage(
@@ -48,7 +54,7 @@ public class ActionTrack implements IActionTrack {
 
     public static final ImmutableList<StageWrap> FINAL_STAGE_LIST = ImmutableList.of(FINAL_STAGE);
 
-    public ActionTrack(
+    public SteppedActionTrack(
         TimeKeeper timeKeeper,
         ArrayList<TickSystem> registeredTickSystems,
         Store<ObjectStore> store,
@@ -70,12 +76,12 @@ public class ActionTrack implements IActionTrack {
         this.listeners = listeners;
     }
 
-    public ActionTrack(
+    public SteppedActionTrack(
             TimeKeeper timeKeeper,
             ArrayList<TickSystem> registeredTickSystems,
             Store<ObjectStore> store,
             RubbishReducer reducer,
-            ActionTrack parent,
+            SteppedActionTrack parent,
             StageStack stageStack,
             PriorityQueue<StageWrappedAction> actionQueue,
             Stack<ScratchHistoryItem> actionHistory,
@@ -93,7 +99,7 @@ public class ActionTrack implements IActionTrack {
         this.listeners = listeners;
     }
 
-    public ActionTrack(
+    public SteppedActionTrack(
             TimeKeeper timeKeeper,
             ArrayList<TickSystem> registeredTickSystems,
             Store<ObjectStore> store,
@@ -143,7 +149,17 @@ public class ActionTrack implements IActionTrack {
         return actionQueue.peek() != null;
     }
 
+    public void resume() {
+        this.processNextAction();
+    }
+
     public void processNextAction() {
+        if(steppedSpec != null && steppedSpec.shouldStop()) {
+            //stop, but how?
+            steppedSpec.setResumePoint(this);
+            return;
+        }
+
         StageWrappedAction wrappedAction = actionQueue.poll();
 
         if(wrappedAction != null) {
@@ -173,6 +189,10 @@ public class ActionTrack implements IActionTrack {
                         wrappedAction.currentStage + 1
                 ));
             }
+        }
+
+        if(steppedSpec != null) {
+            steppedSpec.observeAction();
         }
     }
 
@@ -217,7 +237,7 @@ public class ActionTrack implements IActionTrack {
     private void isolateChildActions() {
         synchronized(childActionQueue) {
             if(!childActionQueue.isEmpty()) {
-                ActionTrack child = new ActionTrack(
+                SteppedActionTrack child = new SteppedActionTrack(
                         timeKeeper,
                         registeredTickSystems,
                         store,
@@ -256,6 +276,10 @@ public class ActionTrack implements IActionTrack {
         }
     }
 
+    public void setSteppedSpecification(SteppedSpecification spec) {
+        this.steppedSpec = spec;
+    }
+
     public void performActionsImmediately(Object... actions) {
         synchronized (processingAction) {
             if(processingAction) {
@@ -268,12 +292,12 @@ public class ActionTrack implements IActionTrack {
         }
     }
 
-    public IActionTrack isolate() {
+    public SteppedActionTrack isolate() {
         PriorityQueue<StageWrappedAction> isolateActionQueue = this.actionQueue;
 
         this.actionQueue = new PriorityQueue();
 
-        return new ActionTrack(
+        return new SteppedActionTrack(
                 timeKeeper,
                 registeredTickSystems,
                 store,
@@ -283,9 +307,5 @@ public class ActionTrack implements IActionTrack {
                 actionHistory,
                 listeners
         );
-    }
-
-    public void setSteppedSpecification(SteppedSpecification spec) {
-        // No op, this type of action track does not care.
     }
 }

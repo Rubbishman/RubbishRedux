@@ -1,9 +1,11 @@
 package com.rubbishman.rubbishRedux.external;
 
+import com.rubbishman.rubbishRedux.experimental.steppedActionTrack.SteppedActionTrack;
 import com.rubbishman.rubbishRedux.external.operational.action.multistageAction.Stage.Stage;
 import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.ActionTrack;
 import com.rubbishman.rubbishRedux.external.setup_extra.TickSystem;
 import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.ActionTrackListener;
+import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.IActionTrack;
 import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.stage.StageStack;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
 import com.rubbishman.rubbishRedux.external.setup_extra.statefullTimer.StatefullTimerProcessing;
@@ -16,7 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class RubbishContainer {
-    private ActionTrack actionTrack;
+    private IActionTrack actionTrack;
     private Store<ObjectStore> store;
     private StatefullTimerProcessing statefullTimer;
     private TimeKeeper timeKeeper;
@@ -27,7 +29,8 @@ public class RubbishContainer {
             RubbishReducer reducer,
             ArrayList<TickSystem> registeredTickSystems,
             TimeKeeper timeKeeper,
-            HashMap<Stage, ArrayList<ActionTrackListener>> listeners
+            HashMap<Stage, ArrayList<ActionTrackListener>> listeners,
+            boolean isSteppedActionTracker
     ) {
         if(timeKeeper == null) {
             this.timeKeeper = new TimeKeeper();
@@ -35,14 +38,26 @@ public class RubbishContainer {
             this.timeKeeper = timeKeeper;
         }
 
-        this.actionTrack = new ActionTrack(
-                this.timeKeeper,
-                registeredTickSystems,
-                store,
-                reducer,
-                stageStack,
-                listeners
-        );
+        if(isSteppedActionTracker) {
+            this.actionTrack = new SteppedActionTrack(
+                    this.timeKeeper,
+                    registeredTickSystems,
+                    store,
+                    reducer,
+                    stageStack,
+                    listeners
+            );
+        } else {
+            this.actionTrack = new ActionTrack(
+                    this.timeKeeper,
+                    registeredTickSystems,
+                    store,
+                    reducer,
+                    stageStack,
+                    listeners
+            );
+        }
+
         this.store = store;
 
         reducer.setRubbishContainer(this);
@@ -76,7 +91,7 @@ public class RubbishContainer {
         timeKeeper.progressTime();
 
         // Take a snapshot of the queue.
-        ActionTrack internalQueue = actionTrack.isolate();
+        IActionTrack internalQueue = actionTrack.isolate();
 
         internalQueue.processActions();
     }

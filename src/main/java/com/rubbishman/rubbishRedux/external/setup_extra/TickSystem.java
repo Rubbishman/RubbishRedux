@@ -2,6 +2,7 @@ package com.rubbishman.rubbishRedux.external.setup_extra;
 
 import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.ActionTrack;
 import com.rubbishman.rubbishRedux.external.operational.store.ObjectStore;
+import com.rubbishman.rubbishRedux.external.setup_extra.actionTrack.IActionTrack;
 import redux.api.Store;
 
 public abstract class TickSystem {
@@ -11,6 +12,6 @@ public abstract class TickSystem {
         this.store = store;
     }
 
-    public abstract void beforeDispatchStarted(ActionTrack actionQueue, Long nowTime);
+    public abstract void beforeDispatchStarted(IActionTrack actionQueue, Long nowTime);
     public abstract void afterDispatchFinished();
 }

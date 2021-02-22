@@ -52,7 +52,8 @@ public class RubbishContainerCreator {
                 rubbishReducer,
                 options.registeredTickSystems,
                 options.timeKeeper,
-                options.listeners
+                options.listeners,
+                options.isSteppedActionTracker
         );
     }
 }
